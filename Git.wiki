@@ -209,3 +209,40 @@ To delete backup created by `git filter-branch` use:
 
 `git update-ref -d refs/original/refs/heads/master`
 
+== SPLIT ==
+=== create a new repo from subdirectory ===
+split subdirectory from main repo to a new repository using `git subtree split`
+
+{{{class="brush: bash"
+#!/bin/env bash
+
+# Script to split a directory from a repository
+# Must be run from root of the repo
+# IN: directory to split
+#     link to github repo
+# USE: git_split_repo DIR GITHUB_REPO
+
+# 1. Prepare the old repo
+# cd <big-repo>
+# git subtree split -P <name-of-folder> -b <name-of-new-branch>
+# Note: <name-of-folder> must NOT contain leading or trailing characters. For instance, the folder named subproject MUST be passed as subproject, NOT ./subproject/
+cwd="$(pwd)"
+git subtree split -P "$1" -b 'subtree_'"$1"
+
+# 2. Create the new repo
+mkdir -P ~/tmp/"$1" && cd ~/tmp/"$1"
+git init
+git pull "${cwd}"  'subtree_'"$1"
+
+# 3. Link the new repo to GitHub or wherever
+# git remote add origin <git@github.com:user/new-repo.git>
+# git push -u origin master
+
+git remote add origin "$2"
+git push -u origin master
+
+# 4. Cleanup inside <big-repo>, if desired
+# git rm -rf <name-of-folder>
+git rm -rf "${cwd}/$1"
+}}}
+
