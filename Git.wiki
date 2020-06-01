@@ -1,7 +1,48 @@
 = GIT =
+== CONFIG ==
+=== setup ===
+{{{class="brush: bash"
+#!/bin/bash
+
+git config --global user.email "rpi3.tomek@protonmail.com"
+git config --global user.name "Jan Tomek"
+}}}
+
+=== show commit tree ===
+shows commits in a graphical manner
+
+`log --graph --decorate --pretty=oneline --abbrev-commit`
+
+=== .gitconfig example ===
+{{{class:"brush: gitconfig"
+[user]
+	name = honzatomek
+	email = rpi3.tomek@protonmail.com
+[alias]
+        tree = log --graph --decorate --pretty=oneline --abbrev-commit
+	vlog = log --no-color
+	vdiff = diff --no-color
+        pp = "!git pull && git push"
+[core]
+        autocrlf = input
+[core]
+	editor = vim
+	# pager = vim -c 'set ft=git' -c AnsiEsc -
+	# pager = vim -c 'set ft=git' -
+[diff]
+	tool = vimdiff
+[merge]
+	tool = vimdiff
+[difftool]
+	prompt = false
+#[difftool "vimdiff"]
+#	# cmd = vimdiff $LOCAL $REMOTE $MERGED $BASE
+#        cmd = vimdiff $LOCAL $MERGED $REMOTE
+}}}
+
 == REMOTE ==
 === update remote url ===
-Updating the *remotte git repository url*:
+Updating the *remote git repository url*:
 {{{class="brush: bash"
 #!/usr/bin/env bash
 
