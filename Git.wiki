@@ -67,8 +67,8 @@ diverged. If it says nothing, the local and remote are the same:
 
 `git status -uno`
 
-will show you the commits in all of the branches whose names end in
-*master* (eg master and origin/master):
+will show you the commits in all of the branches whose names end in *master*
+(eg. master and origin/master):
 
 `git show-branch *master`
 
