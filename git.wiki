@@ -302,9 +302,8 @@ git submodule foreach --recursive 'git checkout $(git config -f $toplevel/.gitmo
 
 == HISTORY ==
 === delete files from history ===
-when you accidentally forget to ignore a file with credentials, temp files
-etc. before several commits - remove a file that is already embedded in git
-history:
+when you accidentally forget to ignore a file with credentials, temp files etc.
+before several commits - *remove a file that is already embedded in git history*:
 
 `git filter-branch --index-filter 'git rm -q --cached --ignore-unmatch *.tmp *~' -- --all`
 
