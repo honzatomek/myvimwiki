@@ -4,6 +4,8 @@
             - [[#GIT#CONFIG#setup|setup]]
             - [[#GIT#CONFIG#show commit tree|show commit tree]]
             - [[#GIT#CONFIG#.gitconfig example|.gitconfig example]]
+        - [[#GIT#.gitmodules|.gitmodules]]
+            - [[#GIT#.gitmodules#ignore files in submodules|ignore files in submodules]]
         - [[#GIT#REMOTE|REMOTE]]
             - [[#GIT#REMOTE#update remote url|update remote url]]
         - [[#GIT#CLONE|CLONE]]
@@ -61,6 +63,47 @@ shows commits in a graphical manner
 #[difftool "vimdiff"]
 #	# cmd = vimdiff $LOCAL $REMOTE $MERGED $BASE
 #        cmd = vimdiff $LOCAL $MERGED $REMOTE
+}}}
+
+== .gitmodules ==
+=== ignore files in submodules ===
+This is helpful when for example vim creates help tags in a doc directory of a plugin added as a git submodule.
+The easy approach is to set ignore to dirty in .gitmodules file.
+
+The standard `git status` output:
+{{{class="brush: git"
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+  (commit or discard the untracked or modified content in submodules)
+
+	modified:   bundle/bash-support (untracked content)
+
+no changes added to commit (use "git add" and/or "git commit -a")
+}}}
+
+And `git status` output from inside of the submodule:
+{{{class="brush: git"
+HEAD detached at 309d6fe
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	doc/tags
+	doc/tags-te
+
+nothing added to commit but untracked files present (use "git add" to track)
+}}}
+
+*Solution:*
+{{{class="brush: gitconfig"
+[submodule "bundle/bash-support"]
+	path = bundle/bash-support
+	url = https://github.com/vim-scripts/bash-support.vim
+	branch = master
+	ignore = dirty
 }}}
 
 == REMOTE ==
