@@ -1,3 +1,26 @@
+= Contents =
+    - [[#GIT|GIT]]
+        - [[#GIT#CONFIG|CONFIG]]
+            - [[#GIT#CONFIG#setup|setup]]
+            - [[#GIT#CONFIG#show commit tree|show commit tree]]
+            - [[#GIT#CONFIG#.gitconfig example|.gitconfig example]]
+        - [[#GIT#REMOTE|REMOTE]]
+            - [[#GIT#REMOTE#update remote url|update remote url]]
+        - [[#GIT#CLONE|CLONE]]
+            - [[#GIT#CLONE#get git repo to a nonempty directory|get git repo to a nonempty directory]]
+        - [[#GIT#CHANGES|CHANGES]]
+            - [[#GIT#CHANGES#view changes|view changes]]
+            - [[#GIT#CHANGES#view changed branches on github|view changed branches on github]]
+        - [[#GIT#SUBMODULES|SUBMODULES]]
+            - [[#GIT#SUBMODULES#update an individual submodule|update an individual submodule]]
+            - [[#GIT#SUBMODULES#remove a submodule|remove a submodule]]
+            - [[#GIT#SUBMODULES#git clone including submodules|git clone including submodules]]
+            - [[#GIT#SUBMODULES#init from .gitmodules|init from .gitmodules]]
+        - [[#GIT#HISTORY|HISTORY]]
+            - [[#GIT#HISTORY#delete files from history|delete files from history]]
+        - [[#GIT#SPLIT|SPLIT]]
+            - [[#GIT#SPLIT#create a new repo from subdirectory|create a new repo from subdirectory]]
+
 = GIT =
 == CONFIG ==
 === setup ===
