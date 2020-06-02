@@ -1,0 +1,81 @@
+= Contents =
+    - [[#TMUX|TMUX]]
+        - [[#TMUX#BASIC KEYBINDS|BASIC KEYBINDS]]
+            - [[#TMUX#BASIC KEYBINDS#LEADER|LEADER]]
+        - [[#TMUX#CUSTOM SETUP|CUSTOM SETUP]]
+            - [[#TMUX#CUSTOM SETUP#256 color support|256 color support]]
+            - [[#TMUX#CUSTOM SETUP#default command language|default command language]]
+            - [[#TMUX#CUSTOM SETUP#status bar colors|status bar colors]]
+            - [[#TMUX#CUSTOM SETUP#highight and display|highight and display]]
+            - [[#TMUX#CUSTOM SETUP#start window numbering at 1 instead of 0|start window numbering at 1 instead of 0]]
+            - [[#TMUX#CUSTOM SETUP#start pane numbering at 1 instead if 0|start pane numbering at 1 instead if 0]]
+            - [[#TMUX#CUSTOM SETUP#bind h to hortizontal split panes|bind h to hortizontal split panes]]
+            - [[#TMUX#CUSTOM SETUP#bind v to vertical split panes|bind v to vertical split panes]]
+
+= TMUX =
+Terminal Multiplexer
+
+File with personal configuration settings: [[local:~/.tmux.conf]]
+
+== BASIC KEYBINDS ==
+=== LEADER ===
+`CTRL-B`
+
+
+== CUSTOM SETUP ==
+=== 256 color support ===
+one possibility:
+{{{class="brush: bash"
+# set 256 color support for tmux
+set -g default-terminal "screen-256color"
+}}}
+
+or (this one works - tested);
+{{{class="brush: bash"
+# set 256 color support for tmux
+set -g default-terminal "tmux-256color"
+}}}
+
+=== default command language ===
+{{{class="brush: bash"
+set-option -g default-command bash
+}}}
+
+
+=== status bar colors ===
+{{{class="brush: bash"
+set -g status-bg blue
+}}}
+
+or:
+{{{class="brush: bash"
+set -g status-fg black
+}}}
+
+=== highight and display ===
+{{{class="brush: bash"
+setw -g monitor-activity on
+setw -g visual-activity on
+}}}
+
+=== start window numbering at 1 instead of 0 ===
+{{{class="brush: bash"
+set -g base-index 1
+}}}
+
+=== start pane numbering at 1 instead if 0 ===
+{{{class="brush: bash"
+set -g pane-base-index 1
+}}}
+
+=== bind h to hortizontal split panes ===
+{{{class="brush: bash"
+unbind '"'
+bind h split-window -v
+}}}
+
+=== bind v to vertical split panes ===
+{{{class="brush: bash"
+unbind %
+bind v split-window -h
+}}}
