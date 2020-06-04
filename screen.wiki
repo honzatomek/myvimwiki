@@ -1,0 +1,54 @@
+= layout =
+https://superuser.com/questions/687348/how-to-persist-gnu-screen-layout-after-restart
+
+== Default layout for new screen's ==
+* Manage your regions, then execute code inside screen:
+    - To save your current layout to file .screen_layout:
+
+	{{{class="brush: bash"
+	rm -f $HOME/.screen_layout
+	screen -X layout dump .screen_layout
+	}}}
+
+    - To make it auto-loading with layout saving:
+	{{{class="brush: bash"
+	echo source .screen_layout  >> $HOME/.screenrc
+	echo layout save def >> $HOME/.screenrc
+	}}}
+
+* How it works:
+    1) You type screen.
+    2) Screen reads _$HOME/.screenrc_:
+    3) `source .screen_layout` - read and execute commands from _$HOME/.screen_layout_
+       Regions now created.
+    4) `layout save def` - save current regions as layout to keep it when you detach.
+
+* `layout dump .screen_layout`
+    Dump (append) current layout to file in _$HOME_ directory.
+
+* `screen -X command`
+    Run _command_ in current screen session (if executed inside).
+    Similar to _<ctrl+a>_ then _:_ command.
+
+* You may also
+    - Disable copyright notice at startup:
+	{{{class="brush: bash"
+	echo startup_message off >> $HOME/.screenrc
+	}}}
+
+* Increase scroll buffer(def. 100)
+    {{{class="brush: bash"
+    echo defscrollback 1000 >> $HOME/.screenrc
+    }}}
+
+* Write own _.screen_layout_ (50% / 50% vertical, with 2 shells):
+    {{{class="brush: bash"
+    split -v
+    screen -t s1
+
+    focus
+    screen -t s2
+
+    focus
+    }}}
+
