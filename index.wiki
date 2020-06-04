@@ -5,4 +5,5 @@
     * [[uPython]] -- micropython snippets, examples and commands
     * [[vim]] -- vim config, snippets, examples and commands
     * [[tmux]] -- tmux config
+    * [[screen]] -- GNU screen config
     * [[RaspberryPi]] -- scripts, configuration and information pertaining to Raspberry Pi

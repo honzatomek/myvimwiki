@@ -109,7 +109,7 @@ nothing added to commit but untracked files present (use "git add" to track)
 == update remote url ==
 Updating the *remote git repository url*:
 {{{class="brush: bash"
-#!/usr/bin/env bash
+#!/bin/bash
 
 new_url='git@github.com:honzatomek/linux_config.git'
 
@@ -263,7 +263,7 @@ The concept is to parse the *.gitmodules* file and for each entry run
 if the submodule is not yet in the git tree, otherwise run *git checkout*.
 
 {{{class="brush: bash"
-#!/usr/bin/env bash
+#!/bin/bash
 # From: https://stackoverflow.com/a/59634978
 
 git config -f .gitmodules --get-regexp '^submodule\..*\.path$' |

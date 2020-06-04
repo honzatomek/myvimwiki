@@ -80,7 +80,7 @@ ssh-keygen -i -f FILE_IN.ppk >> "${HOME}/.ssh/authorized_keys"
 
 === automation by script ===
 {{{class="brush: bash"
-#!/usr/bin/env bash
+#!/bin/bash
 
 HELP='Script to turn ssh.ppk key from Puttygen to linux format
 Use: ./ssh_key_to_linux.sh FILE_IN FILE_OUT
@@ -239,7 +239,7 @@ PS C:\ProgramData\ssh> bash -c 'vim sshd_config'
 == Xming ==
 === setup ===
 {{{class="brush: bash"
-#!/usr/bin/env bash
+#!/bin/bash
 
 if [ -f "/etc/ssh/ssh_config" ]; then
   echo "[+] Editing /etc/ssh/ssh_config"
@@ -546,7 +546,7 @@ and the [[#IPv4_Forwarding|IPv4 Forwarding]] configuration section.
 
 ==== script for wlan0 ====
 {{{class="brush: bash"
-#!/usr/bin/env bash
+#!/bin/bash
 
 # script to set up WiFi hotspot on Raspberry Pi 3
 
