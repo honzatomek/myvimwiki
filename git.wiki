@@ -1,31 +1,30 @@
+:GIT:
 = Contents =
-    - [[#GIT|GIT]]
-        - [[#GIT#CONFIG|CONFIG]]
-            - [[#GIT#CONFIG#setup|setup]]
-            - [[#GIT#CONFIG#show commit tree|show commit tree]]
-            - [[#GIT#CONFIG#.gitconfig example|.gitconfig example]]
-        - [[#GIT#.gitmodules|.gitmodules]]
-            - [[#GIT#.gitmodules#ignore files in submodules|ignore files in submodules]]
-        - [[#GIT#REMOTE|REMOTE]]
-            - [[#GIT#REMOTE#update remote url|update remote url]]
-        - [[#GIT#CLONE|CLONE]]
-            - [[#GIT#CLONE#get git repo to a nonempty directory|get git repo to a nonempty directory]]
-        - [[#GIT#CHANGES|CHANGES]]
-            - [[#GIT#CHANGES#view changes|view changes]]
-            - [[#GIT#CHANGES#view changed branches on github|view changed branches on github]]
-        - [[#GIT#SUBMODULES|SUBMODULES]]
-            - [[#GIT#SUBMODULES#update an individual submodule|update an individual submodule]]
-            - [[#GIT#SUBMODULES#remove a submodule|remove a submodule]]
-            - [[#GIT#SUBMODULES#git clone including submodules|git clone including submodules]]
-            - [[#GIT#SUBMODULES#init from .gitmodules|init from .gitmodules]]
-        - [[#GIT#HISTORY|HISTORY]]
-            - [[#GIT#HISTORY#delete files from history|delete files from history]]
-        - [[#GIT#SPLIT|SPLIT]]
-            - [[#GIT#SPLIT#create a new repo from subdirectory|create a new repo from subdirectory]]
+    - [[#CONFIG|CONFIG]]
+        - [[#CONFIG#setup|setup]]
+        - [[#CONFIG#show commit tree|show commit tree]]
+        - [[#CONFIG#.gitconfig example|.gitconfig example]]
+    - [[#.gitmodules|.gitmodules]]
+        - [[#.gitmodules#ignore files in submodules|ignore files in submodules]]
+    - [[#REMOTE|REMOTE]]
+        - [[#REMOTE#update remote url|update remote url]]
+    - [[#CLONE|CLONE]]
+        - [[#CLONE#get git repo to a nonempty directory|get git repo to a nonempty directory]]
+    - [[#CHANGES|CHANGES]]
+        - [[#CHANGES#view changes|view changes]]
+        - [[#CHANGES#view changed branches on github|view changed branches on github]]
+    - [[#SUBMODULES|SUBMODULES]]
+        - [[#SUBMODULES#update an individual submodule|update an individual submodule]]
+        - [[#SUBMODULES#remove a submodule|remove a submodule]]
+        - [[#SUBMODULES#git clone including submodules|git clone including submodules]]
+        - [[#SUBMODULES#init from .gitmodules|init from .gitmodules]]
+    - [[#HISTORY|HISTORY]]
+        - [[#HISTORY#delete files from history|delete files from history]]
+    - [[#SPLIT|SPLIT]]
+        - [[#SPLIT#create a new repo from subdirectory|create a new repo from subdirectory]]
 
-= GIT =
-== CONFIG ==
-=== setup ===
+= CONFIG =
+== setup ==
 {{{class="brush: bash"
 #!/bin/bash
 
@@ -33,12 +32,12 @@ git config --global user.email "rpi3.tomek@protonmail.com"
 git config --global user.name "Jan Tomek"
 }}}
 
-=== show commit tree ===
+== show commit tree ==
 shows commits in a graphical manner
 
 `log --graph --decorate --pretty=oneline --abbrev-commit`
 
-=== .gitconfig example ===
+== .gitconfig example ==
 {{{class:"brush: gitconfig"
 [user]
 	name = honzatomek
@@ -65,8 +64,8 @@ shows commits in a graphical manner
 #        cmd = vimdiff $LOCAL $MERGED $REMOTE
 }}}
 
-== .gitmodules ==
-=== ignore files in submodules ===
+= .gitmodules =
+== ignore files in submodules ==
 This is helpful when for example vim creates help tags in a doc directory of a plugin added as a git submodule.
 The easy approach is to set ignore to dirty in .gitmodules file.
 
@@ -106,8 +105,8 @@ nothing added to commit but untracked files present (use "git add" to track)
 	ignore = dirty
 }}}
 
-== REMOTE ==
-=== update remote url ===
+= REMOTE =
+== update remote url ==
 Updating the *remote git repository url*:
 {{{class="brush: bash"
 #!/usr/bin/env bash
@@ -121,8 +120,8 @@ git push
 git log | head -n 15
 }}}
 
-== CLONE ==
-=== get git repo to a nonempty directory ===
+= CLONE =
+== get git repo to a nonempty directory ==
 Clone just the repository's .git folder (excluding files as they are
 already in `existing-dir`) into an empty temporary directory:
 
@@ -149,8 +148,8 @@ to update all submodules:
 
 `git submodule foreach git pull origin master`
 
-== CHANGES ==
-=== view changes ===
+= CHANGES =
+== view changes ==
 to let git generate the patches for each log entry:
 
 `git log -p filename`
@@ -163,7 +162,7 @@ or use:
 
 `gitk`
 
-=== view changed branches on github ===
+== view changed branches on github ==
 you can see which branches got updated, so you don't really need any
 further commands:
 
@@ -183,8 +182,8 @@ I suggest you go see the script https://github.com/badele/gitcheck
 I have coded this script for check in one pass all your Git repositories,
 and it shows who has not committed and who has not pushed/pulled.
 
-== SUBMODULES ==
-=== update an individual submodule ===
+= SUBMODULES =
+== update an individual submodule ==
 Get the submodule initially:
 
 `git submodule add ssh://bla submodule_dir`
@@ -211,7 +210,7 @@ Now the submodules are in the state you want, so:
 
 `git commit -am "Pulled down update to submodule_dir"`
 
-=== remove a submodule ===
+== remove a submodule ==
 Remove the submodule entry from *.git/config*:
 
 `git submodule deinit -f path/to/submodule`
@@ -226,7 +225,7 @@ at *path/to/submodule*:
 
 `git rm -f path/to/submodule`
 
-=== git clone including submodules ===
+== git clone including submodules ==
 With version 2.13 of Git and later, `--recurse-submodules` can be used
 instead of `--recursive`:
 
@@ -254,7 +253,7 @@ For already cloned repos, or older Git versions, use:
 `cd bar`
 `git submodule update --init --recursive`
 
-=== init from .gitmodules ===
+== init from .gitmodules ==
 FROM: https://stackoverflow.com/a/59634978
 
 A script to initialise git *submodules* from an existing *.gitmodules* file.
@@ -300,8 +299,8 @@ git submodule sync;
 git submodule foreach --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master)';
 }}}
 
-== HISTORY ==
-=== delete files from history ===
+= HISTORY =
+== delete files from history ==
 when you accidentally forget to ignore a file with credentials, temp files etc.
 before several commits - *remove a file that is already embedded in git history*:
 
@@ -315,8 +314,8 @@ To delete backup created by `git filter-branch` use:
 
 `git update-ref -d refs/original/refs/heads/master`
 
-== SPLIT ==
-=== create a new repo from subdirectory ===
+= SPLIT =
+== create a new repo from subdirectory ==
 split subdirectory from main repo to a new repository using `git subtree split`
 
 {{{class="brush: bash"
