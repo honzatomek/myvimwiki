@@ -75,13 +75,13 @@ can be scripted:
 	* if running -> attach
 	* if not -> create
 
-	{{{class="brush: sh"
-	if [[ $(screen -ls | grep "${session_name}") ]] ; then
-	    screen -x "${session_name}"
-	else
-	    screen -S "${session_name}" -c ~/.screenrc_custom
-	fi
-	}}}
+    {{{bash
+    if [[ $(screen -ls | grep "${session_name}") ]] ; then
+	screen -x "${session_name}"
+    else
+	screen -S "${session_name}" -c ~/.screenrc_custom
+    fi
+    }}}
 
 === example ===
 * list of files:
