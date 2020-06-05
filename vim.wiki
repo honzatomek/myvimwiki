@@ -1,0 +1,9 @@
+= Contents =
+    - [[#debug|debug]]
+        - [[#debug#start logfile|start logfile]]
+
+= debug =
+== start logfile ==
+{{{class="brush: bash"
+vim -V20 README.md  2>&1 | tee logfile
+}}}
