@@ -84,6 +84,66 @@ fi
 }}}
 
 === example ===
+* list of files:
+    {{{class="brush: bash"
+    .
+    ├── python3/
+    │   └── .screenrc_python
+    ├── screenpython*
+    └── .screenrc
+
+    1 directory, 5 files
+    }}}
+
+* default *_.screenrc_*:
+    {{{class="brush: bash"
+    startup_message off
+    defscrollback 1000
+
+    shell /bin/bash
+    }}}
+
+* custom *_./python3/.screenrc_python_*:
+    {{{class="brush: bash"
+    source .screenrc
+
+    split -v
+    resize 60%
+    screen -t 'edit' -X bash -c "cd ${HOME}/Programming/PYTHON3/bin/; vim"
+
+    focus
+    screen -t 'repl' -X /usr/bin/env python3
+
+    focus
+
+    layout save def
+    }}}
+
+* script to *start* or *attach to* a *_named session_*:
+    {{{class="brush: bash"
+    #!/bin/bash
+
+    SCRIPT=$(readlink -m "$0")
+    SCRIPTPATH=$(dirname "${SCRIPT}")
+    SCREENRC=".screenrc"
+    SESSIONRC=".screenrc_python"
+    SESSIONLAYOUT=".screen_python_layout"
+    SESSION='python3'
+
+    if [[ ! -e "${HOME}/${SCREENRC}" ]] ; then
+      echo -e "[\033[01;31e-\033[0m] - ${SCREENRC} missing in ${HOME}"
+      echo -e "[\033[01;33ei\033[0m] - copying generic ${SCREENRC} to ${HOME}"
+      cp "${SCRIPTPATH}/${SCREENRC}" "${HOME}/${SCREENRC}"
+    else
+      echo -e "[\033[01;32e+\033[0m] - ${SCREENRC} found in ${HOME}"
+    fi
+
+    if [[ $(screen -ls | grep "${SESSION}") ]] ; then
+      screen -x "${SESSION}"
+    else
+      screen -S "${SESSION}" -c "${SCRIPTPATH}/${SESSION}/${SESSIONRC}"
+    fi
+    }}}
 
 
 == kill all detached sessions ==
