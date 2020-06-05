@@ -66,22 +66,27 @@ screen -S "${session_name}" -c ~/.screenrc_custom
 }}}
 
 can be scripted:
-1) create a default .screenrc file
-2) create an rc file for each custom predefined session
-3) source the default .screenrc file inside
-4) create a custom layout file
-5) source a layout file inside, don't forget to include `layout save def` at the end of the custom rc file
-6) write a script that checks if a session by given name is running:
-    - if running -> attach
-    - if not -> create
+    1) create a default .screenrc file
 
-{{{class="brush: bash"
-if [[ $(screen -ls | grep "${session_name}") ]] ; then
-    screen -x "${session_name}"
-else
-    screen -S "${session_name}" -c ~/.screenrc_custom
-fi
-}}}
+    2) create an rc file for each custom predefined session
+
+    3) source the default .screenrc file inside
+
+    5) create a custom layout file
+
+    6) source a layout file inside, don't forget to include `layout save def` at the end of the custom rc file
+
+    7) write a script that checks if a session by given name is running:
+	- if running -> attach
+	- if not -> create
+
+    {{{class="brush: bash"
+    if [[ $(screen -ls | grep "${session_name}") ]] ; then
+	screen -x "${session_name}"
+    else
+	screen -S "${session_name}" -c ~/.screenrc_custom
+    fi
+    }}}
 
 === example ===
 * list of files:
