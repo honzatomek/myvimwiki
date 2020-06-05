@@ -77,15 +77,14 @@ end of the custom rc file
     - if running -> attach
     - if not -> create
 
-screen existing + attach/create example
-
-{{{class="brush: bash"
-if [[ $(screen -ls | grep "${session_name}") ]] ; then
-    screen -x "${session_name}"
-else
-    screen -S "${session_name}" -c ~/.screenrc_custom
-fi
-}}}
+screen existing + attach/create example:
+    {{{class="brush: bash"
+    if [[ $(screen -ls | grep "${session_name}") ]] ; then
+	screen -x "${session_name}"
+    else
+	screen -S "${session_name}" -c ~/.screenrc_custom
+    fi
+    }}}
 
 === example ===
 * list of files:
