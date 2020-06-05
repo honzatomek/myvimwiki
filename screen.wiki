@@ -1,3 +1,8 @@
+= Contents =
+    - [[#layout|layout]]
+        - [[#layout#Default layout for new screen's|Default layout for new screen's]]
+        - [[#layout#session with custom .screenrc|session with custom .screenrc]]
+
 = layout =
 https://superuser.com/questions/687348/how-to-persist-gnu-screen-layout-after-restart
 
@@ -51,4 +56,28 @@ https://superuser.com/questions/687348/how-to-persist-gnu-screen-layout-after-re
 
     focus
     }}}
+
+== session with custom .screenrc ==
+creates a new session by ${session_name} and runs custom rc file for it
+{{{class="brush: bash"
+screen -S "${session_name}" -c ~/.screenrc_custom
+}}}
+
+can be scripted:
+1) create a default .screenrc file
+2) create an rc file for each custom predefined session
+3) source the default .screenrc file inside
+4) create a custom layout file
+5) source a layout file inside, don't forget to include `layout save def` at the end of the custom rc file
+6) write a script that checks if a session by given name is running:
+    - if running -> attach
+    - if not -> create
+
+{{{class="brush: bash"
+if [[ $(screen -ls | grep "${session_name}") ]] ; then
+    screen -x "${session_name}"
+else
+    screen -S "${session_name}" -c ~/.screenrc_custom
+fi
+}}}
 
