@@ -70,12 +70,11 @@ can be scripted:
 * create an rc file for each custom predefined session
 * source the default .screenrc file inside
 * create a custom layout file
-* source a layout file inside, don't forget to include `layout save def` at the
-end of the custom rc file
+* source a layout file inside, don't forget to include `layout save def` at the end of the custom rc file
 * write a script that checks if a session by given name is running:
 
-    - if running -> attach
-    - if not -> create
+    * if running --> attach
+    * if not --> create
 
 screen existing + attach/create example:
     {{{class="brush: bash"
