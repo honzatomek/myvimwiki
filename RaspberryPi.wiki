@@ -28,6 +28,8 @@
                 - [[#WLAN#WLAN Hotspot#Raspberry Pi3 B+#6) Finish|6) Finish]]
                 - [[#WLAN#WLAN Hotspot#Raspberry Pi3 B+#7) Notes|7) Notes]]
                 - [[#WLAN#WLAN Hotspot#Raspberry Pi3 B+#script for wlan0|script for wlan0]]
+            - [[#WLAN#WLAN Hotspot#Raspberry Pi 4|Raspberry Pi 4]]
+                - [[#WLAN#WLAN Hotspot#Raspberry Pi 4#wlan1|wlan1]]
     - [[#swap size|swap size]]
 
 = SSH =
@@ -666,6 +668,110 @@ sudo sed 's/exit 0/'"${text2add}"'/g' /etc/rc.local
 sudo service hostapd start
 sudo service dnsmasq start
 }}}
+
+=== Raspberry Pi 4 ===
+==== wlan1 ====
+Needs wlan1 device to have *persistent name* and *static IP address*.
+
+{{{class="brush: bash"
+#!/bin/bash
+
+
+function backup() {
+  sudo cp "$1" "$1".orig
+}
+
+# change dir to /etc
+cd /etc
+
+# install the packages
+# sudo apt-get install dnsmasq hostapd
+
+# commit git repository
+sudo git add .
+sudo git commit -m "Just before hotspot setup"
+
+# add interface to the end of /etc/dhcpcd.conf
+echo "[+] /etc/dhcpcd.conf"
+backup /etc/dhcpcd.conf
+text="
+interface wlan1
+    static ip_address=10.0.1.1/24
+    nohook wpa_supplicant
+"
+sudo bash -c "echo \"${text}\" >> /etc/dhcpcd.conf"
+
+# restart dhcpcd service
+sudo systemctl restart dhcpcd
+
+# configuring DHCP server (dnsmasq)
+echo "[+] /etc/dnsmasq.conf"
+backup /etc/dnsmasq.conf
+text="interface=wlan1
+listen-address=10.0.1.1
+bind-interfaces
+server=8.8.8.8
+domain-needed
+bogus-priv
+dhcp-range=10.0.1.2,10.0.1.30,255.255.255.0,24h"
+sudo bash -c "echo \"${text}\" > /etc/dnsmasq.conf"
+
+# reload DHCP service
+sudo systemctl reload dnsmasq
+
+# configure the access point host software (hostapd)
+echo "[+] /etc/hostapd/hostapd.conf"
+if [ -f /etc/hostapd/hostapd.conf ]; then
+  backup /etc/hostapd/hostapd.conf
+fi
+MY_SSID="RASPI_HONZA"
+MY_PSWD='<my password>'"
+text="interface=wlan1
+#driver=nl80211
+ssid=${MY_SSID}
+hw_mode=g
+channel=7
+wmm_enabled=0
+macaddr_acl=0
+auth_algs=1
+ignore_broadcast_ssid=0
+wpa=2
+wpa_passphrase=${MY_PSWD}
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
+rsn_pairwise=CCMP"
+sudo bash -c "echo \"${text}\" >> /etc/hostapd/hostapd.conf"
+sudo sed -i -e 's/#DAEMON_CONF=\"\"/DAEMON_CONF=\"\/etc\/hostapd\/hostapd.conf\"/g' /etc/default/hostapd
+
+# start the services
+sudo systemctl unmask hostapd
+sudo systemctl enable hostapd
+sudo systemctl start hostapd
+
+# add routing and masqerade
+echo "[+] /etc/sysctl.conf"
+sudo sed -i -e 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
+
+# add a masqerade for outbound traffic on wlan0
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+sudo iptables -A FORWARD -i eth0 -o wlan1 -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i wlan1 -o eth0 -j ACCEPT
+sudo iptables -t nat -A POSTROUTING -o wlan0 -j MASQUERADE
+sudo iptables -A FORWARD -i wlan0 -o wlan1 -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i wlan1 -o wlan0 -j ACCEPT
+sudo bash -c "iptables-save > /etc/iptables.ipv4.nat"
+
+# edit /etc/rc.local to install these rules on boot
+echo "[+] /etc/rc.local"
+if [ -f /etc/rc.local ]; then
+  backup /etc/rc.local
+fi
+sudo sed -i -e '$s/exit 0/iptables-restore < \/etc\/iptables.ipv4.nat/g' /etc/rc.local
+sudo bash -c "echo >> /etc/rc.local"
+sudo bash -c "echo 'exit 0' >> /etc/rc.local"
+
+}}}
+
 
 = swap size =
 {{{class="brush: bash"
