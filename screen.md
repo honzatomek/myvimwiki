@@ -1,7 +1,7 @@
 # Contents
 
 - [layout](#layout)
-    - [Default layout for new screen's](#layout#Default layout for new screen's)
+    - [Default layout for new screen's](#layout#Default\ layout\ for\ new\ screen's)
     - [session with custom .screenrc](#layout#session with custom .screenrc)
         - [example](#layout#session with custom .screenrc#example)
     - [kill all detached sessions](#layout#kill all detached sessions)
