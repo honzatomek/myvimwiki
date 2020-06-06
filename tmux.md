@@ -143,4 +143,4 @@ unbind %
 bind v split-window -h
 ```
 
-[back to index](index)
+[back to index](index.md)

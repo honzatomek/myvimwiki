@@ -9,4 +9,4 @@
 vim -V20 README.md  2>&1 | tee logfile
 ```
 
-[back to index](index)
+[back to index](index.md)

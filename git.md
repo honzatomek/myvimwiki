@@ -353,4 +353,4 @@ git push -u origin master
 git rm -rf "${cwd}/$1"
 ```
 
-[back to index](index)
+[back to index](index.md)

@@ -781,4 +781,4 @@ sudo chmod 600 /var/swap.1
 sudo /sbin/swapon /var/swap.1
 ```
 
-[back to index](index)
+[back to index](index.md)

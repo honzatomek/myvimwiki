@@ -152,4 +152,4 @@ fi
 screen -ls | grep Detached | cut -d. -f1 | awk '{print $1}' | xargs kill
 ```
 
-[back to index](index)
+[back to index](index.md)

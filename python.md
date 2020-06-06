@@ -1,4 +1,4 @@
 
 
 %% back to main placeholder
-[back to index](index)
+[back to index](index.md)
