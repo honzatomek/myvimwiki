@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="date" content="2020-06-07" scheme="YYYY-MM-DD">
+        <meta name="viewport" content="width=device-width" />
+        <title>git</title>
+        <link rel="stylesheet" href="./style.css" type="text/css"
+         media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="./pygmentize.css" type="text/css"
+         media="screen" title="no title" charset="utf-8">
+    </head>
+    <body>
+
+<h1>Contents</h1>
+<ul>
+<li><a href="#CONFIG.html">CONFIG</a><ul>
+<li><a href="#CONFIG#setup.html">setup</a></li>
+<li><a href="#CONFIG#show commit tree.html">show commit tree</a></li>
+<li><a href="#CONFIG#.gitconfig example.html">.gitconfig example</a></li>
+</ul>
+</li>
+<li><a href="#.gitmodules.html">.gitmodules</a><ul>
+<li><a href="#.gitmodules#ignore files in submodules.html">ignore files in submodules</a></li>
+</ul>
+</li>
+<li><a href="#REMOTE.html">REMOTE</a><ul>
+<li><a href="#REMOTE#update remote url.html">update remote url</a></li>
+</ul>
+</li>
+<li><a href="#CLONE.html">CLONE</a><ul>
+<li><a href="#CLONE#get git repo to a nonempty directory.html">get git repo to a nonempty directory</a></li>
+</ul>
+</li>
+<li><a href="#CHANGES.html">CHANGES</a><ul>
+<li><a href="#CHANGES#view changes.html">view changes</a></li>
+<li><a href="#CHANGES#view changed branches on github.html">view changed branches on github</a></li>
+</ul>
+</li>
+<li><a href="#SUBMODULES.html">SUBMODULES</a><ul>
+<li><a href="#SUBMODULES#update an individual submodule.html">update an individual submodule</a></li>
+<li><a href="#SUBMODULES#remove a submodule.html">remove a submodule</a></li>
+<li><a href="#SUBMODULES#git clone including submodules.html">git clone including submodules</a></li>
+<li><a href="#SUBMODULES#init from .gitmodules.html">init from .gitmodules</a></li>
+</ul>
+</li>
+<li><a href="#HISTORY.html">HISTORY</a><ul>
+<li><a href="#HISTORY#delete files from history.html">delete files from history</a></li>
+</ul>
+</li>
+<li><a href="#SPLIT.html">SPLIT</a><ul>
+<li><a href="#SPLIT#create a new repo from subdirectory.html">create a new repo from subdirectory</a></li>
+</ul>
+</li>
+</ul>
+<h1>CONFIG</h1>
+<h2>setup</h2>
+<div class="codehilite"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+git config --global user.email <span class="s2">&quot;rpi3.tomek@protonmail.com&quot;</span>
+git config --global user.name <span class="s2">&quot;Jan Tomek&quot;</span>
+</pre></div>
+
+
+<h2>show commit tree</h2>
+<p>shows commits in a graphical manner</p>
+<p><code>log --graph --decorate --pretty=oneline --abbrev-commit</code></p>
+<h2>.gitconfig example</h2>
+<div class="codehilite"><pre><span></span><span class="k">[user]</span>
+    <span class="na">name</span> <span class="o">=</span> <span class="s">honzatomek</span>
+<span class="s">    email = rpi3.tomek@protonmail.com</span>
+<span class="k">[alias]</span>
+        <span class="na">tree</span> <span class="o">=</span> <span class="s">log --graph --decorate --pretty=oneline --abbrev-commit</span>
+<span class="s">    vlog = log --no-color</span>
+<span class="s">    vdiff = diff --no-color</span>
+<span class="s">        pp = &quot;!git pull &amp;&amp; git push&quot;</span>
+<span class="k">[core]</span>
+        <span class="na">autocrlf</span> <span class="o">=</span> <span class="s">input</span>
+<span class="k">[core]</span>
+    <span class="na">editor</span> <span class="o">=</span> <span class="s">vim</span>
+<span class="s">    # pager = vim -c &#39;set ft=git&#39; -c AnsiEsc -</span>
+<span class="s">    # pager = vim -c &#39;set ft=git&#39; -</span>
+<span class="k">[diff]</span>
+    <span class="na">tool</span> <span class="o">=</span> <span class="s">vimdiff</span>
+<span class="k">[merge]</span>
+    <span class="na">tool</span> <span class="o">=</span> <span class="s">vimdiff</span>
+<span class="k">[difftool]</span>
+    <span class="na">prompt</span> <span class="o">=</span> <span class="s">false</span>
+<span class="c1">#[difftool &quot;vimdiff&quot;]</span>
+<span class="c1">#   # cmd = vimdiff $LOCAL $REMOTE $MERGED $BASE</span>
+<span class="c1">#        cmd = vimdiff $LOCAL $MERGED $REMOTE</span>
+</pre></div>
+
+
+<h1>.gitmodules</h1>
+<h2>ignore files in submodules</h2>
+<p>This is helpful when for example vim creates help tags in a doc directory of a plugin added as a git submodule.
+The easy approach is to set ignore to dirty in .gitmodules file.</p>
+<p>The standard <code>git status</code> output:</p>
+<div class="codehilite"><pre><span></span>On branch master
+Your branch is up to date with &#39;origin/master&#39;.
+
+Changes not staged for commit:
+  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)
+  (commit or discard the untracked or modified content in submodules)
+
+    modified:   bundle/bash-support (untracked content)
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
+</pre></div>
+
+
+<p>And <code>git status</code> output from inside of the submodule:</p>
+<div class="codehilite"><pre><span></span>HEAD detached at 309d6fe
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+
+    doc/tags
+    doc/tags-te
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+</pre></div>
+
+
+<p><strong>Solution:</strong></p>
+<div class="codehilite"><pre><span></span><span class="k">[submodule &quot;bundle/bash-support&quot;]</span>
+    <span class="na">path</span> <span class="o">=</span> <span class="s">bundle/bash-support</span>
+<span class="s">    url = https://github.com/vim-scripts/bash-support.vim</span>
+<span class="s">    branch = master</span>
+<span class="s">    ignore = dirty</span>
+</pre></div>
+
+
+<h1>REMOTE</h1>
+<h2>update remote url</h2>
+<p>Updating the <strong>remote git repository url</strong>:</p>
+<div class="codehilite"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="nv">new_url</span><span class="o">=</span><span class="s1">&#39;git@github.com:honzatomek/linux_config.git&#39;</span>
+
+git remote remove origin
+git remote add origin <span class="s2">&quot;</span><span class="si">${</span><span class="nv">new_url</span><span class="si">}</span><span class="s2">&quot;</span>
+git push --set-upstream origin master
+git push
+git log <span class="p">|</span> head -n <span class="m">15</span>
+</pre></div>
+
+
+<h1>CLONE</h1>
+<h2>get git repo to a nonempty directory</h2>
+<p>Clone just the repository's .git folder (excluding files as they are
+already in <code>existing-dir</code>) into an empty temporary directory:</p>
+<p><code>git clone --no-checkout repo-to-clone existing-dir/existing-dir.tmp</code></p>
+<p>might want <code>-no-hardlinks</code> for cloning local repo</p>
+<p>Move the .git folder to the directory with the files. This makes
+<code>existing-dir</code> a git repo:</p>
+<p><code>mv existing-dir/existing-dir.tmp/.git existing-dir/</code></p>
+<p>Delete the temporary directory:</p>
+<p><code>rmdir existing-dir/existing-dir.tmp</code>
+<code>cd existing-dir</code></p>
+<p>Git thinks all files are deleted, this reverts the state of the repo
+to HEAD. WARNING: any local changes to the files will be lost.</p>
+<p><code>git reset --hard HEAD</code></p>
+<p>to update all submodules:</p>
+<p><code>git submodule foreach git pull origin master</code></p>
+<h1>CHANGES</h1>
+<h2>view changes</h2>
+<p>to let git generate the patches for each log entry:</p>
+<p><code>git log -p filename</code></p>
+<p>To get just the <strong>diff</strong> for a specific commit you can:</p>
+<p><code>git show HEAD</code></p>
+<p>or use:</p>
+<p><code>gitk</code></p>
+<h2>view changed branches on github</h2>
+<p>you can see which branches got updated, so you don't really need any
+further commands:</p>
+<p><code>git remote -v update</code></p>
+<p>will tell you whether the branch you are tracking is ahead, behind or has
+diverged. If it says nothing, the local and remote are the same:</p>
+<p><code>git status -uno</code></p>
+<p>will show you the commits in all of the branches whose names end in <strong>master</strong>
+(eg. master and origin/master):</p>
+<p><code>git show-branch *master</code></p>
+<p>I suggest you go see the script https://github.com/badele/gitcheck
+I have coded this script for check in one pass all your Git repositories,
+and it shows who has not committed and who has not pushed/pulled.</p>
+<h1>SUBMODULES</h1>
+<h2>update an individual submodule</h2>
+<p>Get the submodule initially:</p>
+<div class="codehilite"><pre><span></span>git submodule add ssh://bla submodule_dir
+git submodule init
+</pre></div>
+
+
+<p>Time passes, submodule upstream is updated and you now want to update.
+Change to the submodule directory:</p>
+<p><code>cd submodule_dir</code></p>
+<p>Checkout desired branch:</p>
+<p><code>git checkout master</code></p>
+<p>Update:</p>
+<p><code>git pull</code></p>
+<p>Get back to your project root:</p>
+<p><code>cd ..</code></p>
+<p>Now the submodules are in the state you want, so:</p>
+<p><code>git commit -am "Pulled down update to submodule_dir"</code></p>
+<h2>remove a submodule</h2>
+<p>Remove the submodule entry from <strong>.git/config</strong>:</p>
+<p><code>git submodule deinit -f path/to/submodule</code></p>
+<p>Remove the submodule directory from the superproject's <strong>.git/modules</strong>
+directory:</p>
+<p><code>rm -rf .git/modules/path/to/submodule</code></p>
+<p>Remove the entry in <strong>.gitmodules</strong> and remove the submodule directory located
+at <strong>path/to/submodule</strong>:</p>
+<p><code>git rm -f path/to/submodule</code></p>
+<h2>git clone including submodules</h2>
+<p>With version 2.13 of Git and later, <code>--recurse-submodules</code> can be used
+instead of <code>--recursive</code>:</p>
+<p><code>git clone --recurse-submodules -j8 git://github.com/foo/bar.git</code>
+<code>cd bar</code></p>
+<p><code>-j8</code> is an optional performance optimization that became available in
+version 2.8, and fetches up to 8 submodules at a time in parallel — see
+<code>man git-clone</code>.</p>
+<p>With version 1.9 of Git up until version 2.12 (<code>-j</code> flag only available in
+version 2.8+):</p>
+<p><code>git clone --recursive -j8 git://github.com/foo/bar.git</code>
+<code>cd bar</code></p>
+<p>With version 1.6.5 of Git and later, you can use:</p>
+<p><code>git clone --recursive git://github.com/foo/bar.git</code>
+<code>cd bar</code></p>
+<p>For already cloned repos, or older Git versions, use:</p>
+<p><code>git clone git://github.com/foo/bar.git</code>
+<code>cd bar</code>
+<code>git submodule update --init --recursive</code></p>
+<h2>init from .gitmodules</h2>
+<p>FROM: https://stackoverflow.com/a/59634978</p>
+<p>A script to initialise git <strong>submodules<em> from an existing </em>.gitmodules</strong> file.</p>
+<p>The concept is to parse the <strong>.gitmodules</strong> file and for each entry run
+<code>git submodule add -f -b &lt;branch&gt; &lt;url&gt; &lt;path&gt;</code>
+if the submodule is not yet in the git tree, otherwise run <strong>git checkout</strong>.</p>
+<div class="codehilite"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># From: https://stackoverflow.com/a/59634978</span>
+
+git config -f .gitmodules --get-regexp <span class="s1">&#39;^submodule\..*\.path$&#39;</span> <span class="p">|</span>
+  <span class="k">while</span> <span class="nb">read</span> path_key path
+  <span class="k">do</span>
+    <span class="nv">url_key</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$path_key</span> <span class="p">|</span> sed <span class="s1">&#39;s/\.path/.url/&#39;</span><span class="k">)</span><span class="p">;</span>
+    <span class="nv">branch_key</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$path_key</span> <span class="p">|</span> sed <span class="s1">&#39;s/\.path/.branch/&#39;</span><span class="k">)</span><span class="p">;</span>
+    <span class="c1"># If the url_key doesn&#39;t yet exist then backup up the existing</span>
+    <span class="c1"># directory if necessary and add the submodule</span>
+    <span class="k">if</span> <span class="o">[</span> ! <span class="k">$(</span>git config --get <span class="s2">&quot;</span><span class="nv">$url_key</span><span class="s2">&quot;</span><span class="k">)</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+      <span class="k">if</span> <span class="o">[</span> -d <span class="s2">&quot;</span><span class="nv">$path</span><span class="s2">&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> ! <span class="k">$(</span>git config --get <span class="s2">&quot;</span><span class="nv">$url_key</span><span class="s2">&quot;</span><span class="k">)</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        mv <span class="s2">&quot;</span><span class="nv">$path</span><span class="s2">&quot;</span> <span class="s2">&quot;</span><span class="nv">$path</span><span class="s2">&quot;&quot;_backup_&quot;&quot;</span><span class="k">$(</span>date +<span class="s1">&#39;%Y%m%d%H%M%S&#39;</span><span class="k">)</span><span class="s2">&quot;</span><span class="p">;</span>
+      <span class="k">fi</span><span class="p">;</span>
+      <span class="nv">url</span><span class="o">=</span><span class="k">$(</span>git config -f .gitmodules --get <span class="s2">&quot;</span><span class="nv">$url_key</span><span class="s2">&quot;</span><span class="k">)</span><span class="p">;</span>
+      <span class="c1"># If a branch is specified then use that one, otherwise</span>
+      <span class="c1"># default to master</span>
+      <span class="nv">branch</span><span class="o">=</span><span class="k">$(</span>git config -f .gitmodules --get <span class="s2">&quot;</span><span class="nv">$branch_key</span><span class="s2">&quot;</span><span class="k">)</span><span class="p">;</span>
+      <span class="k">if</span> <span class="o">[</span> ! <span class="s2">&quot;</span><span class="nv">$branch</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="nv">branch</span><span class="o">=</span><span class="s2">&quot;master&quot;</span><span class="p">;</span> <span class="k">fi</span><span class="p">;</span>
+      git submodule add -f -b <span class="s2">&quot;</span><span class="nv">$branch</span><span class="s2">&quot;</span> <span class="s2">&quot;</span><span class="nv">$url</span><span class="s2">&quot;</span> <span class="s2">&quot;</span><span class="nv">$path</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="k">fi</span><span class="p">;</span>
+  <span class="k">done</span><span class="p">;</span>
+
+<span class="c1"># In case the submodule exists in .git/config but the url is out of date</span>
+
+git submodule sync<span class="p">;</span>
+
+<span class="c1"># Now actually pull all the modules. I used to use this...</span>
+<span class="c1">#</span>
+<span class="c1"># git submodule update --init --remote --force --recursive</span>
+<span class="c1"># ...but the submodules would check out in detached HEAD state and I</span>
+<span class="c1"># didn&#39;t like that, so now I do this...</span>
+
+git submodule foreach --recursive <span class="s1">&#39;git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master)&#39;</span><span class="p">;</span>
+</pre></div>
+
+
+<h1>HISTORY</h1>
+<h2>delete files from history</h2>
+<p>when you accidentally forget to ignore a file with credentials, temp files etc.
+before several commits - <strong>remove a file that is already embedded in git history</strong>:</p>
+<p><code>git filter-branch --index-filter 'git rm -q --cached --ignore-unmatch *.tmp *~' -- --all</code></p>
+<p>To push the changed git history onto github <code>--force</code> option is needed:</p>
+<p><code>git push --force</code></p>
+<p>To delete backup created by <code>git filter-branch</code> use:</p>
+<p><code>git update-ref -d refs/original/refs/heads/master</code></p>
+<h1>SPLIT</h1>
+<h2>create a new repo from subdirectory</h2>
+<p>split subdirectory from main repo to a new repository using <code>git subtree split</code></p>
+<div class="codehilite"><pre><span></span><span class="ch">#!/bin/env bash</span>
+
+<span class="c1"># Script to split a directory from a repository</span>
+<span class="c1"># Must be run from root of the repo</span>
+<span class="c1"># IN: directory to split</span>
+<span class="c1">#     link to github repo</span>
+<span class="c1"># USE: git_split_repo DIR GITHUB_REPO</span>
+
+<span class="c1"># 1. Prepare the old repo</span>
+<span class="c1"># cd &lt;big-repo&gt;</span>
+<span class="c1"># git subtree split -P &lt;name-of-folder&gt; -b &lt;name-of-new-branch&gt;</span>
+<span class="c1"># Note: &lt;name-of-folder&gt; must NOT contain leading or trailing characters. For instance, the folder named subproject MUST be passed as subproject, NOT ./subproject/</span>
+<span class="nv">cwd</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>
+git subtree split -P <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> -b <span class="s1">&#39;subtree_&#39;</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+
+<span class="c1"># 2. Create the new repo</span>
+mkdir -P ~/tmp/<span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/tmp/<span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+git init
+git pull <span class="s2">&quot;</span><span class="si">${</span><span class="nv">cwd</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="s1">&#39;subtree_&#39;</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+
+<span class="c1"># 3. Link the new repo to GitHub or wherever</span>
+<span class="c1"># git remote add origin &lt;git@github.com:user/new-repo.git&gt;</span>
+<span class="c1"># git push -u origin master</span>
+
+git remote add origin <span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+git push -u origin master
+
+<span class="c1"># 4. Cleanup inside &lt;big-repo&gt;, if desired</span>
+<span class="c1"># git rm -rf &lt;name-of-folder&gt;</span>
+git rm -rf <span class="s2">&quot;</span><span class="si">${</span><span class="nv">cwd</span><span class="si">}</span><span class="s2">/</span><span class="nv">$1</span><span class="s2">&quot;</span>
+</pre></div>
+
+
+<p><a href="index.html">back to index</a></p>
+
+    </body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="date" content="2020-06-07" scheme="YYYY-MM-DD">
+        <meta name="viewport" content="width=device-width" />
+        <title>tmux</title>
+        <link rel="stylesheet" href="./style.css" type="text/css"
+         media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="./pygmentize.css" type="text/css"
+         media="screen" title="no title" charset="utf-8">
+    </head>
+    <body>
+
+<h1>Contents</h1>
+<ul>
+<li><a href="#TMUX.html">TMUX</a><ul>
+<li><a href="#TMUX#BASIC KEYBINDS.html">BASIC KEYBINDS</a><ul>
+<li><a href="#TMUX#BASIC KEYBINDS#LEADER.html">LEADER</a></li>
+</ul>
+</li>
+<li><a href="#TMUX#CUSTOM SETUP.html">CUSTOM SETUP</a><ul>
+<li><a href="#TMUX#CUSTOM SETUP#256 color support.html">256 color support</a></li>
+<li><a href="#TMUX#CUSTOM SETUP#default command language.html">default command language</a></li>
+<li><a href="#TMUX#CUSTOM SETUP#status bar colors.html">status bar colors</a></li>
+<li><a href="#TMUX#CUSTOM SETUP#highight and display.html">highight and display</a></li>
+<li><a href="#TMUX#CUSTOM SETUP#start window numbering at 1 instead of 0.html">start window numbering at 1 instead of 0</a></li>
+<li><a href="#TMUX#CUSTOM SETUP#start pane numbering at 1 instead if 0.html">start pane numbering at 1 instead if 0</a></li>
+<li><a href="#TMUX#CUSTOM SETUP#bind h to hortizontal split panes.html">bind h to hortizontal split panes</a></li>
+<li><a href="#TMUX#CUSTOM SETUP#bind v to vertical split panes.html">bind v to vertical split panes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1>TMUX</h1>
+<p>Terminal Multiplexer</p>
+<p>File with personal configuration settings: [[local:~/.tmux.conf]]</p>
+<h2>BASIC KEYBINDS</h2>
+<h3>LEADER</h3>
+<p>tmux may be controlled from an attached client by using a key combination of a prefix key, ‘C-b’ (Ctrl-b) by default, followed by a command key.</p>
+<p>The default command key bindings are:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Binding</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-b</td>
+<td>Send the prefix key (C-b) through to the application.</td>
+</tr>
+<tr>
+<td>C-o</td>
+<td>Rotate the panes in the current window forwards.</td>
+</tr>
+<tr>
+<td>C-z</td>
+<td>Suspend the tmux client.</td>
+</tr>
+<tr>
+<td>!</td>
+<td>Break the current pane out of the window.</td>
+</tr>
+<tr>
+<td>"</td>
+<td>Split the current pane into two, top and bottom.</td>
+</tr>
+<tr>
+<td>#</td>
+<td>List all paste buffers.</td>
+</tr>
+<tr>
+<td>$</td>
+<td>Rename the current session.</td>
+</tr>
+<tr>
+<td>%</td>
+<td>Split the current pane into two, left and right.</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>Kill the current window.</td>
+</tr>
+<tr>
+<td>'</td>
+<td>Prompt for a window index to select.</td>
+</tr>
+<tr>
+<td>(</td>
+<td>Switch the attached client to the previous session.</td>
+</tr>
+<tr>
+<td>)</td>
+<td>Switch the attached client to the next session.</td>
+</tr>
+<tr>
+<td>,</td>
+<td>Rename the current window.</td>
+</tr>
+<tr>
+<td>-</td>
+<td>Delete the most recently copied buffer of text.</td>
+</tr>
+<tr>
+<td>.</td>
+<td>Prompt for an index to move the current window.</td>
+</tr>
+<tr>
+<td>0 to 9</td>
+<td>Select windows 0 to 9.</td>
+</tr>
+<tr>
+<td>:</td>
+<td>Enter the tmux command prompt.</td>
+</tr>
+<tr>
+<td>;</td>
+<td>Move to the previously active pane.</td>
+</tr>
+<tr>
+<td>=</td>
+<td>Choose which buffer to paste interactively from a list.</td>
+</tr>
+<tr>
+<td>?</td>
+<td>List all key bindings.</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Choose a client to detach.</td>
+</tr>
+<tr>
+<td>L</td>
+<td>Switch the attached client back to the last session.</td>
+</tr>
+<tr>
+<td>[</td>
+<td>Enter copy mode to copy text or view the history.</td>
+</tr>
+<tr>
+<td>]</td>
+<td>Paste the most recently copied buffer of text.</td>
+</tr>
+<tr>
+<td>c</td>
+<td>Create a new window.</td>
+</tr>
+<tr>
+<td>d</td>
+<td>Detach the current client.</td>
+</tr>
+<tr>
+<td>f</td>
+<td>Prompt to search for text in open windows.</td>
+</tr>
+<tr>
+<td>i</td>
+<td>Display some information about the current window.</td>
+</tr>
+<tr>
+<td>l</td>
+<td>Move to the previously selected window.</td>
+</tr>
+<tr>
+<td>n</td>
+<td>Change to the next window.</td>
+</tr>
+<tr>
+<td>o</td>
+<td>Select the next pane in the current window.</td>
+</tr>
+<tr>
+<td>p</td>
+<td>Change to the previous window.</td>
+</tr>
+<tr>
+<td>q</td>
+<td>Briefly display pane indexes.</td>
+</tr>
+<tr>
+<td>r</td>
+<td>Force redraw of the attached client.</td>
+</tr>
+<tr>
+<td>m</td>
+<td>Mark the current pane (see select-pane -m).</td>
+</tr>
+<tr>
+<td>M</td>
+<td>Clear the marked pane.</td>
+</tr>
+<tr>
+<td>s</td>
+<td>Select a new session for the attached client interactively.</td>
+</tr>
+<tr>
+<td>t</td>
+<td>Show the time.</td>
+</tr>
+<tr>
+<td>w</td>
+<td>Choose the current window interactively.</td>
+</tr>
+<tr>
+<td>x</td>
+<td>Kill the current pane.</td>
+</tr>
+<tr>
+<td>z</td>
+<td>Toggle zoom state of the current pane.</td>
+</tr>
+<tr>
+<td>{</td>
+<td>Swap the current pane with the previous pane.</td>
+</tr>
+<tr>
+<td>}</td>
+<td>Swap the current pane with the next pane.</td>
+</tr>
+<tr>
+<td>~</td>
+<td>Show previous messages from tmux, if any.</td>
+</tr>
+<tr>
+<td>Page Up</td>
+<td>Enter copy mode and scroll one page up.</td>
+</tr>
+<tr>
+<td>Up, Down</td>
+<td>Change to the pane above, below, to the left, or to the right of the current pane.</td>
+</tr>
+<tr>
+<td>Left, Right</td>
+<td>Change to the pane above, below, to the left, or to the right of the current pane.</td>
+</tr>
+<tr>
+<td>M-1 to M-5</td>
+<td>Arrange panes in one of the five preset layouts: even-horizontal, even-vertical, main-horizontal, main-vertical, or tiled.</td>
+</tr>
+<tr>
+<td>Space</td>
+<td>Arrange the current window in the next preset layout.</td>
+</tr>
+<tr>
+<td>M-n</td>
+<td>Move to the next window with a bell or activity marker.</td>
+</tr>
+<tr>
+<td>M-o</td>
+<td>Rotate the panes in the current window backwards.</td>
+</tr>
+<tr>
+<td>M-p</td>
+<td>Move to the previous window with a bell or activity marker.</td>
+</tr>
+<tr>
+<td>C-Up, C-Down</td>
+<td>Resize the current pane in steps of one cell.</td>
+</tr>
+<tr>
+<td>C-Left, C-Right</td>
+<td>Resize the current pane in steps of one cell.</td>
+</tr>
+<tr>
+<td>M-Up, M-Down</td>
+<td>Resize the current pane in steps of five cells.</td>
+</tr>
+<tr>
+<td>M-Left, M-Right</td>
+<td>Resize the current pane in steps of five cells.</td>
+</tr>
+</tbody>
+</table>
+<p>Key bindings may be changed with the bind-key and unbind-key commands.</p>
+<h2>CUSTOM SETUP</h2>
+<h3>256 color support</h3>
+<p>one possibility:</p>
+<div class="codehilite"><pre><span></span><span class="c1"># set 256 color support for tmux</span>
+<span class="nb">set</span> -g default-terminal <span class="s2">&quot;screen-256color&quot;</span>
+</pre></div>
+
+
+<p>or (this one works - tested);</p>
+<div class="codehilite"><pre><span></span><span class="c1"># set 256 color support for tmux</span>
+<span class="nb">set</span> -g default-terminal <span class="s2">&quot;tmux-256color&quot;</span>
+</pre></div>
+
+
+<h3>default command language</h3>
+<div class="codehilite"><pre><span></span>set-option -g default-command bash
+</pre></div>
+
+
+<h3>status bar colors</h3>
+<div class="codehilite"><pre><span></span><span class="nb">set</span> -g status-bg blue
+</pre></div>
+
+
+<p>or:</p>
+<div class="codehilite"><pre><span></span><span class="nb">set</span> -g status-fg black
+</pre></div>
+
+
+<h3>highight and display</h3>
+<div class="codehilite"><pre><span></span>setw -g monitor-activity on
+setw -g visual-activity on
+</pre></div>
+
+
+<h3>start window numbering at 1 instead of 0</h3>
+<div class="codehilite"><pre><span></span><span class="nb">set</span> -g base-index <span class="m">1</span>
+</pre></div>
+
+
+<h3>start pane numbering at 1 instead if 0</h3>
+<div class="codehilite"><pre><span></span><span class="nb">set</span> -g pane-base-index <span class="m">1</span>
+</pre></div>
+
+
+<h3>bind h to hortizontal split panes</h3>
+<div class="codehilite"><pre><span></span>unbind <span class="s1">&#39;&quot;&#39;</span>
+<span class="nb">bind</span> h split-window -v
+</pre></div>
+
+
+<h3>bind v to vertical split panes</h3>
+<div class="codehilite"><pre><span></span>unbind %
+<span class="nb">bind</span> v split-window -h
+</pre></div>
+
+
+<p><a href="index.html">back to index</a></p>
+
+    </body>
+</html>
