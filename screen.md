@@ -1,10 +1,10 @@
 # Contents
 
-    - [layout](#layout)
-    - [Default layout for new screen's](#layout#Default%20layout%20for%20new%20screen's)
-    - [session with custom .screenrc](#layout#session%20with%20custom%20.screenrc)
-        - [example](#layout#session%20with%20custom%20.screenrc#example)
-    - [kill all detached sessions](#layout#kill%20all%20detached%20sessions)
+- [layout](#layout)
+- [Default layout for new screen's](#layout#Default%20layout%20for%20new%20screen's)
+- [session with custom .screenrc](#layout#session%20with%20custom%20.screenrc)
+    - [example](#layout#session%20with%20custom%20.screenrc#example)
+- [kill all detached sessions](#layout#kill%20all%20detached%20sessions)
 
 # layout
 https://superuser.com/questions/687348/how-to-persist-gnu-screen-layout-after-restart
