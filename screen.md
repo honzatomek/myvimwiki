@@ -1,10 +1,10 @@
 # Contents
 
-- [layout](#layout)
+    - [layout](#layout)
     - [Default layout for new screen's](#layout#Default%20layout%20for%20new%20screen's)
-    - [session with custom .screenrc](#layout#session with custom .screenrc)
-        - [example](#layout#session with custom .screenrc#example)
-    - [kill all detached sessions](#layout#kill all detached sessions)
+    - [session with custom .screenrc](#layout#session%20with%20custom%20.screenrc)
+        - [example](#layout#session%20with%20custom%20.screenrc#example)
+    - [kill all detached sessions](#layout#kill%20all%20detached%20sessions)
 
 # layout
 https://superuser.com/questions/687348/how-to-persist-gnu-screen-layout-after-restart
@@ -153,3 +153,5 @@ screen -ls | grep Detached | cut -d. -f1 | awk '{print $1}' | xargs kill
 ```
 
 [back to index](index.md)
+
+%% %s/(#.*)/\=substitute(submatch(0)," ","%20",'g')/gc
