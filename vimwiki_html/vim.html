@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <meta name="date" content="2020-06-07" scheme="YYYY-MM-DD">
+        <meta name="date" content="2020-06-08" scheme="YYYY-MM-DD">
         <meta name="viewport" content="width=device-width" />
         <title>vim</title>
         <link rel="stylesheet" href="./style.css" type="text/css"
@@ -16,23 +16,72 @@
 <ul>
 <li><a href="#debug">debug</a><ul>
 <li><a href="#debug#start%20logfile">start logfile</a></li>
+<li><a href="#debug#measure%20startup%20time">measure startup time</a></li>
+</ul>
+</li>
+<li><a href="#vimwiki">vimwiki</a><ul>
+<li><a href="#vimwiki#fix%20links">fix links</a></li>
 </ul>
 </li>
 </ul>
 <h1>debug</h1>
 <h2>start logfile</h2>
-<p>```brush: bash
-vim -V20 README.md  2&gt;&amp;1 | tee logfile</p>
-<div class="codehilite"><pre><span></span><span class="cp"># vimwiki</span>
-<span class="cp">## fix links</span>
-<span class="n">replace</span> <span class="n">spaces</span> <span class="n">in</span> <span class="n">url</span>
-<span class="err">```</span><span class="n">vim</span>
-<span class="nf">%s</span><span class="o">/</span><span class="err">\</span><span class="n">v</span><span class="p">(</span><span class="err">\</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="err">\</span><span class="o">=</span><span class="s">&quot;#)(.*)(\.md)=(\.html)(&quot;</span><span class="err">\</span><span class="o">&gt;</span><span class="p">)</span><span class="o">/</span><span class="err">\</span><span class="o">=</span><span class="n">submatch</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">substitute</span><span class="p">(</span><span class="n">submatch</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="sc">&#39; &#39;</span><span class="p">,</span><span class="err">&#39;</span><span class="o">%</span><span class="mi">20</span><span class="sc">&#39;,&#39;</span><span class="n">g</span><span class="err">&#39;</span><span class="p">).</span><span class="n">submatch</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">/</span><span class="n">g</span>
+<div class="codehilite"><pre><span></span>vim -V20 README.md  <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">|</span> tee logfile
+</pre></div>
+
+
+<h2>measure startup time</h2>
+<p>current configuration including plugins and .vimrc</p>
+<div class="codehilite"><pre><span></span>vim --startuptime vim.log
+</pre></div>
+
+
+<p>vim without .vimrc and plugins</p>
+<div class="codehilite"><pre><span></span>vim -u NONE --startuptime vim.log
+</pre></div>
+
+
+<p>possible options (see <code>:h --noplugin</code>):
+| argument\load: | vimrc files | plugins | defaults.vim |
+|----------------|:-----------:|:-------:|:------------:|
+| (nothing)      |   <strong>yes</strong>   | <strong>yes</strong> |   <strong>yes</strong>    |
+| -u NONE        |     no      |   no    |      no      |
+| -u DEFAULTS    |     no      |   no    |   <strong>yes</strong>    |
+| -u NORC        |     no      | <strong>yes</strong> |      no      |
+| --noplugin     |   <strong>yes</strong>   |   no    |   <strong>yes</strong>    |</p>
+<h1>vimwiki</h1>
+<h2>fix links</h2>
+<p>replace spaces in url</p>
+<div class="codehilite"><pre><span></span>%s<span class="sr">/\v(\&lt;a href\=&quot;#)(.*)(\.md)=(\.html)(&quot;\&gt;)/</span>\<span class="p">=</span>submatch<span class="p">(</span><span class="m">1</span><span class="p">)</span>.substitute<span class="p">(</span>submatch<span class="p">(</span><span class="m">2</span><span class="p">),</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;%20&#39;</span><span class="p">,</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>.submatch<span class="p">(</span><span class="m">5</span><span class="p">)</span>/<span class="k">g</span>
 </pre></div>
 
 
 <p>delete .md from url</p>
 <div class="codehilite"><pre><span></span>%s<span class="sr">/\v(\&lt;a href\=&quot;.*)(\.md)(\.html&quot;\&gt;)/</span>\<span class="m">1</span>\<span class="m">3</span>/<span class="k">g</span>
+</pre></div>
+
+
+<p>the same thing using <strong>bash</strong> and <strong>sed</strong></p>
+<div class="codehilite"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="k">for</span> f in ~/vimwiki/vimwiki_html/*.html<span class="p">;</span> <span class="k">do</span>
+  <span class="nb">echo</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">f</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="c1"># replace .html in links with .html</span>
+  sed -i -E <span class="s1">&#39;s/\.md\.html/.html/g&#39;</span> <span class="s2">&quot;</span><span class="nv">$f</span><span class="s2">&quot;</span>
+  <span class="c1"># for each line in grep output, grep is for relative links</span>
+  <span class="c1"># they are unfortunately ending with .html and contain spaces</span>
+  <span class="c1"># grep returns only matched string</span>
+  grep -Eo <span class="s1">&#39;href=&quot;#\S.*\.html&quot;&#39;</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">|</span> <span class="k">while</span> <span class="nb">read</span> -r url <span class="p">;</span> <span class="k">do</span>
+<span class="c1">#     echo &quot;${url}&quot;</span>
+    <span class="c1"># replace .md with nothing, spaces with %20 and .html at the end with nothing</span>
+    <span class="nv">urln</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">url</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">|</span> sed -E <span class="s1">&#39;s/\.md//&#39;</span> <span class="p">|</span> sed -E <span class="s1">&#39;s/ /%20/g&#39;</span> <span class="p">|</span> sed -E <span class="s1">&#39;s/\.html&quot;/&quot;/&#39;</span><span class="k">)</span>
+<span class="c1">#     echo &quot;${url}&quot; &#39;--&gt;&#39; &quot;${urln}&quot;</span>
+    <span class="c1"># replace in file (gnu sed =&gt; -i possible, without temp file)</span>
+    sed -i -E <span class="s1">&#39;s/&#39;</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="s1">&#39;/&#39;</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">urln</span><span class="si">}</span><span class="s2">&quot;</span><span class="s1">&#39;/&#39;</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">f</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="c1"># invoked without extended regex to capture characters to be escaped</span>
+    sed -i <span class="s1">&#39;s/&#39;</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="s1">&#39;/&#39;</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">urln</span><span class="si">}</span><span class="s2">&quot;</span><span class="s1">&#39;/&#39;</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">f</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="k">done</span>
+<span class="k">done</span>
 </pre></div>
 
 

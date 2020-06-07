@@ -1,10 +1,38 @@
 # Contents
 
 - [SED](#SED)
+    - [replace file](#SED#replace file)
+    - [replace all occurences](#SED#replace all occurences)
+    - [extended regexp](#SED#extended regexp)
+    - [prefilter lines for regexp](#SED#prefilter lines for regexp)
     - [REGEXP](#SED#REGEXP)
-    - [Examples:](#SED#Examples:)
+    - [Examples](#SED#Examples)
+- [GREP](#GREP)
+    - [print only matched string](#GREP#print only matched string)
 
 # SED
+## replace file
+done with `-i` option, only for **GNU SED**
+`sed -i 's/pattern/replace/' file`
+
+a file extension for the overwritten file can be specified:
+`sed -i.bak 's/pattern/replace/' file`
+
+using temp file
+`sed 's/pattern/replace/' file > tmp.bak; mv tmp.bak file`
+
+## replace all occurences
+done with `g` flag
+`sed 's/pattern/replace/g' file`
+
+## extended regexp
+done with either `-E` or `-r` option
+`sed -E 's/pattern/replace/' file`
+
+## prefilter lines for regexp
+`sed '/pattern/s/pattern/replace/' file`
+
+
 ## REGEXP
 FROM: https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html
 
@@ -136,5 +164,13 @@ Note that the regular expression matcher is greedy, i.e., matches are attempted 
 `‘^.\{15\}A’`
     This matches the start of a string that contains 16 characters, the last of which is an ‘A’.
 
-%% back to main placeholder
+
+# GREP
+## print only matched string
+`grep -Eo 'pattern' file`
+
+> `-E` means extended regexp
+> `-o` means only matching string
+
+
 [back to index](index.md)
