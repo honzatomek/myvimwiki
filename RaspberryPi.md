@@ -10,9 +10,9 @@
         - [add the key to authorized_keys](#SSH#key conversion#add the key to authorized_keys)
         - [automation by script](#SSH#key conversion#automation by script)
     - [ssh setup](#SSH#ssh setup)
-- [Match Group administrators](#Match Group administrators)
-- [AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys](#AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys)
-        - [reset](#AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys#reset)
+    - [Xming](#SSH#Xming)
+        - [setup](#SSH#Xming#setup)
+        - [reset](#SSH#Xming#reset)
 - [WLAN](#WLAN)
     - [network devices](#WLAN#network devices)
         - [show](#WLAN#network devices#show)
@@ -232,7 +232,7 @@ itself and a Debian Linux as a client.
 
 EDIT: (see comment section below) Current windows build require to also comment
 out the following in
-{{{
+```powershell
 PS C:\ProgramData\ssh> bash -c 'vim sshd_config'
 
 # Match Group administrators

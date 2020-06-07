@@ -12,6 +12,96 @@
     </head>
     <body>
 
+<h1>Contents</h1>
+<ul>
+<li><a href="#SED">SED</a><ul>
+<li><a href="#SED#REGEXP">REGEXP</a></li>
+<li><a href="#SED#Examples:">Examples:</a></li>
+</ul>
+</li>
+</ul>
+<h1>SED</h1>
+<h2>REGEXP</h2>
+<p>FROM: https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html</p>
+<p>To know how to use sed, people should understand regular expressions (regexp for short). A regular expression is a pattern that is matched against a subject string from left to right. Most characters are ordinary: they stand for themselves in a pattern, and match the corresponding characters in the subject. As a trivial example, the pattern</p>
+<div class="codehilite"><pre><span></span>`The quick brown fox`
+</pre></div>
+
+
+<p>matches a portion of a subject string that is identical to itself. The power of regular expressions comes from the ability to include alternatives and repetitions in the pattern. These are encoded in the pattern by the use of special characters, which do not stand for themselves but instead are interpreted in some special way. Here is a brief description of regular expression syntax as used in sed.</p>
+<p><code>char</code>
+A single ordinary character matches itself.</p>
+<p><code>*</code></p>
+<p>Matches a sequence of zero or more instances of matches for the preceding regular expression, which must be an ordinary character, a special character preceded by <code>\</code>, a <code>.</code>, a grouped regexp (see below), or a bracket expression. As a GNU extension, a postfixed regular expression can also be followed by <code>*</code>; for example, <code>a**</code> is equivalent to <code>a*</code>. POSIX 1003.1-2001 says that <code>*</code> stands for itself when it appears at the start of a regular expression or subexpression, but many nonGNU implementations do not support this and portable scripts should instead use <code>\*</code> in these contexts.</p>
+<p><code>\+</code></p>
+<p>As <code>*</code>, but matches one or more. It is a GNU extension.</p>
+<p><code>\?</code></p>
+<p>As <code>*</code>, but only matches zero or one. It is a GNU extension.</p>
+<p><code>\{i\}</code></p>
+<p>As <code>*</code>, but matches exactly i sequences (i is a decimal integer; for portability, keep it between 0 and 255 inclusive).</p>
+<p><code>\{i,j\}</code></p>
+<p>Matches between i and j, inclusive, sequences.</p>
+<p><code>\{i,\}</code></p>
+<p>Matches more than or equal to i sequences.</p>
+<p><code>\(regexp\)</code></p>
+<p>Groups the inner regexp as a whole, this is used to:
+Apply postfix operators, like <code>\(abcd\)*</code>: this will search for zero or more whole sequences of ‘abcd’, while <code>abcd*</code> would search for ‘abc’ followed by zero or more occurrences of ‘d’. Note that support for <code>\(abcd\)*</code> is required by POSIX 1003.1-2001, but many non-GNU implementations do not support it and hence it is not universally portable.
+Use back references (see below).</p>
+<p><code>.</code></p>
+<p>Matches any character, including newline.</p>
+<p><code>^</code></p>
+<p>Matches the null string at beginning of the pattern space, i.e. what appears after the circumflex must appear at the beginning of the pattern space.
+In most scripts, pattern space is initialized to the content of each line (see How sed works). So, it is a useful simplification to think of <code>^#include</code> as matching only lines where ‘#include’ is the first thing on line—if there are spaces before, for example, the match fails. This simplification is valid as long as the original content of pattern space is not modified, for example with an s command.</p>
+<blockquote>
+<p><code>^</code> acts as a special character only at the beginning of the regular expression or subexpression (that is, after <code>\(</code> or <code>\|)</code>. Portable scripts should avoid <code>^</code> at the beginning of a subexpression, though, as POSIX allows implementations that treat <code>^</code> as an ordinary character in that context.</p>
+</blockquote>
+<p><code>$</code></p>
+<p>It is the same as <code>^</code>, but refers to end of pattern space. <code>$</code> also acts as a special character only at the end of the regular expression or subexpression (that is, before <code>\)</code> or <code>\|</code>), and its use at the end of a subexpression is not portable.</p>
+<p><code>[list]</code> <code>[^list]</code></p>
+<p>Matches any single character in list: for example, <code>[aeiou]</code> matches all vowels. A list may include sequences like char1-char2, which matches any character between (inclusive) char1 and char2.
+A leading <code>^</code> reverses the meaning of list, so that it matches any single character not in list. To include ] in the list, make it the first character (after the <code>^</code> if needed), to include - in the list, make it the first or last; to include <code>^</code> put it after the first character.</p>
+<p>The characters <code>$</code>, <code>*</code>, <code>.</code>, <code>[</code>, and <code>\</code> are normally not special within list. For example, <code>[\*]</code> matches either <code>‘\’</code> or <code>‘*’</code>, because the <code>\</code> is not special here. However, strings like <code>[.ch.]</code>, <code>[=a=]</code>, and <code>[:space:]</code> are special within list and represent collating symbols, equivalence classes, and character classes, respectively, and <code>[</code> is therefore special within list when it is followed by <code>.</code>, <code>=</code>, or <code>:</code>. Also, when not in <strong>POSIXLY_CORRECT</strong> mode, special escapes like <code>\n</code> and <code>\t</code> are recognized within list. See Escapes.</p>
+<p><code>regexp1\|regexp2</code></p>
+<p>Matches either regexp1 or regexp2. Use parentheses to use complex alternative regular expressions. The matching process tries each alternative in turn, from left to right, and the first one that succeeds is used. It is a GNU extension.</p>
+<p><code>regexp1regexp2</code></p>
+<p>Matches the concatenation of regexp1 and regexp2. Concatenation binds more tightly than <code>\|</code>, <code>^</code>, and <code>$</code>, but less tightly than the other regular expression operators.</p>
+<p><code>\digit</code></p>
+<p>Matches the digit-th <code>\(...\)</code> parenthesized subexpression in the regular expression. This is called a back reference. Subexpressions are implicity numbered by counting occurrences of <code>\(</code> left-to-right.</p>
+<p><code>\n</code></p>
+<p>Matches the newline character.</p>
+<p><code>\char</code></p>
+<p>Matches char, where char is one of <code>$</code>, <code>*</code>, <code>.</code>, <code>[</code>, <code>\</code>, or <code>^</code>. Note that the only C-like backslash sequences that you can portably assume to be interpreted are <code>\n</code> and <code>\\</code>; in particular <code>\t</code> is not portable, and matches a ‘t’ under most implementations of sed, rather than a tab character.
+Note that the regular expression matcher is greedy, i.e., matches are attempted from left to right and, if two or more matches are possible starting at the same character, it selects the longest.</p>
+<h2>Examples</h2>
+<p><code>‘abcdef’</code>
+    Matches ‘abcdef’.</p>
+<p><code>‘a*b’</code>
+    Matches zero or more ‘a’s followed by a single ‘b’. For example, ‘b’ or ‘aaaaab’.</p>
+<p><code>‘a\?b’</code>
+    Matches ‘b’ or ‘ab’.</p>
+<p><code>‘a\+b\+’</code>
+    Matches one or more ‘a’s followed by one or more ‘b’s: ‘ab’ is the shortest possible match, but other examples are ‘aaaab’ or ‘abbbbb’ or ‘aaaaaabbbbbbb’.</p>
+<p><code>‘.*’</code>
+<code>‘.\+’</code>
+    These two both match all the characters in a string; however, the first matches every string (including the empty string), while the second matches only strings containing at least one character.</p>
+<p><code>‘^main.*(.*)’</code>
+    This matches a string starting with ‘main’, followed by an opening and closing parenthesis. The ‘n’, ‘(’ and ‘)’ need not be adjacent.</p>
+<p><code>‘^#’</code>
+    This matches a string beginning with ‘#’.</p>
+<p><code>‘\\$’</code>
+    This matches a string ending with a single backslash. The regexp contains two backslashes for escaping.</p>
+<p><code>‘\$’</code>
+    Instead, this matches a string consisting of a single dollar sign, because it is escaped.</p>
+<p><code>‘[a-zA-Z0-9]’</code>
+    In the C locale, this matches any ASCII letters or digits.</p>
+<p><code>‘[^ tab]\+’</code>
+    (Here tab stands for a single tab character.) This matches a string of one or more characters, none of which is a space or a tab. Usually this means a word.</p>
+<p><code>‘^\(.*\)\n\1$’</code>
+    This matches a string consisting of two equal substrings separated by a newline.</p>
+<p><code>‘.\{9\}A$’</code>
+    This matches nine characters followed by an ‘A’.</p>
+<p><code>‘^.\{15\}A’</code>
+    This matches the start of a string that contains 16 characters, the last of which is an ‘A’.</p>
 <p>%% back to main placeholder
 <a href="index.html">back to index</a></p>
 

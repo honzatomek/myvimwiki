@@ -15,30 +15,32 @@
 <p>:Raspbery:RaspberryPi:RPi:RasPi:</p>
 <h1>Contents</h1>
 <ul>
-<li><a href="#SSH.html">SSH</a><ul>
-<li><a href="#SSH#key conversion.html">key conversion</a><ul>
-<li><a href="#SSH#key conversion#to OpenSSH.html">to OpenSSH</a></li>
-<li><a href="#SSH#key conversion#from OpenSSH.html">from OpenSSH</a></li>
-<li><a href="#SSH#key conversion#export to file.html">export to file</a></li>
-<li><a href="#SSH#key conversion#add the key to authorized_keys.html">add the key to authorized_keys</a></li>
-<li><a href="#SSH#key conversion#automation by script.html">automation by script</a></li>
+<li><a href="#SSH">SSH</a><ul>
+<li><a href="#SSH#key%20conversion">key conversion</a><ul>
+<li><a href="#SSH#key%20conversion#to%20OpenSSH">to OpenSSH</a></li>
+<li><a href="#SSH#key%20conversion#from%20OpenSSH">from OpenSSH</a></li>
+<li><a href="#SSH#key%20conversion#export%20to%20file">export to file</a></li>
+<li><a href="#SSH#key%20conversion#add%20the%20key%20to%20authorized_keys">add the key to authorized_keys</a></li>
+<li><a href="#SSH#key%20conversion#automation%20by%20script">automation by script</a></li>
 </ul>
 </li>
-<li><a href="#SSH#ssh setup.html">ssh setup</a></li>
+<li><a href="#SSH#ssh%20setup">ssh setup</a></li>
+<li><a href="#SSH#Xming">Xming</a><ul>
+<li><a href="#SSH#Xming#setup">setup</a></li>
+<li><a href="#SSH#Xming#reset">reset</a></li>
 </ul>
 </li>
-<li><a href="#Match Group administrators.html">Match Group administrators</a></li>
-<li><a href="#AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys.html">AuthorizedKeysFile <strong>PROGRAMDATA</strong>/ssh/administrators_authorized_keys</a>
-        - <a href="#AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys#reset.html">reset</a></li>
-<li><a href="#WLAN.html">WLAN</a><ul>
-<li><a href="#WLAN#network devices.html">network devices</a><ul>
-<li><a href="#WLAN#network devices#show.html">show</a></li>
-<li><a href="#WLAN#network devices#info.html">info</a></li>
-<li><a href="#WLAN#network devices#naming rules.html">naming rules</a></li>
-<li><a href="#WLAN#network devices#persistent name.html">persistent name</a></li>
 </ul>
 </li>
-<li><a href="#WLAN#WLAN Hotspot.html">WLAN Hotspot</a><ul>
+<li><a href="#WLAN">WLAN</a><ul>
+<li><a href="#WLAN#network%20devices">network devices</a><ul>
+<li><a href="#WLAN#network%20devices#show">show</a></li>
+<li><a href="#WLAN#network%20devices#info">info</a></li>
+<li><a href="#WLAN#network%20devices#naming%20rules">naming rules</a></li>
+<li><a href="#WLAN#network%20devices#persistent%20name">persistent name</a></li>
+</ul>
+</li>
+<li><a href="#WLAN#WLAN%20Hotspot">WLAN Hotspot</a><ul>
 <li><a href="#WLAN#WLAN Hotspot#Raspberry Pi3 B+.html">Raspberry Pi3 B+</a><ul>
 <li><a href="#WLAN#WLAN Hotspot#Raspberry Pi3 B+#packages.html">packages</a></li>
 <li><a href="#WLAN#WLAN Hotspot#Raspberry Pi3 B+#Network interface configuration.html">Network interface configuration</a></li>
@@ -50,15 +52,15 @@
 <li><a href="#WLAN#WLAN Hotspot#Raspberry Pi3 B+#script for wlan0.html">script for wlan0</a></li>
 </ul>
 </li>
-<li><a href="#WLAN#WLAN Hotspot#Raspberry Pi 4.html">Raspberry Pi 4</a><ul>
-<li><a href="#WLAN#WLAN Hotspot#Raspberry Pi 4#wlan1.html">wlan1</a></li>
+<li><a href="#WLAN#WLAN%20Hotspot#Raspberry%20Pi%204">Raspberry Pi 4</a><ul>
+<li><a href="#WLAN#WLAN%20Hotspot#Raspberry%20Pi%204#wlan1">wlan1</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#swap size.html">swap size</a></li>
+<li><a href="#swap%20size">swap size</a></li>
 </ul>
 <h1>SSH</h1>
 <h2>key conversion</h2>
@@ -245,33 +247,35 @@ Run</p>
 <p>It should work at this point. Tried that with Windows 10 as server and both
 itself and a Debian Linux as a client.</p>
 <p>EDIT: (see comment section below) Current windows build require to also comment
-out the following in
-{{{
-PS C:\ProgramData\ssh&gt; bash -c 'vim sshd_config'</p>
-<h1>Match Group administrators</h1>
-<h1>AuthorizedKeysFile <strong>PROGRAMDATA</strong>/ssh/administrators_authorized_keys</h1>
-<div class="codehilite"><pre><span></span>## Xming 
-### setup 
-```bash
-#!/bin/bash
+out the following in</p>
+<div class="codehilite"><pre><span></span><span class="nb">PS </span><span class="n">C</span><span class="err">:</span><span class="p">\</span><span class="n">ProgramData</span><span class="p">\</span><span class="n">ssh</span><span class="p">&gt;</span> <span class="n">bash</span> <span class="n">-c</span> <span class="s1">&#39;vim sshd_config&#39;</span>
 
-if [ -f &quot;/etc/ssh/ssh_config&quot; ]; then
-  echo &quot;[+] Editing /etc/ssh/ssh_config&quot;
+<span class="c"># Match Group administrators</span>
+<span class="c">#       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys</span>
+</pre></div>
+
+
+<h2>Xming</h2>
+<h3>setup</h3>
+<div class="codehilite"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="k">if</span> <span class="o">[</span> -f <span class="s2">&quot;/etc/ssh/ssh_config&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="nb">echo</span> <span class="s2">&quot;[+] Editing /etc/ssh/ssh_config&quot;</span>
   sudo cp /etc/ssh/ssh_config /etc/ssh/ssh_config.orig
-  sudo sed -i -e &#39;s/#   ForwardX11 yes/ForwardX11 yes/g&#39; /etc/ssh/ssh_config
-  sudo sed -i -e &#39;s/#   ForwardX11 no/ForwardX11 yes/g&#39; /etc/ssh/ssh_config
-  sudo sed -i -e &#39;s/#   ForwardX11Trusted yes/ForwardX11Trusted yes/g&#39; /etc/ssh/ssh_config
-  sudo sed -i -e &#39;s/#   ForwardX11Trusted no/ForwardX11Trusted yes/g&#39; /etc/ssh/ssh_config
-  sudo sed -i -e &#39;s/ForwardX11Trusted no/ForwardX11Trusted yes/g&#39; /etc/ssh/ssh_config
-fi
+  sudo sed -i -e <span class="s1">&#39;s/#   ForwardX11 yes/ForwardX11 yes/g&#39;</span> /etc/ssh/ssh_config
+  sudo sed -i -e <span class="s1">&#39;s/#   ForwardX11 no/ForwardX11 yes/g&#39;</span> /etc/ssh/ssh_config
+  sudo sed -i -e <span class="s1">&#39;s/#   ForwardX11Trusted yes/ForwardX11Trusted yes/g&#39;</span> /etc/ssh/ssh_config
+  sudo sed -i -e <span class="s1">&#39;s/#   ForwardX11Trusted no/ForwardX11Trusted yes/g&#39;</span> /etc/ssh/ssh_config
+  sudo sed -i -e <span class="s1">&#39;s/ForwardX11Trusted no/ForwardX11Trusted yes/g&#39;</span> /etc/ssh/ssh_config
+<span class="k">fi</span>
 
-if [ -f &quot;/etc/ssh/sshd_config&quot; ]; then
-  echo &quot;[+] Editing /etc/ssh/sshd_config&quot;
+<span class="k">if</span> <span class="o">[</span> -f <span class="s2">&quot;/etc/ssh/sshd_config&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="nb">echo</span> <span class="s2">&quot;[+] Editing /etc/ssh/sshd_config&quot;</span>
   sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.orig
-  sudo sed -i -e &#39;s/X11Forwarding no/X11Forwarding yes/g&#39; /etc/ssh/sshd_config
-  sudo sed -i -e &#39;s/#X11Forwarding yes/X11Frowarding yes/g&#39; /etc/ssh/sshd_config
-  sudo sed -i -e &#39;s/#X11DisplayOffset 10/X11DisplayOffset 10/g&#39; /etc/ssh/sshd_config
-fi
+  sudo sed -i -e <span class="s1">&#39;s/X11Forwarding no/X11Forwarding yes/g&#39;</span> /etc/ssh/sshd_config
+  sudo sed -i -e <span class="s1">&#39;s/#X11Forwarding yes/X11Frowarding yes/g&#39;</span> /etc/ssh/sshd_config
+  sudo sed -i -e <span class="s1">&#39;s/#X11DisplayOffset 10/X11DisplayOffset 10/g&#39;</span> /etc/ssh/sshd_config
+<span class="k">fi</span>
 
 /etc/init.d/ssh restart
 </pre></div>

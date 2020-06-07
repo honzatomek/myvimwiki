@@ -9,7 +9,7 @@
 # layout
 https://superuser.com/questions/687348/how-to-persist-gnu-screen-layout-after-restart
 
-## Default layout for new screen's
+## default layout for new screen's
 * Manage your regions, then execute code inside screen:
     * To save your current layout to file .screen_layout:
 ```bash
@@ -153,5 +153,3 @@ screen -ls | grep Detached | cut -d. -f1 | awk '{print $1}' | xargs kill
 ```
 
 [back to index](index.md)
-
-%% %s/(#.*)/\=substitute(submatch(0)," ","%20",'g')/gc
