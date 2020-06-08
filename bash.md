@@ -32,6 +32,9 @@ done with either `-E` or `-r` option
 ## prefilter lines for regexp
 `sed '/pattern/s/pattern/replace/' file`
 
+## command inside replace space
+`sed -r 's/(.*CAST[^\x27]*\x27)([^\x27]*)(\x27 AS DateTime.*)/echo "\1"$(date -d"\2" "+%s")"\3"/ge' file`
+
 
 ## REGEXP
 FROM: https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html
