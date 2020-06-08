@@ -173,4 +173,70 @@ Note that the regular expression matcher is greedy, i.e., matches are attempted 
 > `-o` means only matching string
 
 
+# useful commands
+## cat                                                                           
+concatenate all files matching to a single file:                                 
+`cat *.pro >> profiles.txt`                                                      
+                                                                                 
+## cut                                                                           
+cut delimited string (`-d`) and select 4th field (`-f`):                         
+`xrandr | grep -v 'DVI\|DP\|Screen' | cut -d ' ' -f 4`                           
+                                                                                 
+## find                                                                          
+finds all files that satisfy `-name` expression in all subfolder levels limited by `-maxdepth` and `-mindepth` (`-type = file`):
+`find . -maxdepth 1 -mindepth 1 -type f -name "*.png"`                           
+                                                                                 
+## fuser                                                                         
+gets user of a temporary .nfs file:                                              
+`fuser .nfs0000000000005eb80000172e`                                             
+                                                                                 
+## grep                                                                          
+grep multiple strings from file and export them to another:                      
+`grep -E 'one|two' file.txt >another_file.txt`                                   
+`grep 'one\|two' file.txt >another_file.txt`                                     
+get matching line number:                                                        
+`xrandr | grep -n 'DVI-I-1' | cut -d : -f 1`                                     
+                                                                                 
+## head                                                                          
+get first five lines:                                                            
+`head -n 5 ./opt??/*.pro`                                                        
+                                                                                 
+## ln -s                                                                         
+create symbolic link to a file or directory:                                     
+`ln -s /proj/P1144/permas/rechnungen/ ./rechnungen`                              
+                                                                                 
+## readlink                                                                      
+writes real path of a symbolic link:                                             
+`readlink -f "filename"`                                                         
+`readlink -f "directory"`                                                        
+                                                                                 
+## sed                                                                           
+replace $CONTACT STATUS LPAT=360 with $CONTACT STATUS LPAT=5 in file statik_kompass_360.caso and export result to out:
+`sed -e 's/$CONTACT STATUS LPAT=360/$CONTACT STATUS LPAT=5/' statik_kompass_360.caso > out`
+get common prefix of all matching files:                                         
+`printf "%s\n" $(find . -maxdepth 1 -mindepth 1 -type f -name "*.png") | sed -e '$!{N;s/^\(.*\).*\n\1.*$/\1\n\1/;D;}'`
+                                                                                 
+## tail                                                                          
+get last 5 lines, redirect them and use grep to export lines with Elapsed to elapsed.txt:
+`tail -n 5 ./opt??/*.pro >output.txt ; grep Elapsed output.txt >elapsed.txt`        
+`tail -n 5 ./opt??/*.pro | grep Elapsed >elapsed.txt`                            
+get last 5 lines, redirect to grep and search for two words:                     
+`tail -n 5 ./_staangle???/*.pro | grep '_staangle\|Elapsed'`                     
+                                                                                 
+## top, htop                                                                     
+get current running processes:                                                   
+`top`                                                                            
+`htop`                                                                           
+                                                                                 
+## xrandr                                                                        
+get all available screen resolutions:                                            
+`xrandr`                                                                         
+set screen resolution to 1920x1200:                                              
+`xrandr -s 1920x1200`                                                            
+list available screen resolutions (`-v` means show lines not matching):          
+`xrandr | grep -v 'DVI\|DP\|Screen'`                                             
+list only available screen resolutions:                                          
+`xrandr | grep -v 'DVI\|DP\|Screen' | cut -d ' ' -f 4`
+
+
 [back to index](index.md)
