@@ -3,6 +3,7 @@
 - [debug](#debug)
     - [start logfile](#debug#start logfile)
     - [measure startup time](#debug#measure startup time)
+    - [vim without .vimrc and plugins](#debug#vim without .vimrc and plugins)
 - [vimwiki](#vimwiki)
     - [fix links](#vimwiki#fix links)
 
@@ -32,6 +33,17 @@ possible options (see `:h --noplugin`):
 | -u NORC        |     no      | **yes** |      no      |
 | --noplugin     |   **yes**   |   no    |   **yes**    |
 
+## vim without .vimrc and plugins
+```bash
+vim -u NONE -N
+```
+> -u NONE   no .vimrc, plugins or defaults
+> -N	    start with `:set nocompatible`
+
+same can be achieved with
+```bash
+vim -u DEFAULTS
+```
 
 
 # vimwiki
