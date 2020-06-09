@@ -32,10 +32,13 @@
         - [Raspberry Pi 4](#WLAN#WLAN Hotspot#Raspberry Pi 4)
             - [wlan1](#WLAN#WLAN Hotspot#Raspberry Pi 4#wlan1)
 - [swap size](#swap size)
+- [APT](#APT)
+    - [search for package](#APT#search for package)
+    - [show package info](#APT#show package info)
 
-# SSH 
-## key conversion 
-### to OpenSSH 
+# SSH
+## key conversion
+### to OpenSSH
 ```bash
 ssh-keygen -i -f FILE_IN.ppk
 ```
@@ -59,7 +62,7 @@ ssh-keygen -i -f FILE_IN.ppk
 	     private key type will cause the key to be stored in the legacy PEM
 	     private key format.
 
-### from OpenSSH 
+### from OpenSSH
 ```bash
 ssh-keygen -e -f FILE_IN.ppk
 ```
@@ -71,17 +74,17 @@ ssh-keygen -e -f FILE_IN.ppk
 	     allows exporting OpenSSH keys for use by other programs, including
 	     several commercial SSH implementations.
 
-### export to file 
+### export to file
 ```bash
 ssh-keygen -i -f FILE_IN.ppk > FILE_OUT.ppk
 ```
 
-### add the key to authorized_keys 
+### add the key to authorized_keys
 ```bash
 ssh-keygen -i -f FILE_IN.ppk >> "${HOME}/.ssh/authorized_keys"
 ```
 
-### automation by script 
+### automation by script
 ```bash
 #!/bin/bash
 
@@ -166,7 +169,7 @@ read -p "[+] Do you want to append this key to $FILE_OUT? [y/n] " choice
 done
 ```
 
-## ssh setup 
+## ssh setup
 https://stackoverflow.com/questions/16212816/setting-up-openssh-for-windows-using-public-key-authentication/50502015#50502015
 
 Following are setup steps for OpenSSH shipped with Windows 10 v.1803 (April
@@ -239,8 +242,8 @@ PS C:\ProgramData\ssh> bash -c 'vim sshd_config'
 #       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
 ```
 
-## Xming 
-### setup 
+## Xming
+### setup
 ```bash
 #!/bin/bash
 
@@ -265,7 +268,7 @@ fi
 /etc/init.d/ssh restart
 ```
 
-### reset 
+### reset
 ```bash
 #!/bin/bash
 
@@ -275,14 +278,14 @@ sudo cp /etc/ssh/sshd_config.orig /etc/ssh/sshd_config
 /etc/init.d/ssh restart
 ```
 
-# WLAN 
-## network devices 
-### show 
+# WLAN
+## network devices
+### show
 ```bash
 ifconfig
 ```
 
-### info 
+### info
 show info on network device:
 ```bash
 udevadm info /sys/class/net/wlan1
@@ -293,7 +296,7 @@ show full info on network device:
 udevadm info /sys/class/net/wlan1 --attribute-walk
 ```
 
-### naming rules 
+### naming rules
 test rules used for naming the device
 ```bash
 sudo udevadm test /sys/class/net/wlan1
@@ -305,7 +308,7 @@ location of rules for naming the devices (in hierarchic order, first wins):
 /lib/udev/rules.d/
 ```
 
-### persistent name 
+### persistent name
 naming rule example for _/etc/udev/rules.d/70-persistent-net.rules_
 keywords can be selected based upon udevadm info `/sys/class/net/wlan1 --attribute-walk` output
 ```bash
@@ -318,13 +321,13 @@ for the naming rules to work, a following symlink has to be created:
 ln -s /lib/udev/rules.d/80-net-setup-link.rules /etc/udev/rules.d/80-net-setup-link.rules
 ```
 
-## WLAN Hotspot 
-### Raspberry Pi3 B+ 
-####  packages 
+## WLAN Hotspot
+### Raspberry Pi3 B+
+####  packages
 	hostapd – This package allows for creation of WiFi hotspot
 	dnsmasq – A combination of DHCP and DNS server
 
-####  Network interface configuration 
+####  Network interface configuration
 We have to set up a static IP address of *wlan0* device.
 
 First we have to edit *dhcpd* config file to ignore *wlan0* device.
@@ -370,7 +373,7 @@ sudo ifdown wlan0; sudo ifup wlan0
 ```
 
 :hostapd:
-####  hostapd configuration 
+####  hostapd configuration
 Next we have to set up *hostapd*. Let us therefore creat a new config file:
 
 ```bash
@@ -448,7 +451,7 @@ DAEMON_CONF="/etc/hostapd/hostapd.conf"
 This will make sure that WiFi AP will start after the system startup.
 
 :dnsmasq:
-####  dnsmasq configuration 
+####  dnsmasq configuration
 The *dnsmasq* configuration file contains a huge amount of (for us) unneeded
 information. Therefore we rename the original file and create our own:
 
@@ -470,7 +473,7 @@ dhcp-range=192.168.1.10,192.168.1.100,12h # Assign IP addresses between 192.168.
 ```
 
 :IPv4_Forwarding:
-####  IPv4 Forwarding configuration 
+####  IPv4 Forwarding configuration
 At this moment we have a functioning *WiFi hotspot* to which client devices
 can connect and which are allocated an IP address. The only thing left is
 to add internet connection. In our case it will be from *Ethernet* (_eth0_).
@@ -528,7 +531,7 @@ and add the following line before the `exit 0` line:
 iptables-restore < /etc/iptables.ipv4.nat
 ```
 
-####  Finish 
+####  Finish
 At this moment we're finished. Everything should work after *restarting* the
 system. If you don't want to restart, it is enough to run these two services:
 
@@ -537,7 +540,7 @@ sudo service hostapd start
 sudo service dnsmasq start
 ```
 
-####  Notes 
+####  Notes
 If something is not working:
 
 *WiFi Hotspot* -- look for an error in [[#hostapd|hostapd]] configuration.
@@ -547,7 +550,7 @@ work -- check network connection of the source adapter (_eth0_ in this case)
 and the [[#IPv4_Forwarding|IPv4 Forwarding]] configuration section.
 
 
-#### script for wlan0 
+#### script for wlan0
 ```bash
 #!/bin/bash
 
@@ -670,8 +673,8 @@ sudo service hostapd start
 sudo service dnsmasq start
 ```
 
-### Raspberry Pi 4 
-#### wlan1 
+### Raspberry Pi 4
+#### wlan1
 Needs wlan1 device to have *persistent name* and *static IP address*.
 
 ```bash
@@ -773,12 +776,24 @@ sudo bash -c "echo 'exit 0' >> /etc/rc.local"
 ```
 
 
-# swap size 
+# swap size
 ```bash
 sudo /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
 sudo /sbin/mkswap /var/swap.1
 sudo chmod 600 /var/swap.1
 sudo /sbin/swapon /var/swap.1
 ```
+
+# APT
+## search for package
+```bash
+apt-cache search sed | grep -E '^sed'
+```
+
+## show package info
+```bash
+apt-cache show sed
+```
+
 
 [back to index](index.md)
