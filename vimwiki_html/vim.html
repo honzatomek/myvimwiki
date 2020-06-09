@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <meta name="date" content="2020-06-08" scheme="YYYY-MM-DD">
+        <meta name="date" content="2020-06-09" scheme="YYYY-MM-DD">
         <meta name="viewport" content="width=device-width" />
         <title>vim</title>
         <link rel="stylesheet" href="./style.css" type="text/css"
@@ -17,6 +17,11 @@
 <li><a href="#debug">debug</a><ul>
 <li><a href="#debug#start%20logfile">start logfile</a></li>
 <li><a href="#debug#measure%20startup%20time">measure startup time</a></li>
+<li><a href="#debug#vim%20without%20.vimrc%20and%20plugins">vim without .vimrc and plugins</a></li>
+<li><a href="#debug#vimdiff">vimdiff</a><ul>
+<li><a href="#debug#vimdiff#ignore%20all%20whitespaces">ignore all whitespaces</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#vimwiki">vimwiki</a><ul>
@@ -49,6 +54,46 @@
 | -u DEFAULTS    |     no      |   no    |   <strong>yes</strong>    |
 | -u NORC        |     no      | <strong>yes</strong> |      no      |
 | --noplugin     |   <strong>yes</strong>   |   no    |   <strong>yes</strong>    |</p>
+<h2>vim without .vimrc and plugins</h2>
+<div class="codehilite"><pre><span></span>vim -u NONE -N
+</pre></div>
+
+
+<blockquote>
+<p>-u NONE   no .vimrc, plugins or defaults
+-N        start with <code>:set nocompatible</code></p>
+</blockquote>
+<p>same can be achieved with</p>
+<div class="codehilite"><pre><span></span>vim -u DEFAULTS
+</pre></div>
+
+
+<h2>vimdiff</h2>
+<h3>ignore all whitespaces</h3>
+<div class="codehilite"><pre><span></span><span class="c">&quot; ignore case</span>
+<span class="k">set</span> <span class="nb">diffopt</span><span class="p">+=</span>icase
+<span class="c">&quot; ignore whitespace</span>
+<span class="k">set</span> <span class="nb">diffopt</span><span class="p">+=</span>iwhite
+
+<span class="c">&quot; custom diff expression</span>
+<span class="k">set</span> <span class="nb">diffexpr</span><span class="p">=</span>DiffIgnoreWhite<span class="p">()</span>
+
+<span class="c">&quot; custom diff function</span>
+<span class="c">&quot; ignore leading and trailing whitespaces (the -w option)</span>
+<span class="k">function</span> DiffIgnoreWhite<span class="p">()</span>
+  <span class="k">let</span> <span class="k">opt</span> <span class="p">=</span> <span class="s2">&quot;&quot;</span>
+  <span class="k">if</span> &amp;<span class="nb">diffopt</span> <span class="p">=~</span> <span class="s2">&quot;icase&quot;</span>
+    <span class="k">let</span> <span class="k">opt</span> <span class="p">=</span> <span class="k">opt</span> . <span class="s2">&quot;-i &quot;</span>
+  <span class="k">endif</span>
+  <span class="k">if</span> &amp;<span class="nb">diffopt</span> <span class="p">=~</span> <span class="s2">&quot;iwhite&quot;</span>
+    <span class="k">let</span> <span class="k">opt</span> <span class="p">=</span> <span class="k">opt</span> . <span class="s2">&quot;-w &quot;</span>  <span class="c">&quot; -w instead of -b to ignore all white spaces</span>
+  <span class="k">endif</span>
+  <span class="k">silent</span> execute <span class="s2">&quot;!diff -a --binary &quot;</span> . <span class="k">opt</span> . <span class="k">v</span>:fname_in . <span class="s2">&quot; &quot;</span> . <span class="k">v</span>:fname_new . <span class="s2">&quot; &gt; &quot;</span> . <span class="k">v</span>:fname_out
+<span class="k">endfunction</span>
+</pre></div>
+
+
+<p><code>:h diff-diffexpr</code></p>
 <h1>vimwiki</h1>
 <h2>fix links</h2>
 <p>replace spaces in url</p>
@@ -81,6 +126,16 @@
     <span class="c1"># invoked without extended regex to capture characters to be escaped</span>
     sed -i <span class="s1">&#39;s/&#39;</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="s1">&#39;/&#39;</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">urln</span><span class="si">}</span><span class="s2">&quot;</span><span class="s1">&#39;/&#39;</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">f</span><span class="si">}</span><span class="s2">&quot;</span>
   <span class="k">done</span>
+<span class="k">done</span>
+</pre></div>
+
+
+<p>another possibility using <strong>awk</strong>:</p>
+<div class="codehilite"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="k">for</span> f in ~/vimwiki/vimwiki_html/*.html<span class="p">;</span> <span class="k">do</span>
+<span class="c1">#   cat &quot;${f}&quot; | awk &#39;match($0, /(^.*&lt;a href=\&quot;)(#.*)(\&quot;&gt;.*$)/, arr) { gsub(/ /, &quot;%20&quot;, arr[2]); gsub(/\.html$/, &quot;&quot;, arr[2]); gsub(/\.md/, &quot;&quot;, arr[2]); print arr[1] arr[2] arr[3] }&#39;</span>
+  cat <span class="s2">&quot;</span><span class="si">${</span><span class="nv">f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">|</span> awk <span class="s1">&#39;{ match($0, /(^.*&lt;a href=\&quot;)(#.*)(\&quot;&gt;.*$)/, arr); if (arr[2] == &quot;&quot;) print $0; else { gsub(/ /, &quot;%20&quot;, arr[2]); gsub(/\.html$/, &quot;&quot;, arr[2]); gsub(/\.md/, &quot;&quot;, arr[2]); print arr[1] arr[2] arr[3] }; }&#39;</span> &gt; <span class="s2">&quot;</span><span class="si">${</span><span class="nv">f</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="k">done</span>
 </pre></div>
 

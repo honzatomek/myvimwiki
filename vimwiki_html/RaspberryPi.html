@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <meta name="date" content="2020-06-08" scheme="YYYY-MM-DD">
+        <meta name="date" content="2020-06-09" scheme="YYYY-MM-DD">
         <meta name="viewport" content="width=device-width" />
         <title>RaspberryPi</title>
         <link rel="stylesheet" href="./style.css" type="text/css"
@@ -61,6 +61,11 @@
 </ul>
 </li>
 <li><a href="#swap%20size">swap size</a></li>
+<li><a href="#APT">APT</a><ul>
+<li><a href="#APT#search%20for%20package">search for package</a></li>
+<li><a href="#APT#show%20package%20info">show package info</a></li>
+</ul>
+</li>
 </ul>
 <h1>SSH</h1>
 <h2>key conversion</h2>
@@ -764,6 +769,17 @@ sudo bash -c <span class="s2">&quot;echo &#39;exit 0&#39; &gt;&gt; /etc/rc.local
 sudo /sbin/mkswap /var/swap.1
 sudo chmod <span class="m">600</span> /var/swap.1
 sudo /sbin/swapon /var/swap.1
+</pre></div>
+
+
+<h1>APT</h1>
+<h2>search for package</h2>
+<div class="codehilite"><pre><span></span>apt-cache search sed <span class="p">|</span> grep -E <span class="s1">&#39;^sed&#39;</span>
+</pre></div>
+
+
+<h2>show package info</h2>
+<div class="codehilite"><pre><span></span>apt-cache show sed
 </pre></div>
 
 

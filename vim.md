@@ -4,6 +4,8 @@
     - [start logfile](#debug#start logfile)
     - [measure startup time](#debug#measure startup time)
     - [vim without .vimrc and plugins](#debug#vim without .vimrc and plugins)
+    - [vimdiff](#debug#vimdiff)
+        - [ignore all whitespaces](#debug#vimdiff#ignore all whitespaces)
 - [vimwiki](#vimwiki)
     - [fix links](#vimwiki#fix links)
 
@@ -59,14 +61,14 @@ set diffexpr=DiffIgnoreWhite()
 
 " custom diff function
 " ignore leading and trailing whitespaces (the -w option)
-function DiffIgnoreWhite()                                                     
-  let opt = ""                                                                 
-  if &diffopt =~ "icase"                                                       
-    let opt = opt . "-i "                                                      
-  endif                                                                        
-  if &diffopt =~ "iwhite"                                                      
-    let opt = opt . "-w "  " -w instead of -b to ignore all white spaces          
-  endif                                                                        
+function DiffIgnoreWhite()
+  let opt = ""
+  if &diffopt =~ "icase"
+    let opt = opt . "-i "
+  endif
+  if &diffopt =~ "iwhite"
+    let opt = opt . "-w "  " -w instead of -b to ignore all white spaces
+  endif
   silent execute "!diff -a --binary " . opt . v:fname_in . " " . v:fname_new . " > " . v:fname_out
 endfunction
 ```
@@ -106,6 +108,16 @@ for f in ~/vimwiki/vimwiki_html/*.html; do
     # invoked without extended regex to capture characters to be escaped
     sed -i 's/'"${url}"'/'"${urln}"'/' "${f}"
   done
+done
+```
+
+another possibility using **awk**:
+```bash
+#!/bin/bash
+
+for f in ~/vimwiki/vimwiki_html/*.html; do
+#   cat "${f}" | awk 'match($0, /(^.*<a href=\")(#.*)(\">.*$)/, arr) { gsub(/ /, "%20", arr[2]); gsub(/\.html$/, "", arr[2]); gsub(/\.md/, "", arr[2]); print arr[1] arr[2] arr[3] }'
+  cat "${f}" | awk '{ match($0, /(^.*<a href=\")(#.*)(\">.*$)/, arr); if (arr[2] == "") print $0; else { gsub(/ /, "%20", arr[2]); gsub(/\.html$/, "", arr[2]); gsub(/\.md/, "", arr[2]); print arr[1] arr[2] arr[3] }; }' > "${f}"
 done
 ```
 

@@ -5,10 +5,26 @@
     - [replace all occurences](#SED#replace all occurences)
     - [extended regexp](#SED#extended regexp)
     - [prefilter lines for regexp](#SED#prefilter lines for regexp)
+    - [command inside replace space](#SED#command inside replace space)
     - [REGEXP](#SED#REGEXP)
     - [Examples](#SED#Examples)
+- [AWK](#AWK)
+    - [match, group, substitute example](#AWK#match, group, substitute example)
 - [GREP](#GREP)
     - [print only matched string](#GREP#print only matched string)
+- [useful commands](#useful commands)
+    - [cat](#useful commands#cat)
+    - [cut](#useful commands#cut)
+    - [find](#useful commands#find)
+    - [fuser](#useful commands#fuser)
+    - [grep](#useful commands#grep)
+    - [head](#useful commands#head)
+    - [ln -s](#useful commands#ln -s)
+    - [readlink](#useful commands#readlink)
+    - [sed](#useful commands#sed)
+    - [tail](#useful commands#tail)
+    - [top, htop](#useful commands#top, htop)
+    - [xrandr](#useful commands#xrandr)
 
 # SED
 ## replace file
@@ -167,6 +183,37 @@ Note that the regular expression matcher is greedy, i.e., matches are attempted 
 `‘^.\{15\}A’`
     This matches the start of a string that contains 16 characters, the last of which is an ‘A’.
 
+# AWK
+## match, group, substitute example
+had to install GNU AWK (`gawk`), Raspbian is preinstalled with `mawk`:
+
+```bash
+GNU Awk 4.2.1, API: 2.0 (GNU MPFR 4.0.2, GNU MP 6.1.2)
+Copyright (C) 1989, 1991-2018 Free Software Foundation.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see http://www.gnu.org/licenses/.
+```
+
+```bash
+#!/bin/bash
+
+for f in ~/vimwiki/vimwiki_html/*.html; do
+#   cat "${f}" | awk 'match($0, /(^.*<a href=\")(#.*)(\">.*$)/, arr) { gsub(/ /, "%20", arr[2]); gsub(/\.html$/, "", arr[2]); gsub(/\.md/, "", arr[2]); print arr[1] arr[2] arr[3] }'
+  cat "${f}" | awk '{ match($0, /(^.*<a href=\")(#.*)(\">.*$)/, arr); if (arr[2] == "") print $0; else { gsub(/ /, "%20", arr[2]); gsub(/\.html$/, "", arr[2]); gsub(/\.md/, "", arr[2]); print arr[1] arr[2] arr[3] }; }'
+done
+```
+
 
 # GREP
 ## print only matched string
@@ -177,68 +224,68 @@ Note that the regular expression matcher is greedy, i.e., matches are attempted 
 
 
 # useful commands
-## cat                                                                           
-concatenate all files matching to a single file:                                 
-`cat *.pro >> profiles.txt`                                                      
-                                                                                 
-## cut                                                                           
-cut delimited string (`-d`) and select 4th field (`-f`):                         
-`xrandr | grep -v 'DVI\|DP\|Screen' | cut -d ' ' -f 4`                           
-                                                                                 
-## find                                                                          
+## cat
+concatenate all files matching to a single file:
+`cat *.pro >> profiles.txt`
+
+## cut
+cut delimited string (`-d`) and select 4th field (`-f`):
+`xrandr | grep -v 'DVI\|DP\|Screen' | cut -d ' ' -f 4`
+
+## find
 finds all files that satisfy `-name` expression in all subfolder levels limited by `-maxdepth` and `-mindepth` (`-type = file`):
-`find . -maxdepth 1 -mindepth 1 -type f -name "*.png"`                           
-                                                                                 
-## fuser                                                                         
-gets user of a temporary .nfs file:                                              
-`fuser .nfs0000000000005eb80000172e`                                             
-                                                                                 
-## grep                                                                          
-grep multiple strings from file and export them to another:                      
-`grep -E 'one|two' file.txt >another_file.txt`                                   
-`grep 'one\|two' file.txt >another_file.txt`                                     
-get matching line number:                                                        
-`xrandr | grep -n 'DVI-I-1' | cut -d : -f 1`                                     
-                                                                                 
-## head                                                                          
-get first five lines:                                                            
-`head -n 5 ./opt??/*.pro`                                                        
-                                                                                 
-## ln -s                                                                         
-create symbolic link to a file or directory:                                     
-`ln -s /proj/P1144/permas/rechnungen/ ./rechnungen`                              
-                                                                                 
-## readlink                                                                      
-writes real path of a symbolic link:                                             
-`readlink -f "filename"`                                                         
-`readlink -f "directory"`                                                        
-                                                                                 
-## sed                                                                           
+`find . -maxdepth 1 -mindepth 1 -type f -name "*.png"`
+
+## fuser
+gets user of a temporary .nfs file:
+`fuser .nfs0000000000005eb80000172e`
+
+## grep
+grep multiple strings from file and export them to another:
+`grep -E 'one|two' file.txt >another_file.txt`
+`grep 'one\|two' file.txt >another_file.txt`
+get matching line number:
+`xrandr | grep -n 'DVI-I-1' | cut -d : -f 1`
+
+## head
+get first five lines:
+`head -n 5 ./opt??/*.pro`
+
+## ln -s
+create symbolic link to a file or directory:
+`ln -s /proj/P1144/permas/rechnungen/ ./rechnungen`
+
+## readlink
+writes real path of a symbolic link:
+`readlink -f "filename"`
+`readlink -f "directory"`
+
+## sed
 replace $CONTACT STATUS LPAT=360 with $CONTACT STATUS LPAT=5 in file statik_kompass_360.caso and export result to out:
 `sed -e 's/$CONTACT STATUS LPAT=360/$CONTACT STATUS LPAT=5/' statik_kompass_360.caso > out`
-get common prefix of all matching files:                                         
+get common prefix of all matching files:
 `printf "%s\n" $(find . -maxdepth 1 -mindepth 1 -type f -name "*.png") | sed -e '$!{N;s/^\(.*\).*\n\1.*$/\1\n\1/;D;}'`
-                                                                                 
-## tail                                                                          
+
+## tail
 get last 5 lines, redirect them and use grep to export lines with Elapsed to elapsed.txt:
-`tail -n 5 ./opt??/*.pro >output.txt ; grep Elapsed output.txt >elapsed.txt`        
-`tail -n 5 ./opt??/*.pro | grep Elapsed >elapsed.txt`                            
-get last 5 lines, redirect to grep and search for two words:                     
-`tail -n 5 ./_staangle???/*.pro | grep '_staangle\|Elapsed'`                     
-                                                                                 
-## top, htop                                                                     
-get current running processes:                                                   
-`top`                                                                            
-`htop`                                                                           
-                                                                                 
-## xrandr                                                                        
-get all available screen resolutions:                                            
-`xrandr`                                                                         
-set screen resolution to 1920x1200:                                              
-`xrandr -s 1920x1200`                                                            
-list available screen resolutions (`-v` means show lines not matching):          
-`xrandr | grep -v 'DVI\|DP\|Screen'`                                             
-list only available screen resolutions:                                          
+`tail -n 5 ./opt??/*.pro >output.txt ; grep Elapsed output.txt >elapsed.txt`
+`tail -n 5 ./opt??/*.pro | grep Elapsed >elapsed.txt`
+get last 5 lines, redirect to grep and search for two words:
+`tail -n 5 ./_staangle???/*.pro | grep '_staangle\|Elapsed'`
+
+## top, htop
+get current running processes:
+`top`
+`htop`
+
+## xrandr
+get all available screen resolutions:
+`xrandr`
+set screen resolution to 1920x1200:
+`xrandr -s 1920x1200`
+list available screen resolutions (`-v` means show lines not matching):
+`xrandr | grep -v 'DVI\|DP\|Screen'`
+list only available screen resolutions:
 `xrandr | grep -v 'DVI\|DP\|Screen' | cut -d ' ' -f 4`
 
 
