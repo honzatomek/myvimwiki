@@ -10,6 +10,8 @@
     - [Examples](#SED#Examples)
 - [AWK](#AWK)
     - [match, group, substitute and if-else example](#AWK#match, group, substitute and if-else example)
+    - [act only on matching lines](#AWK#act only on matching lines)
+    - [act on all lines](#AWK#act on all lines)
 - [GREP](#GREP)
     - [print only matched string](#GREP#print only matched string)
 - [useful commands](#useful commands)
@@ -234,6 +236,32 @@ for f in ~/vimwiki/vimwiki_html/*.html; do
         print arr[1] arr[2] arr[3] };
       }' # > "${f}"
 done
+```
+
+## act only on matching lines
+the match command stores groups (if used)  into the arr list variable
+`$0` is the whole line
+```bash
+cat $file | awk 'match($0, /(pattern1)(pattern2)/, arr)
+{
+  print arr[1];
+  print arr[2];
+}
+```
+
+## act on all lines
+the match command stores groups (if used)  into the arr list variable
+`$0` is the whole line
+```bash
+cat $file | awk '
+{
+  match($0, /(pattern1)(pattern2)/, arr);
+  if (arr[1] != "")
+    print arr[1];
+    print arr[2];
+  else
+    print $0;
+}
 ```
 
 

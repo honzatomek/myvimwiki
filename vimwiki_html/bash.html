@@ -26,6 +26,8 @@
 </li>
 <li><a href="#AWK">AWK</a><ul>
 <li><a href="#AWK#match,%20group,%20substitute%20and%20if-else%20example">match, group, substitute and if-else example</a></li>
+<li><a href="#AWK#act%20only%20on%20matching%20lines">act only on matching lines</a></li>
+<li><a href="#AWK#act%20on%20all%20lines">act on all lines</a></li>
 </ul>
 </li>
 <li><a href="#GREP">GREP</a><ul>
@@ -196,6 +198,32 @@ along with this program. If not, see http://www.gnu.org/licenses/.
 <span class="s1">        print arr[1] arr[2] arr[3] };</span>
 <span class="s1">      }&#39;</span> <span class="c1"># &gt; &quot;${f}&quot;</span>
 <span class="k">done</span>
+</pre></div>
+
+
+<h2>act only on matching lines</h2>
+<p>the match command stores groups (if used)  into the arr list variable
+<code>$0</code> is the whole line</p>
+<div class="codehilite"><pre><span></span>cat <span class="nv">$file</span> <span class="p">|</span> awk <span class="err">&#39;</span>match<span class="o">(</span><span class="nv">$0</span>, /<span class="o">(</span>pattern1<span class="o">)(</span>pattern2<span class="o">)</span>/, arr<span class="o">)</span>
+<span class="o">{</span>
+  print arr<span class="o">[</span><span class="m">1</span><span class="o">]</span><span class="p">;</span>
+  print arr<span class="o">[</span><span class="m">2</span><span class="o">]</span><span class="p">;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2>act on all lines</h2>
+<p>the match command stores groups (if used)  into the arr list variable
+<code>$0</code> is the whole line</p>
+<div class="codehilite"><pre><span></span>cat <span class="nv">$file</span> <span class="p">|</span> awk <span class="err">&#39;</span>
+<span class="o">{</span>
+  match<span class="o">(</span><span class="nv">$0</span>, /<span class="o">(</span>pattern1<span class="o">)(</span>pattern2<span class="o">)</span>/, arr<span class="o">)</span><span class="p">;</span>
+  <span class="k">if</span> <span class="o">(</span>arr<span class="o">[</span><span class="m">1</span><span class="o">]</span> !<span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">)</span>
+    print arr<span class="o">[</span><span class="m">1</span><span class="o">]</span><span class="p">;</span>
+    print arr<span class="o">[</span><span class="m">2</span><span class="o">]</span><span class="p">;</span>
+  <span class="k">else</span>
+    print <span class="nv">$0</span><span class="p">;</span>
+<span class="o">}</span>
 </pre></div>
 
 
