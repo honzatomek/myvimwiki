@@ -45,6 +45,33 @@ same can be achieved with
 vim -u DEFAULTS
 ```
 
+## vimdiff
+### ignore all whitespaces
+
+```vim
+" ignore case
+set diffopt+=icase
+" ignore whitespace
+set diffopt+=iwhite
+
+" custom diff expression
+set diffexpr=DiffIgnoreWhite()
+
+" custom diff function
+" ignore leading and trailing whitespaces (the -w option)
+function DiffIgnoreWhite()                                                     
+  let opt = ""                                                                 
+  if &diffopt =~ "icase"                                                       
+    let opt = opt . "-i "                                                      
+  endif                                                                        
+  if &diffopt =~ "iwhite"                                                      
+    let opt = opt . "-w "  " -w instead of -b to ignore all white spaces          
+  endif                                                                        
+  silent execute "!diff -a --binary " . opt . v:fname_in . " " . v:fname_new . " > " . v:fname_out
+endfunction
+```
+
+`:h diff-diffexpr`
 
 # vimwiki
 ## fix links
