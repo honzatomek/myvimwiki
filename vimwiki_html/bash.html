@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <meta name="date" content="2020-06-09" scheme="YYYY-MM-DD">
+        <meta name="date" content="2020-06-10" scheme="YYYY-MM-DD">
         <meta name="viewport" content="width=device-width" />
         <title>bash</title>
         <link rel="stylesheet" href="./style.css" type="text/css"
@@ -25,7 +25,7 @@
 </ul>
 </li>
 <li><a href="#AWK">AWK</a><ul>
-<li><a href="#AWK#match,%20group,%20substitute%20example">match, group, substitute example</a></li>
+<li><a href="#AWK#match,%20group,%20substitute%20and%20if-else%20example">match, group, substitute and if-else example</a></li>
 </ul>
 </li>
 <li><a href="#GREP">GREP</a><ul>
@@ -148,7 +148,7 @@ Note that the regular expression matcher is greedy, i.e., matches are attempted 
 <p><code>‘^.\{15\}A’</code>
     This matches the start of a string that contains 16 characters, the last of which is an ‘A’.</p>
 <h1>AWK</h1>
-<h2>match, group, substitute example</h2>
+<h2>match, group, substitute and if-else example</h2>
 <p>had to install GNU AWK (<code>gawk</code>), Raspbian is preinstalled with <code>mawk</code>:</p>
 <div class="codehilite"><pre><span></span>GNU Awk <span class="m">4</span>.2.1, API: <span class="m">2</span>.0 <span class="o">(</span>GNU MPFR <span class="m">4</span>.0.2, GNU MP <span class="m">6</span>.1.2<span class="o">)</span>
 Copyright <span class="o">(</span>C<span class="o">)</span> <span class="m">1989</span>, <span class="m">1991</span>-2018 Free Software Foundation.
@@ -168,11 +168,33 @@ along with this program. If not, see http://www.gnu.org/licenses/.
 </pre></div>
 
 
+<p>oneliner:</p>
 <div class="codehilite"><pre><span></span><span class="ch">#!/bin/bash</span>
 
 <span class="k">for</span> f in ~/vimwiki/vimwiki_html/*.html<span class="p">;</span> <span class="k">do</span>
 <span class="c1">#   cat &quot;${f}&quot; | awk &#39;match($0, /(^.*&lt;a href=\&quot;)(#.*)(\&quot;&gt;.*$)/, arr) { gsub(/ /, &quot;%20&quot;, arr[2]); gsub(/\.html$/, &quot;&quot;, arr[2]); gsub(/\.md/, &quot;&quot;, arr[2]); print arr[1] arr[2] arr[3] }&#39;</span>
   cat <span class="s2">&quot;</span><span class="si">${</span><span class="nv">f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">|</span> awk <span class="s1">&#39;{ match($0, /(^.*&lt;a href=\&quot;)(#.*)(\&quot;&gt;.*$)/, arr); if (arr[2] == &quot;&quot;) print $0; else { gsub(/ /, &quot;%20&quot;, arr[2]); gsub(/\.html$/, &quot;&quot;, arr[2]); gsub(/\.md/, &quot;&quot;, arr[2]); print arr[1] arr[2] arr[3] }; }&#39;</span>
+<span class="k">done</span>
+</pre></div>
+
+
+<p>much nicer format:</p>
+<div class="codehilite"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="k">for</span> f in ~/vimwiki/vimwiki_html/*.html<span class="p">;</span> <span class="k">do</span>
+<span class="c1">#   cat &quot;${f}&quot; | awk &#39;match($0, /(^.*&lt;a href=\&quot;)(#.*)(\&quot;&gt;.*$)/, arr) { gsub(/ /, &quot;%20&quot;, arr[2]); gsub(/\.html$/, &quot;&quot;, arr[2]); gsub(/\.md/, &quot;&quot;, arr[2]); print arr[1] arr[2] arr[3] }&#39;</span>
+  cat <span class="s2">&quot;</span><span class="si">${</span><span class="nv">f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">|</span> awk <span class="s1">&#39;</span>
+<span class="s1">  {</span>
+<span class="s1">    match($0, /(^.*&lt;a href=\&quot;)(#.*)(\&quot;&gt;.*$)/, arr);</span>
+<span class="s1">    if (arr[2] == &quot;&quot;)</span>
+<span class="s1">      print $0;</span>
+<span class="s1">    else</span>
+<span class="s1">      {</span>
+<span class="s1">        gsub(/ /, &quot;%20&quot;, arr[2]);</span>
+<span class="s1">        gsub(/\.html$/, &quot;&quot;, arr[2]);</span>
+<span class="s1">        gsub(/\.md/, &quot;&quot;, arr[2]);</span>
+<span class="s1">        print arr[1] arr[2] arr[3] };</span>
+<span class="s1">      }&#39;</span> <span class="c1"># &gt; &quot;${f}&quot;</span>
 <span class="k">done</span>
 </pre></div>
 

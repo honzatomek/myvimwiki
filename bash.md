@@ -9,7 +9,7 @@
     - [REGEXP](#SED#REGEXP)
     - [Examples](#SED#Examples)
 - [AWK](#AWK)
-    - [match, group, substitute example](#AWK#match, group, substitute example)
+    - [match, group, substitute and if-else example](#AWK#match, group, substitute and if-else example)
 - [GREP](#GREP)
     - [print only matched string](#GREP#print only matched string)
 - [useful commands](#useful commands)
@@ -184,7 +184,7 @@ Note that the regular expression matcher is greedy, i.e., matches are attempted 
     This matches the start of a string that contains 16 characters, the last of which is an ‘A’.
 
 # AWK
-## match, group, substitute example
+## match, group, substitute and if-else example
 had to install GNU AWK (`gawk`), Raspbian is preinstalled with `mawk`:
 
 ```bash
@@ -205,12 +205,34 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see http://www.gnu.org/licenses/.
 ```
 
+oneliner:
 ```bash
 #!/bin/bash
 
 for f in ~/vimwiki/vimwiki_html/*.html; do
 #   cat "${f}" | awk 'match($0, /(^.*<a href=\")(#.*)(\">.*$)/, arr) { gsub(/ /, "%20", arr[2]); gsub(/\.html$/, "", arr[2]); gsub(/\.md/, "", arr[2]); print arr[1] arr[2] arr[3] }'
   cat "${f}" | awk '{ match($0, /(^.*<a href=\")(#.*)(\">.*$)/, arr); if (arr[2] == "") print $0; else { gsub(/ /, "%20", arr[2]); gsub(/\.html$/, "", arr[2]); gsub(/\.md/, "", arr[2]); print arr[1] arr[2] arr[3] }; }'
+done
+```
+
+much nicer format:
+```bash
+#!/bin/bash
+
+for f in ~/vimwiki/vimwiki_html/*.html; do
+#   cat "${f}" | awk 'match($0, /(^.*<a href=\")(#.*)(\">.*$)/, arr) { gsub(/ /, "%20", arr[2]); gsub(/\.html$/, "", arr[2]); gsub(/\.md/, "", arr[2]); print arr[1] arr[2] arr[3] }'
+  cat "${f}" | awk '
+  {
+    match($0, /(^.*<a href=\")(#.*)(\">.*$)/, arr);
+    if (arr[2] == "")
+      print $0;
+    else
+      {
+        gsub(/ /, "%20", arr[2]);
+        gsub(/\.html$/, "", arr[2]);
+        gsub(/\.md/, "", arr[2]);
+        print arr[1] arr[2] arr[3] };
+      }' # > "${f}"
 done
 ```
 
