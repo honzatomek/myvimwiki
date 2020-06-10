@@ -10,3 +10,6 @@
 
 # Movies
 - Crash
+# Useful Links
+## Vim-like keybindings in Total Commander
+- https://www.ghisler.ch/board/viewtopic.php?t=33268
