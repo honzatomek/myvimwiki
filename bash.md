@@ -1,8 +1,8 @@
 # Contents
 
 - [SED](#SED)
-    - [replace file](#SED#replace file)
-    - [replace all occurences](#SED#replace all occurences)
+    - [replace file](#SED#replace-file)
+    - [replace all occurences](#SED#replace-all-occurences)
     - [extended regexp](#SED#extended regexp)
     - [prefilter lines for regexp](#SED#prefilter lines for regexp)
     - [command inside replace space](#SED#command inside replace space)
