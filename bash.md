@@ -280,7 +280,7 @@ echo Ziel-Tmax: ${TmaxC}°C
        ax     ax
                     
 awk -F, '! /TEMP/ {print $0}                                                             # set the delimiter to ",", if row does not contain TEMP print the row unchanged
-                                                                                           for rows that contain TEMP:
+           /TEMP/ {                                                                      # for rows that contain TEMP:
                 tk='$min'+($4-'$min')/('$max'-'$min')*(('$TmaxC'+273.15)-'$min')         # tk = min + (value - min) / (max - min) * ((TmaxC + 273.15) - min)
                  c      c'+(($4-273.15)-'$minc )/('$maxc -'$minc')*('$TmaxC'-'$minc')    #  c = minc + ((value - 273.15) - minc) / (maxc - minc) * (TmaxC - minc)
                 if ( $4 > 0 ) $4 = tk                                                    # if value > 0 then value = tk
