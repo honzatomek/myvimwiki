@@ -289,6 +289,19 @@ awk -F, '! /TEMP/ {print $0}                                                    
                 else                \n") }' $BDF > Shift_$BDF                            # else print just newline and export to Shift_$BDF
 ```
 
+## floating point operations using GNU AWK
+```bash
+awk "BEGIN {print 100/3}"
+```
+
+```bash
+awk "BEGIN {printf \"%.2f\n\", 100/3}"
+```
+
+```bash
+awk "BEGIN {print -8.4 - -8}"
+```
+
 # GREP
 ## print only matched string
 `grep -Eo 'pattern' file`
