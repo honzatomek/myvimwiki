@@ -18,5 +18,8 @@
 - Download:http://sourceforge.net/projects/viatc/files/latest/download
 > Install:Use TC to open archive.
 
+## Calculator in BASH
+- https://www.shell-tips.com/bash/performing-math-calculation-in-bash/
+
 # Doma
 * [doma](doma.md) -- udaje o nasem bytu
