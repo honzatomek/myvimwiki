@@ -21,5 +21,8 @@
 ## Calculator in BASH
 - https://www.shell-tips.com/bash/performing-math-calculation-in-bash/
 
+## Screen layout
+- https://www.gnu.org/software/screen/manual/html_node/Layout.html
+
 # Doma
 * [doma](doma.md) -- udaje o nasem bytu
