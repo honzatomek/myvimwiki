@@ -1,13 +1,13 @@
 # Contents
 
 - [SED](#SED)
-    - [replace file](#SED#replace file)
-    - [replace all occurences](#SED#replace all occurences)
-    - [extended regexp](#SED#extended regexp)
-    - [prefilter lines for regexp](#SED#prefilter lines for regexp)
-    - [command inside replace space](#SED#command inside replace space)
-    - [REGEXP](#SED#REGEXP)
-    - [Examples](#SED#Examples)
+    - [replace file](#replace-file)
+    - [replace all occurences](#replace-all-occurences)
+    - [extended regexp](#extended-regexp)
+    - [prefilter lines for regexp](#prefilter-lines-for-regexp)
+    - [command inside replace space](#command-inside-replace-space)
+    - [REGEXP](#regexp)
+    - [Examples](#examples)
 - [AWK](#AWK)
     - [match, group, substitute and if-else example](#AWK#match, group, substitute and if-else example)
     - [act only on matching lines](#AWK#act only on matching lines)
@@ -264,6 +264,43 @@ cat $file | awk '
 }
 ```
 
+## example
+```bash
+#!/usr/bin/zsh                                                                                                                                                                                                                                                    
+TmaxC=652                                                                       
+BDF=$1                                                                                   # read first argument into BDF variable
+awk -F, 'BEGIN {min=1000;max=0}                                                          # column delimiter = "," (-F option); set min variable to 1000, max variable to 0
+         { max=($4>max?$4:max)                                                           # if 4th column is larger than max set max to 4th column, otherwise max = max
+           if ($4>0) min=($4<min?$4:min)                                                 # where 4th column is larger than 0; if 4th column is smaller than min then min=4th column value, otherwise min = min
+         }                                                                       
+         END { print min,max,min-273.15,max-273.15}' $BDF | read min max minc maxc       # print the resulting values into variables: min = minimal 4th column value, max = maximal 4th column value, dtto in Celsius
+                                                                                 
+echo Ziel-Tmax: ${TmaxC}°C
+     Tmin: ${minc}°C      
+       ax     ax
+                    
+awk -F, '! /TEMP/ {print $0}                                                             # set the delimiter to ",", if row does not contain TEMP print the row unchanged
+           /TEMP/ {                                                                      # for rows that contain TEMP:
+                tk='$min'+($4-'$min')/('$max'-'$min')*(('$TmaxC'+273.15)-'$min')         # tk = min + (value - min) / (max - min) * ((TmaxC + 273.15) - min)
+                 c      c'+(($4-273.15)-'$minc )/('$maxc -'$minc')*('$TmaxC'-'$minc')    #  c = minc + ((value - 273.15) - minc) / (maxc - minc) * (TmaxC - minc)
+                if ( $4 > 0 ) $4 = tk                                                    # if value > 0 then value = tk
+                printf ("%s,%s,%s,%12.6e",$1,$2,$3,$4)                                   # print values delimited by "," 1st to 4th column respectively
+                if (NF==5) printf (",%s\n",$5)                                           # if NF = number of fields = 5, print the 5th one and newline
+                else                \n") }' $BDF > Shift_$BDF                            # else print just newline and export to Shift_$BDF
+```
+
+## floating point operations using GNU AWK
+```bash
+awk "BEGIN {print 100/3}"
+```
+
+```bash
+awk "BEGIN {printf \"%.2f\n\", 100/3}"
+```
+
+```bash
+awk "BEGIN {print -8.4 - -8}"
+```
 
 # GREP
 ## print only matched string

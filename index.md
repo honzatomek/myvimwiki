@@ -10,3 +10,19 @@
 
 # Movies
 - Crash
+# Useful Links
+## Vim-like keybindings in Total Commander
+- https://www.ghisler.ch/board/viewtopic.php?t=33268
+- http://sf.net/p/viatc
+- Home: http://sourceforge.net/p/viatc/home/Introduce/
+- Download:http://sourceforge.net/projects/viatc/files/latest/download
+> Install:Use TC to open archive.
+
+## Calculator in BASH
+- https://www.shell-tips.com/bash/performing-math-calculation-in-bash/
+
+## Screen layout
+- https://www.gnu.org/software/screen/manual/html_node/Layout.html
+
+# Doma
+* [doma](doma.md) -- udaje o nasem bytu
