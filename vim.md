@@ -147,7 +147,7 @@ done
 ```
 
 # highlight whole lines
-syntax highlighting does not support this feature but it can be done via :sign command
+syntax highlighting does not support this feature but it can be done via `:sign` command
 see `:h sign-commands`
 
 plugin function:
