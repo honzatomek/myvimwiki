@@ -9,6 +9,17 @@
 - [vimwiki](#vimwiki)
     - [fix links](#vimwiki#fix links)
 
+ Contents
+
+- [debug](#debug)
+    - [start logfile](#debug#start logfile)
+    - [measure startup time](#debug#measure startup time)
+    - [vim without .vimrc and plugins](#debug#vim without .vimrc and plugins)
+    - [vimdiff](#debug#vimdiff)
+        - [ignore all whitespaces](#debug#vimdiff#ignore all whitespaces)
+- [vimwiki](#vimwiki)
+    - [fix links](#vimwiki#fix links)
+
 # debug
 ## start logfile
 ```bash
@@ -76,27 +87,27 @@ endfunction
 `:h diff-diffexpr`
 
 ```vim
-function! PermasDiff()                                                                                                                                                                                                                                          
-    let opt = ""                                                                 
-    if &diffopt =~ "icase"                                                       
-      let opt = opt . "-i "                                                      
-    endif                                                                        
-    if &diffopt =~ "iwhite"                                                      
-      let opt = opt . "-w "  " -w instead of -b to ignore all white spaces          
-    endif                                                                        
-~   if join(g:permas_diffopt, ";") =~ "icomment"                                 
-+     let l:file_in = StripComments(v:fname_in)                                  
-+     let l:file_new = StripComments(v:fname_new)                                
-+     silent execute "!diff -a --binary " . opt . " " . l:file_in . " " .l:file_new . " > " . v:fname_out
-+   else                                                                         
-+     silent execute "!diff -a --binary " . opt . v:fname_in . " " . v:fname_new . " > " . v:fname_out
-+   endif                                                                        
-+ endfunction                                                                    
-+                                                                                
-+ function! StripComments(fname)                                                 
-+   let l:fname = "<(sed -E 's/\\!\.*\$//' " . a:fname . ")"                     
-+   echom l:fname                                                                
-+   return l:fname                                                               
+function! PermasDiff()
+    let opt = ""
+    if &diffopt =~ "icase"
+      let opt = opt . "-i "
+    endif
+    if &diffopt =~ "iwhite"
+      let opt = opt . "-w "  " -w instead of -b to ignore all white spaces
+    endif
+    if join(g:permas_diffopt, ";") =~ "icomment"
+      let l:file_in = StripComments(v:fname_in)
+      let l:file_new = StripComments(v:fname_new)
+      silent execute "!diff -a --binary " . opt . " " . l:file_in . " " .l:file_new . " > " . v:fname_out
+    else
+      silent execute "!diff -a --binary " . opt . v:fname_in . " " . v:fname_new . " > " . v:fname_out
+    endif
+  endfunction
+ 
+  function! StripComments(fname)
+    let l:fname = "<(sed -E 's/\\!\.*\$//' " . a:fname . ")"
+    echom l:fname
+    return l:fname
   endfunction
 ```
 
@@ -104,12 +115,12 @@ function! PermasDiff()
 ## fix links
 replace spaces in url
 ```vim
-%s/\v(\<a href\="#)(.*)(\.md)=(\.html)("\>)/\=submatch(1).substitute(submatch(2),' ','%20','g').submatch(5)/g
+:%s/\v(\<a href\="#)(.*)(\.md)=(\.html)("\>)/\=submatch(1).substitute(submatch(2),' ','%20','g').submatch(5)/g
 ```
 
 delete .md from url
 ```vim
-%s/\v(\<a href\=".*)(\.md)(\.html"\>)/\1\3/g
+:%s/\v(\<a href\=".*)(\.md)(\.html"\>)/\1\3/g
 ```
 
 the same thing using **bash** and **sed**
