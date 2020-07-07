@@ -385,5 +385,22 @@ BACK_PID=$!
 wait ${BACK_PID}
 ```
 
+# check if "*.txt" file exists in dir
+the test done using `find` command
+```bash
+res="$(find . -maxdepth 1 -name '*.txt' -type f -print -quit)"
+if [ -n "${res}" ]; then # -n tests if string is not null
+    echo "*.txt file exists"
+else
+    echo "no *.txt found"
+fi
+
+if [ -z "${res}" ]; then # -z tests if string is null
+    echo "no *.txt found"
+else
+    echo "*.txt file exists"
+fi
+```
+
 
 [back to index](index.md)
