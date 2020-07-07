@@ -65,5 +65,200 @@ if __name__ == '__main__':
     sst_merge(args.txt, args.outputset, args.name, args.verbose)
 ```
 
+# ENCRYPT password using RSA key
+https://stackoverflow.com/questions/2466401/how-to-generate-ssh-key-pairs-with-python
+
+## generate RSA key pairs
+```python
+#!/usr/bin/env python3
+import os
+from subprocess import Popen, PIPE
+
+
+def generate_rsa_key_pair(keyname='generated_rsa', password=None):
+    '''
+    Generates RSA public/private key pair.
+    idea from: https://stackoverflow.com/questions/2466401/how-to-generate-ssh-key-pairs-with-python
+    In:
+        keyname:  generated RSA key pair name
+    Optional:
+        password: optional password for the RSA key
+    Out:
+        RSA key pair
+    '''
+    print('[+] generating RSA key pair.')
+    if keyname is None:
+        path = os.path.join(os.getcwd(), 'generated_rsa')
+    else:
+        path = keyname
+
+    if os.path.isfile(path):
+        print('[+] removing existing file: {0}'.format(path))
+        os.remove(path)
+
+    if os.path.isfile(path + '.pub'):
+        print('[+] removing existing file: {0}'.format(path + '.pub'))
+        os.remove(path + '.pub')
+
+    cmd = ['ssh-keygen', '-m', 'PEM', '-t', 'rsa', '-f', path]
+    if password:
+        cmd.append('-P')
+        cmd.append(password)
+
+    p = Popen(cmd, stdout=PIPE)
+    p.wait()
+    res, err = p.communicate()
+
+    if err:
+        raise Exception(err)
+
+    if res:
+        cert_content = res.decode('utf-8')
+        print('[+] Certificate: {0}'.format(cert_content))
+
+    return path, path + '.pub'
+```
+
+## encrypt password
+```python
+#!/usr/bin/env python3
+import os
+from Cryptodome.PublicKey import RSA
+from Cryptodome.Random import get_random_bytes
+from Cryptodome.Cipher import AES, PKCS1_OAEP
+
+
+def encrypt(string_to_encrypt, public_key, encrypted_file='password.bin'):
+    '''
+    ENCRYPTS a string using RSA - AES key combination. First an AES session key
+    is generated, then it is used to encrypt the string_to_encrypt. Aftwerwards
+    the AES session key is encrypted using the RSA public key and the encrypted
+    AES key is stored together with the encrypted string_to_encrypt in a file.
+    This has the advantage of encrypting strings too short for a RSA encryption
+    (e.g. passwords).
+
+    WARNING: Does not work if RSA key has password.
+
+    In:
+        string_to_encrypt: string to be encrypted
+        public_key:        file with RSA public key
+    Optional:
+        encrypted_file:    filename where to store the ecrypted string
+                           (DEFAULT = password.bin)'
+    Out:
+        file with the encrypted string
+    '''
+
+    assert(type(string_to_encrypt) == str), 'string_to_encrypt ({0}) must be a string.'.format(string_to_encrypt)
+    assert(string_to_encrypt != ''), 'string_to_encrypt cannot be a nullstring'
+    assert(os.path.isfile(public_key)), 'public_key file ({0}) does not exist'.format(public_key)
+
+    recipient_key = RSA.importKey(open(public_key, 'r').read())
+    session_key = get_random_bytes(16)
+
+    # Encrypt the session key with the public RSA key
+    cipher_rsa = PKCS1_OAEP.new(recipient_key)
+    enc_session_key = cipher_rsa.encrypt(session_key)
+
+    # Encrypt the data with the AES session key
+    # EAX mode is used to allow detection of unauthoriyed modifications
+    cipher_aes = AES.new(session_key, AES.MODE_EAX)
+    ciphertext, tag = cipher_aes.encrypt_and_digest(string_to_encrypt.encode('utf-8'))
+
+    with open(encrypted_file, 'wb') as file_out:
+        [file_out.write(x) for x in (enc_session_key,
+                                     cipher_aes.nonce,
+                                     tag,
+                                     ciphertext)]
+
+    return encrypted_file
+```
+
+## decrypt password
+```python
+#!/usr/bin/env python3
+import os
+from Cryptodome.PublicKey import RSA
+from Cryptodome.Random import get_random_bytes
+from Cryptodome.Cipher import AES, PKCS1_OAEP
+
+
+def decrypt(string_to_decrypt, private_key):
+    '''
+    DECRYPTS a string ENCRYPTED using RSA - AES key combination. RSA encrypted
+    key is extracted from the string_to_decrypt, decrypted using RSA private
+    key and the ewsulting AES session key is used to decrypt the encrypted
+    string stored at the end of the string_to_decrypt file.
+
+    WARNING: Does not work if RSA key has password.
+
+    In:
+        string_to_decrypt: file with (RSA encrypted AES session key, AES
+                           session key NONCE, TAG, encrypted text)
+        private_key:       RSA private key filename
+    Out:
+        decrypted string if everything works, AssertionError if not
+    '''
+
+    assert(os.path.isfile(string_to_decrypt)), 'string_to_decrypt {0} is not a file.'.format(string_to_decrypt)
+    assert(os.path.isfile(private_key)), 'private_key file ({0}) does not exist.'.format(private_key)
+
+    key = RSA.importKey(open(private_key, 'r').read())
+
+    with open(string_to_decrypt, 'rb') as file_in:
+        enc_session_key, nonce, tag, ciphertext = [file_in.read(x) for x in (key.size_in_bytes(), 16, 16, -1)]
+
+    # Decrypt the session key with the private RSA key
+    cipher_rsa = PKCS1_OAEP.new(key)
+    session_key = cipher_rsa.decrypt(enc_session_key)
+
+    # Decrypt the data with the AES session key
+    cipher_aes = AES.new(session_key, AES.MODE_EAX, nonce)
+    decrypted_string = cipher_aes.decrypt_and_verify(ciphertext, tag)
+
+    return decrypted_string.decode('utf-8')
+```
+
+## test encryption - decryption
+```python
+#!/usr/bin/env python3
+import os
+from mycrypto import encrypt, decrypt # it is presumed that the functions above are stored in mycrypto.py
+
+def test_encryption(private_key=None, public_key=None, test_string='This is a test string'):
+    '''
+    Tests if encrypt() and decrypt() functions work both ways. First the
+    test_string is ENCRYPTED, then the encrypted string is DECRYPTED and the
+    result is checked.
+
+    In:
+        private_key: RSA private key file
+        public_key:  RSA public key file
+        test_string: String to test the ecryption on
+                     (DEFAULT = 'This is a test string')
+    Out:
+        True if the ENCRYPTION - DECRYPTION works, AssertionError if not.
+    '''
+
+    assert(private_key is None), '[-] No private key supplied. Encryption cannot be tested.'
+    assert(public_key is None), '[-] No public key supplied. Encryption cannot be tested.'
+
+    print('[+] Private key: {0}'.format(private_key))
+    print('[+] Public key: {0}'.format(public_key))
+
+    test_string = 'this is a test string'
+    print('test string: {0}'.format(test_string))
+    encrypted = encrypt(test_string, public_key, )
+
+    decrypted = decrypt(encrypted, private_key)
+    print('decrypted string: {0}'.format(decrypted))
+
+    assert(test_string == decrypted), 'Encryption -> Decryption did not work: {0} != {1}'.format(test_string, decrypted)
+    os.remove(encrypted)
+
+    return True
+```
+
+
 %% back to main placeholder
 [back to index](index.md)
