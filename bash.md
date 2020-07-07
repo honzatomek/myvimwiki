@@ -377,5 +377,13 @@ list available screen resolutions (`-v` means show lines not matching):
 list only available screen resolutions:
 `xrandr | grep -v 'DVI\|DP\|Screen' | cut -d ' ' -f 4`
 
+# wait for process to finish
+run a cmd in background, using `$!` get its PID and supply it to `wait` command to wait for the process to finish:
+```bash
+cmd &
+BACK_PID=$!
+wait ${BACK_PID}
+```
+
 
 [back to index](index.md)
