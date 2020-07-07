@@ -29,6 +29,8 @@
     - [tail](#useful commands#tail)
     - [top, htop](#useful commands#top, htop)
     - [xrandr](#useful commands#xrandr)
+- [wait for process to finish](#wait for process to finish)
+- [check if "*.txt" file exists in dir](#check if "*.txt" file exists in dir)
 
 # SED
 ## replace file
@@ -386,7 +388,7 @@ wait ${BACK_PID}
 ```
 
 # check if "*.txt" file exists in dir
-the test done using `find` command
+the test is done using `find` command
 ```bash
 res="$(find . -maxdepth 1 -name '*.txt' -type f -print -quit)"
 if [ -n "${res}" ]; then # -n tests if string is not null
