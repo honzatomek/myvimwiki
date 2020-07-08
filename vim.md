@@ -8,17 +8,8 @@
         - [ignore all whitespaces](#debug#vimdiff#ignore all whitespaces)
 - [vimwiki](#vimwiki)
     - [fix links](#vimwiki#fix links)
-
- Contents
-
-- [debug](#debug)
-    - [start logfile](#debug#start logfile)
-    - [measure startup time](#debug#measure startup time)
-    - [vim without .vimrc and plugins](#debug#vim without .vimrc and plugins)
-    - [vimdiff](#debug#vimdiff)
-        - [ignore all whitespaces](#debug#vimdiff#ignore all whitespaces)
-- [vimwiki](#vimwiki)
-    - [fix links](#vimwiki#fix links)
+- [highlight whole lines](#highlight whole lines)
+- [batch file processing](#batch file processing)
 
 # debug
 ## start logfile
@@ -186,6 +177,75 @@ let b:permas_uci_sign = 1
 ftdetect:
 ```vim
 au BufRead,BufEnter,BufLeave,InsertLeave,CursorMoved *.uci call PermasUCIPlaceSigns()
+```
+
+# batch file processing
+
+1. first read all corresponding files into args list
+```vim
+:args ./**/*unique_filename_part*.txt
+```
+this will populate the `:args` list and open the first file for editing
+
+useful commands:
+`:args` displays the files in `args` list
+`:set hidden` allows for switching between unsaved buffers
+`:first` go to the first buffer in args list
+`:last` go to the last buffer in args list
+`:next` go to the next buffer in args list
+`:previous` go to the previous buffer in args list
+`:argdo command` execute command for each file in `args` list
+
+2. run command using `:argdo`
+substitute:
+```vim
+:argdo %s/pattern/replace/g
+```
+
+delete using range:
+```vim
+:argdo 8,40d
+```
+some range specifiers:
+    .   current line
+    0   first line of file
+    $   last line of file
+    %   the entire file
+
+delete using pattern:
+```vim
+:argdo g/pattern/d
+```
+
+delete using two patterns:
+```vim
+:argdo g/pattern1/.,./pattern2/d
+```
+
+this is using the `:global` command:
+```vim
+:g[lobal]/pattern/[range]command
+```
+`:global` runs command on each line containing pattern, `.` specifies the line returned from `global` command
+=> `.,./pattern2/d` means execute `delete` on range from matched line to line containing `pattern2`
+the range can also look like (delete between patterns):
+```vim
+:g/pattern1/.+1,./pattern2/-1d
+```
+
+to delete lines not containing pattern:
+```vim
+:argdo v/pattern1/d
+```
+
+3. save files using `:argdo`
+```vim
+:argdo exec 'w '.substitute(expand('%:p'),"\.txt$",'_new.txt','')
+```
+
+4. quit loaded files without saving
+```vim
+:argdo quit!
 ```
 
 
