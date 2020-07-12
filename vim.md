@@ -242,10 +242,18 @@ to delete lines not containing pattern:
 ```vim
 :argdo exec 'w '.substitute(expand('%:p'),"\.txt$",'_new.txt','')
 ```
+or to just save all
+```vim
+:wall!
+```
 
 4. quit loaded files without saving
 ```vim
 :argdo quit!
+```
+or
+```vim
+:qall!
 ```
 
 
