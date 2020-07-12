@@ -31,6 +31,8 @@
     - [xrandr](#useful commands#xrandr)
 - [wait for process to finish](#wait for process to finish)
 - [check if "*.txt" file exists in dir](#check if "*.txt" file exists in dir)
+- [wget](#wget)
+    - [recursively download whole structure](#wget#recursively download whole structure)
 
 # SED
 ## replace file
@@ -403,6 +405,17 @@ else
     echo "*.txt file exists"
 fi
 ```
+
+# wget
+## recursively download whole structure
+```bash
+wget -r -p -k --wait=1 http://website.html
+```
+the `--wait=#SECONDS` option is a courtesy to not overwhelm the target website. Sometimes, if the download is too massive,
+the website will block subsequent wget calls.
+`-r` download recursively
+`-p` page requisites - wget will download all files needed to properly display the page
+`-k` convert links - convert all links for local viewing
 
 
 [back to index](index.md)
