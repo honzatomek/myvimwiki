@@ -256,5 +256,25 @@ or
 :qall!
 ```
 
+# floating point operations using awk
+autoformat:
+```vim
+:.r !awk 'BEGIN { print 3.12E-01 * 2.1E+05 }'
+```
+
+custom formating (`%` must be escaped as otherwise it will be expanded to filename by vim):
+```vim
+:.r !awk 'BEGIN { printf "\%16.2e", 3.12E-01 * 2.1E+05 }'
+```
+
+store result into register (or variable):
+```vim
+:let @c=system('awk "BEGIN { printf \"%16.2e\", 3.12E-01 * 2.1E+05 }"')
+```
+
+and use registers for input:
+```vim
+:let @c=system('awk "BEGIN { printf \"%16.2e\", '.@a.' * '.@b.' }"')
+```
 
 [back to index](index.md)
