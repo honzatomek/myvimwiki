@@ -1,6 +1,556 @@
-# CError
+# Contents
+
+    - [Snippets](#Snippets)
+        - [Slice Array](#Snippets#Slice Array)
+        - [Merge Charts](#Snippets#Merge Charts)
+        - [Export to text file](#Snippets#Export to text file)
+        - [get text alignment from cell](#Snippets#get text alignment from cell)
+        - [align text](#Snippets#align text)
+        - [round number to a base 2](#Snippets#round number to a base 2)
+        - [maximum string length in range](#Snippets#maximum string length in range)
+        - [insert zeros into empty cells](#Snippets#insert zeros into empty cells)
+        - [Formats cells as scientific with base 10^3](#Snippets#Formats cells as scientific with base 10^3)
+        - [vector cross product R3](#Snippets#vector cross product R3)
+        - [transpose range as a reference](#Snippets#transpose range as a reference)
+        - [bruteforce break of password protected sheet](#Snippets#bruteforce break of password protected sheet)
+        - [decimal to binary to decimal](#Snippets#decimal to binary to decimal)
+    - [CError](#CError)
+    - [CExcelFunctions](#CExcelFunctions)
+        - [code](#CExcelFunctions#code)
+            - [header](#CExcelFunctions#code#header)
+            - [global constants](#CExcelFunctions#code#global constants)
+            - [global variables](#CExcelFunctions#code#global variables)
+            - [external libraries](#CExcelFunctions#code#external libraries)
+            - [class initialisation](#CExcelFunctions#code#class initialisation)
+            - [class termination](#CExcelFunctions#code#class termination)
+            - [class properties](#CExcelFunctions#code#class properties)
+                - [help](#CExcelFunctions#code#class properties#help)
+                - [parse module](#CExcelFunctions#code#class properties#parse module)
+                - [parse procedure](#CExcelFunctions#code#class properties#parse procedure)
+                - [TimerStart](#CExcelFunctions#code#class properties#TimerStart)
+                - [TimerLast](#CExcelFunctions#code#class properties#TimerLast)
+                - [TimerTotal](#CExcelFunctions#code#class properties#TimerTotal)
+                - [GetUserName](#CExcelFunctions#code#class properties#GetUserName)
+                - [GetUserProjectDir](#CExcelFunctions#code#class properties#GetUserProjectDir)
+            - [functions and procedures](#CExcelFunctions#code#functions and procedures)
+                - [PickFile](#CExcelFunctions#code#functions and procedures#PickFile)
+                - [GetFiles](#CExcelFunctions#code#functions and procedures#GetFiles)
+                - [bFileFilter](#CExcelFunctions#code#functions and procedures#bFileFilter)
+                - [PickDir](#CExcelFunctions#code#functions and procedures#PickDir)
+                - [GetSubDirs](#CExcelFunctions#code#functions and procedures#GetSubDirs)
+                - [SaveFileAs](#CExcelFunctions#code#functions and procedures#SaveFileAs)
+                - [SaveFile](#CExcelFunctions#code#functions and procedures#SaveFile)
+                - [ExportChart](#CExcelFunctions#code#functions and procedures#ExportChart)
+                - [quickSort](#CExcelFunctions#code#functions and procedures#quickSort)
+                - [SortDictionaryByKey](#CExcelFunctions#code#functions and procedures#SortDictionaryByKey)
+                - [GetColumn](#CExcelFunctions#code#functions and procedures#GetColumn)
+                - [GetRow](#CExcelFunctions#code#functions and procedures#GetRow)
+                - [bWorksheetExists](#CExcelFunctions#code#functions and procedures#bWorksheetExists)
+                - [IsIn](#CExcelFunctions#code#functions and procedures#IsIn)
+                - [RemoveDuplicates](#CExcelFunctions#code#functions and procedures#RemoveDuplicates)
+                - [AlignRight](#CExcelFunctions#code#functions and procedures#AlignRight)
+                - [AlignLeft](#CExcelFunctions#code#functions and procedures#AlignLeft)
+                - [AlignJust](#CExcelFunctions#code#functions and procedures#AlignJust)
+                - [RoundBase2](#CExcelFunctions#code#functions and procedures#RoundBase2)
+                - [VBALinEst](#CExcelFunctions#code#functions and procedures#VBALinEst)
+                - [GetTXTContentUNIX](#CExcelFunctions#code#functions and procedures#GetTXTContentUNIX)
+                - [GetTXTContentWIN](#CExcelFunctions#code#functions and procedures#GetTXTContentWIN)
+                - [StripLines](#CExcelFunctions#code#functions and procedures#StripLines)
+                - [StripSpaces](#CExcelFunctions#code#functions and procedures#StripSpaces)
+                - [ClearChart](#CExcelFunctions#code#functions and procedures#ClearChart)
+                - [WorkStart](#CExcelFunctions#code#functions and procedures#WorkStart)
+                - [WorkStop](#CExcelFunctions#code#functions and procedures#WorkStop)
+                - [DeleteSheet](#CExcelFunctions#code#functions and procedures#DeleteSheet)
+                - [SleepMS](#CExcelFunctions#code#functions and procedures#SleepMS)
+                - [PolyInterpolate](#CExcelFunctions#code#functions and procedures#PolyInterpolate)
+                - [PolyInterpolateArray](#CExcelFunctions#code#functions and procedures#PolyInterpolateArray)
+                - [RaiseError](#CExcelFunctions#code#functions and procedures#RaiseError)
+                - [DisplayError](#CExcelFunctions#code#functions and procedures#DisplayError)
+                - [GetModuleContent](#CExcelFunctions#code#functions and procedures#GetModuleContent)
+                - [GetActiveModule](#CExcelFunctions#code#functions and procedures#GetActiveModule)
+                - [ClearImmediateWindow](#CExcelFunctions#code#functions and procedures#ClearImmediateWindow)
+                - [bDirExists](#CExcelFunctions#code#functions and procedures#bDirExists)
+                - [bFileExists](#CExcelFunctions#code#functions and procedures#bFileExists)
+                - [bFileExistsWild](#CExcelFunctions#code#functions and procedures#bFileExistsWild)
+                - [CreateDir](#CExcelFunctions#code#functions and procedures#CreateDir)
+                - [GetAllModuleNames](#CExcelFunctions#code#functions and procedures#GetAllModuleNames)
+                - [GetModuleLineNo](#CExcelFunctions#code#functions and procedures#GetModuleLineNo)
+                - [BackupModules](#CExcelFunctions#code#functions and procedures#BackupModules)
+                - [BackupWorkbookVBProject](#CExcelFunctions#code#functions and procedures#BackupWorkbookVBProject)
+                - [GetFileNameWithExt](#CExcelFunctions#code#functions and procedures#GetFileNameWithExt)
+                - [GetFileNameWithoutExt](#CExcelFunctions#code#functions and procedures#GetFileNameWithoutExt)
+                - [GetDirPathFromPathFileName](#CExcelFunctions#code#functions and procedures#GetDirPathFromPathFileName)
+                - [GetParentDirPathFromPath](#CExcelFunctions#code#functions and procedures#GetParentDirPathFromPath)
+                - [GetDirNameFromPath](#CExcelFunctions#code#functions and procedures#GetDirNameFromPath)
+                - [GetTicksMS](#CExcelFunctions#code#functions and procedures#GetTicksMS)
+                - [TimerStartMS](#CExcelFunctions#code#functions and procedures#TimerStartMS)
+                - [TimerLastMS](#CExcelFunctions#code#functions and procedures#TimerLastMS)
+                - [TimerTotalMS](#CExcelFunctions#code#functions and procedures#TimerTotalMS)
+                - [pprint](#CExcelFunctions#code#functions and procedures#pprint)
+                - [arrayToString](#CExcelFunctions#code#functions and procedures#arrayToString)
+                - [rangeToString](#CExcelFunctions#code#functions and procedures#rangeToString)
+        - [usage](#CExcelFunctions#usage)
+            - [test_CEF](#CExcelFunctions#usage#test_CEF)
+            - [test_timer](#CExcelFunctions#usage#test_timer)
+            - [test_CountModuleLines](#CExcelFunctions#usage#test_CountModuleLines)
+            - [test_backupModules](#CExcelFunctions#usage#test_backupModules)
+            - [test_paths](#CExcelFunctions#usage#test_paths)
+            - [test_ticks](#CExcelFunctions#usage#test_ticks)
+            - [Parse_Module](#CExcelFunctions#usage#Parse_Module)
+            - [Parse_Procedure](#CExcelFunctions#usage#Parse_Procedure)
+    - [CExcelProperties](#CExcelProperties)
+        - [header](#CExcelProperties#header)
+        - [Class_Initialize](#CExcelProperties#Class_Initialize)
+        - [Class_Terminate](#CExcelProperties#Class_Terminate)
+        - [RestoreCalculation Get](#CExcelProperties#RestoreCalculation Get)
+        - [RestoreCalculation Let](#CExcelProperties#RestoreCalculation Let)
+        - [RestoreDisplayAlerts Get](#CExcelProperties#RestoreDisplayAlerts Get)
+        - [RestoreDisplayAlerts Let](#CExcelProperties#RestoreDisplayAlerts Let)
+        - [RestoreEnableEvents Get](#CExcelProperties#RestoreEnableEvents Get)
+        - [RestoreEnableEvents Let](#CExcelProperties#RestoreEnableEvents Let)
+        - [RestoreScreenUpdating Get](#CExcelProperties#RestoreScreenUpdating Get)
+        - [RestoreScreenUpdating Let](#CExcelProperties#RestoreScreenUpdating Let)
+        - [RestoreEnableAnimations Get](#CExcelProperties#RestoreEnableAnimations Get)
+        - [RestoreEnableAnimations Let](#CExcelProperties#RestoreEnableAnimations Let)
+        - [Save](#CExcelProperties#Save)
+        - [Restore](#CExcelProperties#Restore)
+    - [Usage Examples](#Usage Examples)
+        - [Example_Help](#Usage Examples#Example_Help)
+        - [Example_Help_1](#Usage Examples#Example_Help_1)
+        - [Example_All](#Usage Examples#Example_All)
+        - [Example_Error](#Usage Examples#Example_Error)
+        - [Example_BackupModules](#Usage Examples#Example_BackupModules)
+    - [CLog](#CLog)
+        - [code](#CLog#code)
+        - [usage](#CLog#usage)
+
+# Snippets
+
+## Slice Array
+returns sliced array
 
 ```vba
+Option Explicit
+
+Private Function Slice(ByRef arr As Variant, ByVal s_index As Long, Optional ByVal e_index As Long = 0) As Variant
+    Dim tmp As Variant
+    Dim i As Long
+    tmp = Array()
+    
+    If s_index < 0 Then
+        s_index = UBound(arr) + s_index + 1
+    End If
+    
+    If e_index < 0 Then
+        e_index = UBound(arr) + e_index + 1
+    ElseIf e_index > UBound(arr) Then
+        e_index = UBound(arr)
+    ElseIf e_index = 0 Then
+        e_index = s_index
+    End If
+    
+    ReDim tmp(e_index - s_index)
+    
+    For i = s_index To e_index Step 1
+        tmp(i - s_index) = arr(i)
+    Next
+    
+    Slice = tmp
+End Function
+```
+
+## Merge Charts
+merges all chart sheets in active Workbook into one
+
+```vba
+Private Sub Merge_Charts()
+    Dim CEF As New CExcelFunctions
+    Dim chts() As String
+    Dim cht As Chart
+    Dim i As Long
+    Dim ser As Series
+    
+    For i = 1 To ActiveWorkbook.Charts.Count
+        ReDim Preserve chts(0 To i - 1)
+        chts(i - 1) = ActiveWorkbook.Charts(i).name
+    Next
+
+    Set cht = ActiveWorkbook.Charts.Add2(ActiveWorkbook.Sheets(1))
+    Call CEF.ClearChart(cht)
+    
+    For i = LBound(chts) To UBound(chts)
+        For Each ser In ActiveWorkbook.Charts(chts(i)).SeriesCollection
+            With cht
+                .SeriesCollection.NewSeries
+                .FullSeriesCollection(.SeriesCollection.Count).name = ActiveWorkbook.Charts(chts(i)).name & "_" & ser.name
+                .FullSeriesCollection(.SeriesCollection.Count).XValues = ser.XValues
+                .FullSeriesCollection(.SeriesCollection.Count).values = ser.values
+            End With
+        Next
+    Next
+    
+    cht.ChartType = ActiveWorkbook.Charts(chts(0)).ChartType
+    cht.ChartStyle = ActiveWorkbook.Charts(chts(0)).ChartStyle
+    
+    With ActiveWorkbook.Charts(chts(0))
+        cht.ChartType = .ChartType
+       
+        Call cht.SetElement(msoElementPrimaryCategoryGridLinesMajor)
+        Call cht.SetElement(msoElementPrimaryValueGridLinesMajor)
+        Call cht.SetElement(msoElementPrimaryValueGridLinesMinorMajor)
+        Call cht.SetElement(msoElementPrimaryCategoryGridLinesMinorMajor)
+        Call cht.SetElement(msoElementPrimaryValueAxisTitleAdjacentToAxis)
+        Call cht.SetElement(msoElementPrimaryCategoryAxisTitleAdjacentToAxis)
+        Call cht.SetElement(msoElementLegendRight)
+        cht.Axes(xlCategory).MinimumScale = .Axes(xlCategory).MinimumScale
+        cht.Axes(xlCategory).MaximumScale = .Axes(xlCategory).MaximumScale
+        cht.Axes(xlValue).MinimumScale = .Axes(xlValue).MinimumScale
+        cht.Axes(xlValue).MaximumScale = .Axes(xlValue).MaximumScale
+        
+        cht.ChartTitle.Caption = .ChartTitle.Caption
+        
+        cht.Axes(xlCategory).AxisTitle.Caption = .Axes(xlCategory).AxisTitle.Caption
+        cht.Axes(xlValue).HasTitle = .Axes(xlValue).HasTitle
+        cht.Axes(xlValue).AxisTitle.Caption = .Axes(xlValue).AxisTitle.Caption
+
+        With .Legend
+            cht.Legend.left = .left
+            cht.Legend.width = .width
+            cht.Legend.top = .top
+            cht.Legend.height = .height
+        End With
+        cht.PlotArea.width = .PlotArea.width
+    End With
+End Sub
+```
+
+## Export to text file
+
+```vba
+Private Sub Export2TXT()
+    Const delim As String = " "
+    Const LF As String = vbLf
+    Dim wb As Workbook
+    Dim ws As Worksheet
+    Dim rg As Range
+    Dim cl As Range
+    Dim rows As Long, cols As Long
+    Dim i As Long, j As Long
+    Dim headerlen() As Long
+    Dim align() As String
+    
+    Set cl = Selection
+    
+    Dim filename As Variant
+    Dim FileNo As Long
+    Dim text As String
+    
+    filename = Application.GetSaveAsFilename(title:="Input filename for export")
+    If filename = False Then
+        GoTo ExitHere
+    End If
+    
+    Set wb = ActiveWorkbook
+    Set ws = wb.ActiveSheet
+    rows = ws.Cells(ws.rows.Count, 1).End(xlUp).row
+    cols = ws.Cells(1, ws.columns.Count).End(xlToLeft).Column
+    Set rg = ws.Cells(1, 1).Resize(rows, cols)
+    
+    Debug.Print rows & " " & cols
+    
+    ReDim headerlen(cols) As Long
+    For i = 0 To UBound(headerlen) Step 1
+        Set cl = rg.Resize(, 1).Offset(, i)
+        headerlen(i) = RoundBase2(MaxLen(cl) + Len(delim)) - Len(delim)
+    Next
+    
+    text = ""
+    For Each cl In rg.Resize(, 1)
+        For i = 0 To cols - 1 Step 1
+            text = text & delim & ret_aligned(CStr(cl.Offset(, i).Value), CLng(cl.Offset(, i).HorizontalAlignment), CLng(headerlen(i)))
+        Next
+        text = text & LF
+    Next
+    
+    ' Debug.Print text
+    
+    FileNo = FreeFile()
+    Open filename For Output As #FileNo
+        Print #FileNo, text;  ' write in data, file is for linux -> no carriage return
+    Close #FileNo
+    
+ExitHere:
+    On Error Resume Next
+    Close #FileNo
+    Set cl = Nothing
+    Set rg = Nothing
+    Set ws = Nothing
+    Set wb = Nothing
+End Sub
+```
+
+## get text alignment from cell
+
+```vba
+Private Function ret_aligned(ByVal txt As String, ByVal horAlign As Long, ByVal FieldLen As Long) As String
+    Select Case horAlign
+        Case xlHAlignCenter, xlHAlignCenterAcrossSelection, xlHAlignDistributed, xlHAlignFill, xlHAlignJustify
+            ret_aligned = CenterAlign(txt, FieldLen)
+        Case xlHAlignLeft
+            ret_aligned = LeftAlign(txt, FieldLen)
+        Case xlHAlignRight
+            ret_aligned = RightAlign(txt, FieldLen)
+        Case Else
+            ret_aligned = LeftAlign(txt, FieldLen)
+    End Select
+End Function
+```
+
+## align text
+
+```vba
+Private Function RightAlign(txt As String, FieldLen As Long) As String
+    Dim StrLen As Long
+    Dim Packer As String
+    
+    StrLen = Len(Trim(txt))
+    Packer = String(FieldLen - StrLen, " ")
+    RightAlign = Packer & Trim(txt)
+End Function
+```
+
+```vba
+Private Function LeftAlign(txt As String, FieldLen As Long) As String
+    Dim StrLen As Long
+    Dim Packer As String
+    
+    StrLen = Len(Trim(txt))
+    Packer = String(FieldLen - StrLen, " ")
+    LeftAlign = Trim(txt) & Packer
+End Function
+```
+
+```vba
+Private Function CenterAlign(txt As String, FieldLen As Long) As String
+    Dim StrLen As Long
+    Dim PackerL As String
+    Dim PackerR As String
+    
+    StrLen = Len(Trim(txt))
+    If (FieldLen - StrLen) Mod 2 <> 0 Then
+        PackerR = String(CLng((FieldLen - StrLen) / 2), " ")
+        PackerL = String(FieldLen - StrLen - Len(PackerR), " ")
+    Else
+        PackerL = String((FieldLen - StrLen) / 2, " ")
+        PackerR = PackerL
+    End If
+
+    CenterAlign = PackerL & Trim(txt) & PackerR
+End Function
+```
+
+## round number to a base 2
+rounds a number to nearest 2^n value
+
+```vba
+Private Function RoundBase2(ByRef n As Double) As Long
+    RoundBase2 = CLng(2 ^ Application.WorksheetFunction.RoundUp(log(n) / log(2), 0))
+End Function
+```
+
+## maximum string length in range
+
+```vba
+Private Function MaxLen(ByRef rg As Range)
+    Dim length As Long
+    Dim cl As Range
+    length = 0
+    
+    For Each cl In rg
+        If length < Len(cl.Value) Then length = Len(cl.Value)
+    Next
+    
+    Set cl = Nothing
+    MaxLen = length
+End Function
+```
+
+## insert zeros into empty cells
+```vba
+Private Sub Insert_Zeros()
+    Dim cl As Range
+    
+    For Each cl In Selection
+        If cl.Value = vbNullString Then cl.Value = 0
+    Next
+End Sub
+```
+
+## Formats cells as scientific with base 10^3
+```vba
+Private Sub NumberFormat_1_0_E3()
+    Dim cl As Range
+    
+    For Each cl In Selection
+        cl.NumberFormat = "##0.0E+00;-##0.0E-00;0"
+    Next
+End Sub
+```
+
+## vector cross product R3
+```vba
+Function vCP(v1 As Variant, v2 As Variant) As Variant
+    vCP = Array(v1(2) * v2(3) - v1(3) * v2(2), v1(3) * v2(1) - v1(1) * v2(3), v1(1) * v2(2) - v1(2) * v2(1))
+End Function
+```
+
+## transpose range as a reference
+```vba
+Private Sub TransposeAddress()
+    Dim rg As Range, cl As Range
+    Dim tmp As Variant
+    Dim i As Long, j As Long
+    
+    Set rg = Selection
+    
+    On Error GoTo ExitHere
+    
+    tmp = Application.InputBox("Select first target cell", "Transpose Addresses", , , , , , 8).Address
+    
+    If Not tmp = vbNullString Then
+        Set cl = ActiveSheet.Range(tmp)
+    End If
+    
+    For i = 1 To rg.rows.Count Step 1
+        For j = 1 To rg.columns.Count Step 1
+            cl.Offset(j - 1, i - 1).formula = "=" & rg.Cells(i, j).Address
+        Next
+    Next
+ExitHere:
+    On Error Resume Next
+    Set cl = Nothing
+    Set rg = Nothing
+End Sub
+```
+
+## bruteforce break of password protected sheet
+```vba
+Private Sub PasswordBreaker()
+    Dim stime As Double, LTime As Double, Interval As Double
+    stime = Timer
+    LTime = stime
+    Debug.Print "[+] Time: " & LTime - stime & " s - Start of script."
+    Application.ScreenUpdating = False
+    
+    Dim ws As Worksheet
+    Set ws = ActiveSheet
+    Dim i As Long, j As Long
+        
+    Dim comb As String
+    Dim chr1() As String
+    Dim chr2() As String
+    Dim num As Long
+    Dim tot As Long
+    
+    'Setup:
+    num = 11
+    Interval = 60   ' seconds
+    
+    On Error GoTo ExitHere
+    
+    ReDim chr1(0 To Bin2Dec(String$(num, "1")))
+    ReDim chr2(0 To 126 - 32)
+    
+    For i = 0 To UBound(chr2) Step 1
+        chr2(i) = Chr(i + 32)
+    Next
+    
+    For i = 0 To UBound(chr2) Step 1
+        comb = Dec2Bin(str(i), num)
+        comb = Replace$(comb, "0", "A")
+        chr1(i) = Replace$(comb, "1", "B")
+    Next
+    
+    tot = (UBound(chr1) + 1) * (UBound(chr2) + 1)
+    LTime = Timer
+    Debug.Print "[+] Time: " & LTime - stime & " s - Start of bruteforce attack.."
+    Debug.Print "          " & tot & " possible combinations."
+    On Error Resume Next
+    If ws.ProtectContents Then
+        For i = 0 To UBound(chr1) Step 1
+            For j = 0 To UBound(chr2) Step 1
+                Call ws.Unprotect(chr1(i) & chr2(j))
+                If Timer - LTime > Interval Then
+                    LTime = Timer
+                    num = i * (UBound(chr2) + 1) + j + 1
+                    Debug.Print "[-] Time: " & LTime - stime & " " & num & "/" & tot & " [" & String$(Int(num / tot * 20), "#") & String$(20 - Int(num / tot * 20), " ") & "] Trying password: " & chr1(i) & chr2(j)
+                End If
+                If Not ws.ProtectContents Then
+                    LTime = Timer
+                    Debug.Print "[+] Time: " & LTime - stime & "s Password: " & chr1(i) & chr2(j)
+                    Call MsgBox("Password: " & chr1(i) & chr2(j))
+                    GoTo ExitHere
+                End If
+            Next
+        Next
+    End If
+    
+    On Error GoTo ExitHere
+    LTime = Timer
+    Debug.Print "[-] Time: " & LTime - stime & " s - Could not break password :("
+    Call MsgBox("Could not detect password :(")
+ExitHere:
+    On Error Resume Next
+    Application.ScreenUpdating = True
+    Set ws = Nothing
+    On Error GoTo 0
+End Sub
+```
+
+## decimal to binary to decimal
+binary to decimal
+```vba
+Function Bin2Dec(sMyBin As String) As Long
+    Dim X As Integer
+    Dim iLen As Integer
+
+    iLen = Len(sMyBin) - 1
+    For X = 0 To iLen
+        Bin2Dec = Bin2Dec + _
+          Mid(sMyBin, iLen - X + 1, 1) * 2 ^ X
+    Next
+End Function
+```
+
+decimal to binary
+```vba
+' The DecimalIn argument is limited to 79228162514264337593543950245
+' (approximately 96-bits) - large numerical values must be entered
+' as a String value to prevent conversion to scientific notation. Then
+' optional NumberOfBits allows you to zero-fill the front of smaller
+' values in order to return values up to a desired bit level.
+Function Dec2Bin(ByVal DecimalIn As Variant, Optional NumberOfBits As Variant) As String
+  Dec2Bin = ""
+  DecimalIn = CDec(DecimalIn)
+  Do While DecimalIn <> 0
+    Dec2Bin = Trim$(str$(DecimalIn - 2 * Int(DecimalIn / 2))) & Dec2Bin
+    DecimalIn = Int(DecimalIn / 2)
+  Loop
+  If Not IsMissing(NumberOfBits) Then
+    If Len(Dec2Bin) > NumberOfBits Then
+      Dec2Bin = "Error - Number too large for bit size"
+    Else
+      Dec2Bin = Right$(String$(NumberOfBits, "0") & Dec2Bin, NumberOfBits)
+    End If
+  End If
+End Function
+```
+
+
+# CError
+custom error handling class
+
+```basic
 Option Explicit
 
 Private n As Long
@@ -59,7 +609,11 @@ End Sub
 ```
 
 # CExcelFunctions
+custom class with most used functions
 
+## code
+
+### header
 ```vba
 Option Explicit
 'Class name: CExcelFunctions
@@ -68,7 +622,10 @@ Option Explicit
 '
 'Description:
 'Class wrapper for custom reusable functions for Excel VBA.
+```
 
+### global constants
+```vba
 '#<---------------------------------------------------------------------------------------------------------- global constants --->
 Const CEXCELFUNCTIONS_DEBUG = False
 
@@ -78,7 +635,10 @@ Const Version = "2.0"
 Const CREATED = "8.8.2019"
 Const LAST_EDIT = "29.8.2019"
 Dim D As Object ' Class description
+```
 
+### global variables
+```vba
 '#<---------------------------------------------------------------------------------------------------------- global variables --->
 Private timer_start As Double
 Private timer_last As Double
@@ -86,19 +646,15 @@ Private timer_start_MS As Long
 Private timer_last_MS As Long
 Private ErrorAlreadyUsed As Boolean
 
-'Public Type myErr
-'    Number As Long
-'    Source As String
-'    Description As String
-'    Line As Long
-'    Procedure As String
-'End Type
 Public Enum ModuleBackupState
     increment_version = 0
     replace_last = 1
     create_backup = 2
 End Enum
+```
 
+### external libraries
+```vba
 '#<-------------------------------------------------------------------------------------------------------- external libraries --->
 'https://bettersolutions.com/vba/macros/windows-api.htm
 #If VBA7 Then
@@ -110,7 +666,10 @@ Private Declare PtrSafe Function GetTickCount Lib "kernel32" () As LongPtr
 Private Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 Private Declare Function GetTickCount Lib "kernel32" () As Long
 #End If
+```
 
+### class initialisation
+```vba
 '#<---------------------------------------------------------------------------------------------------------- class initialize --->
 Private Sub Class_Initialize()
     On Error GoTo ExitHere
@@ -141,14 +700,21 @@ Private Sub Class_Initialize()
 ExitHere:
     If Err.Number <> 0 Then Call RaiseError(Err.Number, Err.Source, "CExcelFunctions.Class_Initialize", Err.Description, Erl)
 End Sub
+```
 
+### class termination
+```vba
 '#<----------------------------------------------------------------------------------------------------------- class terminate --->
 Private Sub Class_Terminate()
     If ErrorAlreadyUsed Then
         Call DisplayError(Err.Source, Err.Description, "CExcelFunctions.Class_Terminate", Erl)
     End If
 End Sub
+```
 
+### class properties
+#### help
+```vba
 '#<---------------------------------------------------------------------------------------------------------- class properties --->
 Public Property Get help(Optional ByVal FunctionName As String = vbNullString) As String
     '''Prints this message.
@@ -196,7 +762,10 @@ Public Property Get help(Optional ByVal FunctionName As String = vbNullString) A
     End If
     help = str
 End Property
+```
 
+#### parse module
+```vba
 Public Sub Parse_Module(ByRef dict As Object, Optional ByVal module_name As String = "CExcelFunctions")
     '''Parses module for Property, Function and Sub declaration, adds Array entries to the dictionary passed (name, declaration, comment starting with tripple '
     Dim CEF As New CExcelFunctions
@@ -232,7 +801,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Sub
+```
 
+#### parse procedure
+```vba
 Public Function Parse_Procedure(ByRef module_text() As String, ByVal start_line As Long, ByVal procedure_type As String) As String()
     '''Parses procedure starting at start_line in module_text Array
     Dim fname As String
@@ -278,14 +850,20 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### TimerStart
+```vba
 Public Function TimerStart() As Double
     '''Starts a timer and sets last_time = start_time, returns current time in s
     timer_start = Timer()
     timer_last = timer_start
     TimerStart = timer_start
 End Function
+```
 
+#### TimerLast
+```vba
 Public Property Get TimerLast() As Double
     '''Returns time from last measurement or TimerStart. Needs TimerStart to run first. Rewrites last_time to new time.
     Dim t As Double
@@ -293,23 +871,36 @@ Public Property Get TimerLast() As Double
     TimerLast = t - timer_last
     timer_last = t
 End Property
+```
 
+#### TimerTotal
+```vba
 Public Property Get TimerTotal() As Double
     '''Returns time from TimerStart. Needs TimerStart to run first. Rewrites last_time to new time.
     timer_last = Timer()
     TimerTotal = timer_last - timer_start
 End Property
+```
 
+#### GetUserName
+```vba
 Public Property Get GetUserName() As String
     '''Returns username login from Windows.
     GetUserName = Environ("UserName")
 End Property
+```
 
+#### GetUserProjectDir
+```vba
 Public Property Get GetUserProjectDir() As String
     '''Returns project directory path of the user currently logged in.
     GetUserProjectDir = "z:\misc\MBtech\user\" & Me.GetUserName
 End Property
+```
 
+### functions and procedures
+#### PickFile
+```vba
 '#<-------------------------------------------------------------------------------------------------- functions and procedures --->
 Public Function PickFile(Optional ByVal initdir As String = "", Optional ByVal filter_array As Variant = Nothing, _
                          Optional ByVal title As String = "Pick a file:") As String 'Pick a File
@@ -346,7 +937,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetFiles
+```vba
 Public Function GetFiles(ByVal initdir As String, Optional ByVal filter_array As Variant = Nothing) As String()
     '''Function to get all files that satisfy a filter_array criteria.,
     '''Filter arrray = e.g. Array("*.res", "*.pro", "*.txt").
@@ -375,7 +969,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### bFileFilter
+```vba
 Public Function bFileFilter(ByVal filename As String, Optional ByVal filter_array As Variant = Nothing) As Boolean
     '''Function to check if the extension of a file satisfies preset filter.
     '''Filter arrray = e.g. Array("*.res", "*.pro", "*.txt").
@@ -395,7 +992,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### PickDir
+```vba
 Public Function PickDir(Optional ByVal initdir As String = "", Optional ByVal title As String = "Pick a directory:") As String
     '''Function wrapper for FileDialogFolderPicker
     Dim fldr As FileDialog
@@ -422,7 +1022,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetSubDirs
+```vba
 Public Function GetSubDirs(ByVal directory As String) As String()
     '''Function to get all subdirectories of a directory
     Dim objFSO As Object
@@ -460,7 +1063,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### SaveFileAs
+```vba
 Public Function SaveFileAs(Optional ByVal initdir As String = "", Optional ByVal filter_array As Variant = Nothing, _
                            Optional ByVal title As String = "Save File As:") As String
     '''Function wrapper for SaveFileAs FileDialog.
@@ -486,7 +1092,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### SaveFile
+```vba
 Public Sub SaveFile(ByVal filename As String, ByVal txt As String, Optional ByVal open_in_notepad As Boolean = False)
     '''Saves a string to a file, overwrites it if it exists. filename has to contain full path.
     Dim FileNum As Long
@@ -509,7 +1118,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Sub
+```
 
+#### ExportChart
+```vba
 Public Sub ExportChart(ByRef objCht As Chart, ByVal filename As String)
     '''Exports chart as a *.png file, the filename is overwritten. filename must contain full path.
     On Error Resume Next
@@ -523,7 +1135,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Sub
+```
 
+#### quickSort
+```vba
 Public Sub quickSort(vArray As Variant, Optional inLow As Long = -999, Optional inHi As Long = -999)
     '''Quick Sort procedure that works on vArray.
     Dim pivot   As Variant
@@ -569,7 +1184,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Sub
+```
 
+#### SortDictionaryByKey
+```vba
 Public Function SortDictionaryByKey(ByRef dict As Object, Optional sortorder As XlSortOrder = xlAscending) As Object
     '''Sorts a created dictionary by key value. XlSortOrder = xlAscending/xlDescending.
     Dim arrList As Object
@@ -617,7 +1235,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetColumn
+```vba
 Public Function GetColumn(ByRef arr As Variant, ByVal col As Long) As Variant()
     '''Returns a new array of just one column from arr, dimensions: (1 to n, 1 to 1)
     Dim tmp() As Variant
@@ -642,7 +1263,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetRow
+```vba
 Public Function GetRow(ByRef arr As Variant, ByVal row As Long) As Variant()
     '''Returns a new array of just one row from arr, dimensions: (1 to 1, 1 to n)
     Dim tmp() As Variant
@@ -667,7 +1291,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### bWorksheetExists
+```vba
 Public Function bWorksheetExists(ByVal wsname As String, Optional ByRef wb As Workbook = Nothing) As Boolean
     '''Tests whether a Worksheet by wsname exists in Workbook wb. Default wb is ActiveWorkbook. Returns Boolean.
     If wb Is Nothing Then Set wb = ActiveWorkbook
@@ -680,7 +1307,10 @@ Public Function bWorksheetExists(ByVal wsname As String, Optional ByRef wb As Wo
     Err.Clear
     On Error GoTo 0
 End Function
+```
 
+#### IsIn
+```vba
 Public Function IsIn(ByRef valToCheck As Variant, ByRef valuesArray As Variant) As Boolean
     '''Tests whether a value is present in a one-dimensional array. Returns True.
     On Error GoTo ExitHere
@@ -688,7 +1318,10 @@ Public Function IsIn(ByRef valToCheck As Variant, ByRef valuesArray As Variant) 
 ExitHere:
     On Error GoTo 0
 End Function
+```
 
+#### RemoveDuplicates
+```vba
 Public Function RemoveDuplicates(ByRef data As Variant, ParamArray columns()) As Variant
     '''Function to remove duplicates from a two dimensional array, variable columns specifies the column numbers to look into.
     Dim ret(), indexes(), ids(), r As Long, c As Long
@@ -728,7 +1361,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### AlignRight
+```vba
 Public Function AlignRight(ByVal str As String, ByVal FieldLen As Integer) As String
     '''Aligns a string to the Right, prepending spaces. If Len(str) > FieldLen, Error.
     Dim StrLen As Integer
@@ -743,7 +1379,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### AlignLeft
+```vba
 Public Function AlignLeft(ByVal str As String, ByVal FieldLen As Integer) As String
     '''Aligns a string to the Left, appending spaces. If Len(str) > FieldLen, Error.
     Dim StrLen As Integer
@@ -758,7 +1397,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### AlignJust
+```vba
 Public Function AlignJust(ByVal str As String, ByVal FieldLen As Integer) As String
     '''Justifies string, adding spaces. If Len(str) > FieldLen, Error.
     Dim StrLen As Integer
@@ -775,7 +1417,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### RoundBase2
+```vba
 Public Function RoundBase2(ByRef n As Double) As Long
     '''Rounds a number up to the closest 2^n integer. => 1 = 1, 2 = 2, 3 = 4, 5 = 8, 9 = 16
     On Error GoTo ExitHere
@@ -786,7 +1431,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### VBALinEst
+```vba
 Public Function VBALinEst(ByRef arrY() As Double, ByRef arrX() As Double, Optional ByVal order As Long = 6) As Variant
     '''Linear regression of nth order. Data lines in rows.
     Dim curve() As Double
@@ -823,7 +1471,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetTXTContentUNIX
+```vba
 Public Function GetTXTContentUNIX(ByVal txtfile As String) As String()
     '''Read in a txt file in UNIX format (no carriage return) an return an array of lines.
     Dim FileNum As Long
@@ -847,7 +1498,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetTXTContentWIN
+```vba
 Public Function GetTXTContentWIN(ByVal txtfile As String) As String()
     '''Read in a txt file in WIN format (with carriage return) an return an array of lines.
     Dim FileNum As Long
@@ -871,7 +1525,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### StripLines
+```vba
 Public Function StripLines(ByVal lines As Variant) As String()
     '''Strips lines that are empty or contain just empty characters.
     Dim newlines() As String
@@ -903,7 +1560,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### StripSpaces
+```vba
 Public Function StripSpaces(ByVal str As String) As String
     '''Replaces all multispaces in string with single spaces.
     On Error GoTo ExitHere
@@ -917,7 +1577,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### ClearChart
+```vba
 Public Sub ClearChart(ByRef cht As Chart)
     '''Clears all series in a Chart.
     Dim i As Long
@@ -931,7 +1594,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Sub
+```
 
+#### WorkStart
+```vba
 Public Sub WorkStart()
     '''Sets ScreenUpdating, EnableEvents and EnableAnimations to False, Calculation to xlCalculationManual.
     On Error GoTo ExitHere
@@ -947,7 +1613,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Sub
+```
 
+#### WorkStop
+```vba
 Public Sub WorkStop()
     '''Sets ScreenUpdating, EnableEvents and EnableAnimations to True, Calculation to xlCalculationAutomatic.
     On Error GoTo ExitHere
@@ -963,7 +1632,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Sub
+```
 
+#### DeleteSheet
+```vba
 Public Sub DeleteSheet(ByRef wb As Workbook, ByVal shname As String)
     '''Deletes Sheet shname from Workbook wb if it exists.
     On Error GoTo ExitHere
@@ -978,7 +1650,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Sub
+```
 
+#### SleepMS
+```vba
 Public Sub SleepMS(ByVal miliseconds As Long)
     '''Wrapper for kernel32.dll function Sleep, the running process is paused for specified time.
     On Error GoTo ExitHere
@@ -989,7 +1664,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Sub
+```
 
+#### PolyInterpolate
+```vba
 Public Function PolyInterpolate(ByRef arrX() As Double, ByRef arrY() As Double, ByVal X As Double) As Double
     '''Polynomial interpolation of nth order, where n is the dimension of arrX and arrY - 1, arrX = X values (column array), arrY = Y values (column array), X = point to interpolate at.
     Dim mult As Double
@@ -1013,7 +1691,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### PolyInterpolateArray
+```vba
 Public Function PolyInterpolateArray(ByRef arrX As Variant, ByRef arrY As Variant, ByVal srow As Long, ByVal lrow As Long, ByVal X As Double) As Double
     '''Polynomial interpolation of (lrow - srow) - 1 order, where arrX and arrY are arrays of values (column array), srow and lrow limit the interpolation range and X = point to interpolate at.
     Dim mult As Double
@@ -1037,7 +1718,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### RaiseError
+```vba
 Public Sub RaiseError(ByVal errorNo As Long, ByVal src As String, ByVal proc As String, ByVal desc As String, ByVal lineNo As Long)
     '''Reraises an error and adds line number and current procedure name.
     '''From: https://excelmacromastery.com/vba-error-handling/
@@ -1066,7 +1750,10 @@ Public Sub RaiseError(ByVal errorNo As Long, ByVal src As String, ByVal proc As 
     ' placed in the topmost procedure)
     Err.Raise errorNo, sSource, desc
 End Sub
+```
 
+#### DisplayError
+```vba
 ' Displays the error when it reaches the topmost sub
 ' Note: You can add a call to logging from this sub
 Public Sub DisplayError(ByVal src As String, ByVal desc As String, ByVal sProcname As String, lineNo As Long)
@@ -1086,7 +1773,10 @@ Public Sub DisplayError(ByVal src As String, ByVal desc As String, ByVal sProcna
     ' reset the boolean value
     ErrorAlreadyUsed = False
 End Sub
+```
 
+#### GetModuleContent
+```vba
 Public Function GetModuleContent(ByRef wb As Workbook, ByVal moduleName As String) As String()
     '''Function that returns an array of lines of the selected module from the given workbook. Needs: Options->Trust Center->Trust Center Settings->Macro Settings->Trust access to the VBA project object model: "YES"
     Dim strModule As Variant
@@ -1101,7 +1791,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetActiveModule
+```vba
 Public Function GetActiveModule() As String
     '''Function returns the name of the currently opened module in VB Editor. Needs: Options->Trust Center->Trust Center Settings->Macro Settings->Trust access to the VBA project object model: "YES"
     On Error GoTo ExitHere
@@ -1112,7 +1805,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### ClearImmediateWindow
+```vba
 Public Sub ClearImmediateWindow()
     '''Clears Immediate Window. Use with caution as it utilises Application.SendKeys.
     On Error GoTo ExitHere
@@ -1125,7 +1821,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Sub
+```
 
+#### bDirExists
+```vba
 Public Function bDirExists(ByVal directory As String) As Boolean
     '''Checks if a directory exists.
     Dim oFSO As Object
@@ -1140,7 +1839,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### bFileExists
+```vba
 Public Function bFileExists(ByVal filename As String) As Boolean
     '''Checks if a file exists.
     Dim oFSO As Object
@@ -1155,7 +1857,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### bFileExistsWild
+```vba
 Public Function bFileExistsWild(ByVal directory As String, ByVal filename As String) As Boolean
      '''Checks if a file exists, supports wildcard characters. *?~
     On Error GoTo ExitHere
@@ -1168,7 +1873,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### CreateDir
+```vba
 Public Function CreateDir(ByVal directory As String, ByVal dirname As String, Optional ByVal wait_created As Boolean = False) As Boolean
     '''Creates a directory in specified path and returns True if successful.
     On Error GoTo ExitHere
@@ -1187,7 +1895,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetAllModuleNames
+```vba
 Public Function GetAllModuleNames(ByRef wb As Workbook) As String()
     '''Function to get all class, module and form names in specified workbook.
     Dim module As Variant
@@ -1211,7 +1922,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetModuleLineNo
+```vba
 Public Function GetModuleLineNo(ByRef wb As Workbook, ByVal moduleName As String) As Long
     '''Returns number of lines of specified module in specified workbook.
     Dim lngModule As Long
@@ -1226,7 +1940,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### BackupModules
+```vba
 Public Sub BackupModules(ByRef wb As Workbook, Optional ByVal directory As String = "", Optional module_backup As ModuleBackupState = ModuleBackupState.increment_version)
     '''Procedure to save all VBA files in specified Workbook.
     Dim bExport As Boolean
@@ -1332,7 +2049,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Sub
+```
 
+#### BackupWorkbookVBProject
+```vba
 Public Sub BackupWorkbookVBProject(ByRef wb As Workbook, Optional ByVal backup_folder As String = "backup")
     '''Saves all of VBA Project in Specified Workbook as new files, old files are renamed, not overwritten.
     Dim strPath As String
@@ -1357,7 +2077,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Sub
+```
 
+#### GetFileNameWithExt
+```vba
 Public Function GetFileNameWithExt(ByVal path As String) As String
     '''Return filename with extension from complete path.
     Dim pos As Integer
@@ -1374,7 +2097,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetFileNameWithoutExt
+```vba
 Public Function GetFileNameWithoutExt(ByVal path As String) As String
     '''Return filename without extension from complete path.
     Dim pos As Integer
@@ -1393,7 +2119,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetDirPathFromPathFileName
+```vba
 Public Function GetDirPathFromPathFileName(ByVal path As String) As String
     '''Return directory path from complete path with filename.
     Dim pos As Integer
@@ -1410,7 +2139,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetParentDirPathFromPath
+```vba
 Public Function GetParentDirPathFromPath(ByVal path As String) As String
     '''Return parent directory path.
     Dim pos As Integer
@@ -1428,7 +2160,10 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetDirNameFromPath
+```vba
 Public Function GetDirNameFromPath(ByVal path As String) As String
     '''Return directory name from path.
     Dim pos As Integer
@@ -1450,19 +2185,28 @@ ExitHere:
     On Error GoTo 0
     If e.Number <> 0 Then Call RaiseError(e.Number, e.Source, e.Procedure, e.Description, e.Line)
 End Function
+```
 
+#### GetTicksMS
+```vba
 Public Function GetTicksMS() As Long
     '''Returns number of miliseconds since start of Windows.
     GetTicksMS = CLng(GetTickCount())
 End Function
+```
 
+#### TimerStartMS
+```vba
 Public Function TimerStartMS() As Long
     '''Starts a milisecond Timer.
     timer_start_MS = GetTicksMS()
     timer_last_MS = timer_start_MS
     TimerStartMS = timer_start_MS
 End Function
+```
 
+#### TimerLastMS
+```vba
 Public Property Get TimerLastMS() As Long
     '''Returns number of miliseconds since either TimerStartMS or TimerLastMS last call.
     Dim t As Long
@@ -1470,13 +2214,19 @@ Public Property Get TimerLastMS() As Long
     TimerLastMS = t - timer_last_MS
     timer_last_MS = t
 End Property
+```
 
+#### TimerTotalMS
+```vba
 Public Property Get TimerTotalMS() As Long
     '''Returns number of miliseconds since TimerStartMS last call.
     timer_last_MS = GetTicksMS()
     TimerTotalMS = timer_last_MS - timer_start_MS
 End Property
+```
 
+#### pprint
+```vba
 Public Sub pprint(ParamArray aArgumentsArray() As Variant)
     '''dx2sery, Procedure to print all classic variables including arrays and ranges. Output fed to Debug.Print.
     Dim result As String, itemString As String
@@ -1497,7 +2247,10 @@ Public Sub pprint(ParamArray aArgumentsArray() As Variant)
     Next item
     Debug.Print result
 End Sub
+```
 
+#### arrayToString
+```vba
 Public Function arrayToString(ByRef arr As Variant) As String
     '''dx2sery, Function to concatenate an Array to string.
     Dim itemString As String
@@ -1516,7 +2269,10 @@ Public Function arrayToString(ByRef arr As Variant) As String
     Next
     arrayToString = arrayToString & "]"
 End Function
+```
 
+#### rangeToString
+```vba
 Public Function rangeToString(ByRef rng As Variant) As String
     '''dx2sery, Function to concatenate a range to string.
     Dim i As Integer, j As Integer
@@ -1546,8 +2302,181 @@ Public Function rangeToString(ByRef rng As Variant) As String
 End Function
 ```
 
-# CExcelProperties
+## usage
 
+### test_CEF
+```vba
+Private Sub test_CEF()
+    Dim CEF As New CExcelFunctions
+    'Debug.Print CEF.help
+    
+    Debug.Print CEF.bFileExistsWild("z:\misc\MBtech\user\dx2tomek\scripts\VBA\backup\module\", "SST_ACCE_v_?_?.bas")
+End Sub
+```
+
+### test_timer
+```vba
+Private Sub test_timer()
+    Dim CEF As New CExcelFunctions
+    Dim CP As New CExcelProperties
+    Dim i As Long
+    Dim str As String
+    
+    Call CP.Save
+    With CEF
+        Call .WorkStart
+        Call .TimerStart
+        str = vbNullString
+        For i = 0 To 100
+            Call .SleepMS(100)
+            str = str & "Loop " & i & " took: " & .TimerLast & " seconds." & vbCrLf
+        Next
+        str = str & "That makes " & .TimerTotal & " seconds in total."
+    End With
+    Debug.Print str
+End Sub
+```
+
+### test_CountModuleLines
+```vba
+Private Sub test_CountModuleLines()
+    Dim CEF As New CExcelFunctions
+    Dim modules() As String
+    Dim i As Long
+    Dim lines As Long
+    Dim lineSum As Long
+    modules = CEF.GetAllModuleNames(ThisWorkbook)
+    lineSum = 0
+    For i = LBound(modules) To UBound(modules)
+        lines = CEF.GetModuleLineNo(ThisWorkbook, modules(i))
+        Debug.Print modules(i) & vbTab & lines
+        lineSum = lineSum + lines
+    Next
+    Debug.Print "Total:" & vbTab & CStr(lineSum)
+End Sub
+```
+
+### test_backupModules
+```vba
+Private Sub test_backupModules()
+    Dim CEF As New CExcelFunctions
+    On Error GoTo ExitHere
+    Call CEF.BackupWorkbookVBProject(ThisWorkbook)
+    Debug.Print "Backup Finished."
+ExitHere:
+    If Err.Number <> 0 Then Call CEF.DisplayError(Err.Source, Err.Description, "test_backupModules", Erl)
+End Sub
+```
+
+### test_paths
+```vba
+Private Sub test_paths()
+    Dim CEF As New CExcelFunctions
+    Dim path As String
+    path = ThisWorkbook.FullName
+    Debug.Print CEF.GetFileNameWithExt(path)
+    Debug.Print CEF.GetFileNameWithoutExt(path)
+    Debug.Print CEF.GetDirPathFromPathFileName(path)
+    Debug.Print CEF.GetDirNameFromPath(path)
+    Debug.Print CEF.GetParentDirPathFromPath(path)
+    Debug.Print CEF.GetParentDirPathFromPath(CEF.GetParentDirPathFromPath(path))
+End Sub
+```
+
+### test_ticks
+```vba
+Private Sub test_ticks()
+    Dim CEF As New CExcelFunctions
+    Debug.Print CEF.GetTicksMS
+End Sub
+```
+
+### Parse_Module
+```vba
+Private Sub Parse_Module(Optional ByVal module_name As String = "CExcelFunctions")
+    Dim CEF As New CExcelFunctions
+    'Const MNAME = "CExcelFunctions"
+    Dim mtext() As String
+    Dim kwrds As Variant
+    Dim i As Long
+    Dim help As Object
+    Dim fname As String
+    Dim declaration As String
+    Dim comment As String
+    Dim str() As String
+    
+    On Error GoTo ExitHere
+    
+    mtext = CEF.GetModuleContent(ThisWorkbook, module_name)
+    
+    Set help = CreateObject("Scripting.Dictionary")
+    For i = LBound(mtext) To UBound(mtext) Step 1
+        If mtext(i) Like "*Property ??? *(*" And InStr(1, mtext(i), "Private") = 0 And (InStr(1, mtext(i), Chr(34)) = 0 Or InStr(1, mtext(i), Chr(34)) > InStr(1, mtext(i), "Property")) Then
+            str = Parse_Procedure(mtext, i, "Property")
+            help(str(0)) = str
+        ElseIf mtext(i) Like "*Function *(*" And InStr(1, mtext(i), "Private") = 0 And (InStr(1, mtext(i), Chr(34)) = 0 Or InStr(1, mtext(i), Chr(34)) > InStr(1, mtext(i), "Function")) Then
+            str = Parse_Procedure(mtext, i, "Function")
+            help(str(0)) = str
+        ElseIf mtext(i) Like "*Sub *(*" And InStr(1, mtext(i), "Private") = 0 And (InStr(1, mtext(i), Chr(34)) = 0 Or InStr(1, mtext(i), Chr(34)) > InStr(1, mtext(i), "Sub")) Then
+            str = Parse_Procedure(mtext, i, "Sub")
+            help(str(0)) = str
+        End If
+    Next
+ExitHere:
+    Set help = Nothing
+End Sub
+```
+
+### Parse_Procedure
+```vba
+Private Function Parse_Procedure(ByRef module_text() As String, ByVal start_line As Long, ByVal procedure_type As String) As String()
+    Dim fname As String
+    Dim declaration As String
+    Dim comment As String
+    Dim retVal(2) As String
+    Dim i As Long
+    
+    On Error GoTo ExitHere
+    
+    fname = Split(module_text(start_line), "(")(0)
+    fname = Mid(fname, InStrRev(fname, " ") + 1)
+    
+    declaration = module_text(start_line)
+    For i = start_line + 1 To UBound(module_text)
+        If InStr(1, module_text(i), "End " & procedure_type) <> 0 Then Exit For
+        If Right(RTrim(module_text(i - 1)), 1) = "_" Then
+            declaration = Replace(declaration, " _", " " & LTrim(module_text(i)))
+        Else
+            Exit For
+        End If
+    Next
+    If InStr(1, declaration, " '") <> 0 Then
+        declaration = RTrim(Split(declaration, " '")(0))
+    End If
+    
+    comment = ""
+    For i = start_line + 1 To UBound(module_text)
+        If InStr(1, module_text(i), "End " & procedure_type) <> 0 Then Exit For
+        If left(LTrim(module_text(i)), 3) = "'''" Then
+            comment = comment & Mid(LTrim(module_text(i)), 4) & vbCrLf
+        End If
+    Next
+    If Len(comment) > 0 Then comment = left(comment, Len(comment) - Len(vbCrLf))
+    
+    retVal(0) = fname
+    retVal(1) = declaration
+    retVal(2) = comment
+    Parse_Procedure = retVal
+ExitHere:
+    On Error Resume Next
+    On Error GoTo 0
+End Function
+```
+
+# CExcelProperties
+save and restore excel session properties
+
+## header
 ```vba
 Option Explicit
 
@@ -1584,63 +2513,102 @@ Private Type TMembers
   IsSaved As Boolean
   IsRestored As Boolean
 End Type
+```
 
-'Set the default restoration behaviours on intialize
+## Class_Initialize
+```vba
 Private Sub Class_Initialize()
+'Set the default restoration behaviours on intialize
   this.RestoreCA = DEFAULT_RESTORE_CALCULATION
   this.RestoreDA = DEFAULT_RESTORE_DISPLAY_ALERTS
   this.RestoreEE = DEFAULT_RESTORE_ENABLE_EVENTS
   this.RestoreSU = DEFAULT_RESTORE_SCREEN_UPDATING
   this.RestoreEA = DEFAULT_RESTORE_ENABLE_ANIMATIONS
 End Sub
+```
 
-'By default, restore the settings if we didn't do it explicitly
+## Class_Terminate
+```vba
 Private Sub Class_Terminate()
+'By default, restore the settings if we didn't do it explicitly
   If this.IsSaved And Not this.IsRestored And RESTORE_ON_TERMINATE Then
     Me.Restore
   End If
 End Sub
+```
 
+## RestoreCalculation Get
+```vba
 Public Property Get RestoreCalculation() As Boolean
   RestoreCalculation = this.RestoreCA
 End Property
+```
 
+## RestoreCalculation Let
+```vba
 Public Property Let RestoreCalculation(Value As Boolean)
   this.RestoreCA = Value
 End Property
+```
 
+## RestoreDisplayAlerts Get
+```vba
 Public Property Get RestoreDisplayAlerts() As Boolean
   RestoreDisplayAlerts = this.RestoreDA
 End Property
+```
 
+## RestoreDisplayAlerts Let
+```vba
 Public Property Let RestoreDisplayAlerts(Value As Boolean)
   this.RestoreDA = Value
 End Property
+```
 
+## RestoreEnableEvents Get
+```vba
 Public Property Get RestoreEnableEvents() As Boolean
   RestoreEnableEvents = this.RestoreEE
 End Property
+```
 
+## RestoreEnableEvents Let
+```vba
 Public Property Let RestoreEnableEvents(Value As Boolean)
   this.RestoreEE = Value
 End Property
+```
 
+## RestoreScreenUpdating Get
+```vba
 Public Property Get RestoreScreenUpdating() As Boolean
   RestoreScreenUpdating = this.RestoreSU
 End Property
+```
 
+## RestoreScreenUpdating Let
+```vba
 Public Property Let RestoreScreenUpdating(Value As Boolean)
   this.RestoreSU = Value
 End Property
+```
 
+## RestoreEnableAnimations Get
+```vba
 Public Property Get RestoreEnableAnimations() As Boolean
   RestoreEnableAnimations = this.RestoreEA
 End Property
+```
 
+## RestoreEnableAnimations Let
+```vba
 Public Property Let RestoreEnableAnimations(Value As Boolean)
   this.RestoreEA = Value
 End Property
+```
 
+## Save
+```vba
 Public Sub Save()
   If Not this.IsSaved Then
     'Save all of the settings
@@ -1656,7 +2624,10 @@ Public Sub Save()
     Err.Raise Error_AlreadyInitialized, "CExcelProperties", "Properties have already been saved."
   End If
 End Sub
+```
 
+## Restore
+```vba
 Public Sub Restore()
   'Only restore the settings that we want restored
   '(which by default is all of them)
@@ -1685,7 +2656,10 @@ End Sub
 
 ```vba
 Option Explicit
+```
 
+## Example_Help
+```vba
 Private Sub Example_Help()
     Dim CEF As New CExcelFunctions
     On Error GoTo ExitHere
@@ -1695,7 +2669,10 @@ ExitHere:
     If Err.Number <> 0 Then Call CEF.DisplayError(Err.Source, Err.Description, "Example_Help", Erl)
     On Error GoTo 0
 End Sub
+```
 
+## Example_Help_1
+```vba
 Private Sub Example_Help_1()
     Dim CEF As New CExcelFunctions
     On Error GoTo ExitHere
@@ -1704,7 +2681,10 @@ ExitHere:
     If Err.Number <> 0 Then Call CEF.DisplayError(Err.Source, Err.Description, "Example_Help", Erl)
     On Error GoTo 0
 End Sub
+```
 
+## Example_All
+```vba
 Private Sub Example_All()
     Dim CEF As New CExcelFunctions
     Dim wb As Workbook
@@ -1747,7 +2727,10 @@ ExitHere:
     Set CProp = Nothing
     On Error GoTo 0
 End Sub
+```
 
+## Example_Error
+```vba
 Private Sub Example_Error()
     Dim CEF As New CExcelFunctions
     Dim CProp As New CExcelProperties
@@ -1772,7 +2755,10 @@ ExitHere:
     Set CProp = Nothing
     On Error GoTo 0
 End Sub
+```
 
+## Example_BackupModules
+```vba
 Private Sub Example_BackupModules()
     Dim CEF As New CExcelFunctions
     On Error GoTo ExitHere
@@ -1786,6 +2772,7 @@ End Sub
 
 # CLog
 
+## code
 ```vba
 Option Explicit
 
@@ -1845,320 +2832,8 @@ Private Function GetStyle(ByVal style As LogEntryStyle) As String
 End Function
 ```
 
-# Misc
-
+## usage
 ```vba
-Option Explicit
-
-Private Sub Export2TXT()
-    Const delim As String = " "
-    Const LF As String = vbLf
-    Dim wb As Workbook
-    Dim ws As Worksheet
-    Dim rg As Range
-    Dim cl As Range
-    Dim rows As Long, cols As Long
-    Dim i As Long, j As Long
-    Dim headerlen() As Long
-    Dim align() As String
-    
-    Set cl = Selection
-    
-    Dim filename As Variant
-    Dim FileNo As Long
-    Dim text As String
-    
-    filename = Application.GetSaveAsFilename(title:="Input filename for export")
-    If filename = False Then
-        GoTo ExitHere
-    End If
-    
-    Set wb = ActiveWorkbook
-    Set ws = wb.ActiveSheet
-    rows = ws.Cells(ws.rows.Count, 1).End(xlUp).row
-    cols = ws.Cells(1, ws.columns.Count).End(xlToLeft).Column
-    Set rg = ws.Cells(1, 1).Resize(rows, cols)
-    
-    Debug.Print rows & " " & cols
-    
-    ReDim headerlen(cols) As Long
-    For i = 0 To UBound(headerlen) Step 1
-        Set cl = rg.Resize(, 1).Offset(, i)
-        headerlen(i) = RoundBase2(MaxLen(cl) + Len(delim)) - Len(delim)
-    Next
-    
-    text = ""
-    For Each cl In rg.Resize(, 1)
-        For i = 0 To cols - 1 Step 1
-            text = text & delim & ret_aligned(CStr(cl.Offset(, i).Value), CLng(cl.Offset(, i).HorizontalAlignment), CLng(headerlen(i)))
-        Next
-        text = text & LF
-    Next
-    
-    ' Debug.Print text
-    
-    FileNo = FreeFile()
-    Open filename For Output As #FileNo
-        Print #FileNo, text;  ' write in data, file is for linux -> no carriage return
-    Close #FileNo
-    
-ExitHere:
-    On Error Resume Next
-    Close #FileNo
-    Set cl = Nothing
-    Set rg = Nothing
-    Set ws = Nothing
-    Set wb = Nothing
-End Sub
-
-Private Function ret_aligned(ByVal txt As String, ByVal horAlign As Long, ByVal FieldLen As Long) As String
-    Select Case horAlign
-        Case xlHAlignCenter, xlHAlignCenterAcrossSelection, xlHAlignDistributed, xlHAlignFill, xlHAlignJustify
-            ret_aligned = CenterAlign(txt, FieldLen)
-        Case xlHAlignLeft
-            ret_aligned = LeftAlign(txt, FieldLen)
-        Case xlHAlignRight
-            ret_aligned = RightAlign(txt, FieldLen)
-        Case Else
-            ret_aligned = LeftAlign(txt, FieldLen)
-    End Select
-End Function
-
-Private Function RightAlign(txt As String, FieldLen As Long) As String
-    Dim StrLen As Long
-    Dim Packer As String
-    
-    StrLen = Len(Trim(txt))
-    Packer = String(FieldLen - StrLen, " ")
-    RightAlign = Packer & Trim(txt)
-End Function
-
-Private Function LeftAlign(txt As String, FieldLen As Long) As String
-    Dim StrLen As Long
-    Dim Packer As String
-    
-    StrLen = Len(Trim(txt))
-    Packer = String(FieldLen - StrLen, " ")
-    LeftAlign = Trim(txt) & Packer
-End Function
-
-Private Function CenterAlign(txt As String, FieldLen As Long) As String
-    Dim StrLen As Long
-    Dim PackerL As String
-    Dim PackerR As String
-    
-    StrLen = Len(Trim(txt))
-    If (FieldLen - StrLen) Mod 2 <> 0 Then
-        PackerR = String(CLng((FieldLen - StrLen) / 2), " ")
-        PackerL = String(FieldLen - StrLen - Len(PackerR), " ")
-    Else
-        PackerL = String((FieldLen - StrLen) / 2, " ")
-        PackerR = PackerL
-    End If
-
-    CenterAlign = PackerL & Trim(txt) & PackerR
-End Function
-
-Private Function RoundBase2(ByRef n As Double) As Long
-    RoundBase2 = CLng(2 ^ Application.WorksheetFunction.RoundUp(log(n) / log(2), 0))
-End Function
-
-Private Function MaxLen(ByRef rg As Range)
-    Dim length As Long
-    Dim cl As Range
-    length = 0
-    
-    For Each cl In rg
-        If length < Len(cl.Value) Then length = Len(cl.Value)
-    Next
-    
-    Set cl = Nothing
-    MaxLen = length
-End Function
-
-Private Sub Insert_Zeros()
-    Dim cl As Range
-    
-    For Each cl In Selection
-        If cl.Value = vbNullString Then cl.Value = 0
-    Next
-End Sub
-
-'Formats cells as scientific with base 10^3
-Private Sub NumberFormat_1_0_E3()
-    Dim cl As Range
-    
-    For Each cl In Selection
-        cl.NumberFormat = "##0.0E+00;-##0.0E-00;0"
-    Next
-End Sub
-
-Function vCP(v1 As Variant, v2 As Variant) As Variant
-    vCP = Array(v1(2) * v2(3) - v1(3) * v2(2), v1(3) * v2(1) - v1(1) * v2(3), v1(1) * v2(2) - v1(2) * v2(1))
-End Function
-
-Private Sub TransposeAddress()
-    Dim rg As Range, cl As Range
-    Dim tmp As Variant
-    Dim i As Long, j As Long
-    
-    Set rg = Selection
-    
-    On Error GoTo ExitHere
-    
-    tmp = Application.InputBox("Select first target cell", "Transpose Addresses", , , , , , 8).Address
-    
-    If Not tmp = vbNullString Then
-        Set cl = ActiveSheet.Range(tmp)
-    End If
-    
-    For i = 1 To rg.rows.Count Step 1
-        For j = 1 To rg.columns.Count Step 1
-            cl.Offset(j - 1, i - 1).formula = "=" & rg.Cells(i, j).Address
-        Next
-    Next
-ExitHere:
-    On Error Resume Next
-    Set cl = Nothing
-    Set rg = Nothing
-End Sub
-
-Private Sub PasswordBreaker()
-    Dim stime As Double, LTime As Double, Interval As Double
-    stime = Timer
-    LTime = stime
-    Debug.Print "[+] Time: " & LTime - stime & " s - Start of script."
-    Application.ScreenUpdating = False
-    
-    Dim ws As Worksheet
-    Set ws = ActiveSheet
-    Dim i As Long, j As Long
-        
-    Dim comb As String
-    Dim chr1() As String
-    Dim chr2() As String
-    Dim num As Long
-    Dim tot As Long
-    
-    'Setup:
-    num = 11
-    Interval = 60   ' seconds
-    
-    On Error GoTo ExitHere
-    
-    ReDim chr1(0 To Bin2Dec(String$(num, "1")))
-    ReDim chr2(0 To 126 - 32)
-    
-    For i = 0 To UBound(chr2) Step 1
-        chr2(i) = Chr(i + 32)
-    Next
-    
-    For i = 0 To UBound(chr2) Step 1
-        comb = Dec2Bin(str(i), num)
-        comb = Replace$(comb, "0", "A")
-        chr1(i) = Replace$(comb, "1", "B")
-    Next
-    
-    tot = (UBound(chr1) + 1) * (UBound(chr2) + 1)
-    LTime = Timer
-    Debug.Print "[+] Time: " & LTime - stime & " s - Start of bruteforce attack.."
-    Debug.Print "          " & tot & " possible combinations."
-    On Error Resume Next
-    If ws.ProtectContents Then
-        For i = 0 To UBound(chr1) Step 1
-            For j = 0 To UBound(chr2) Step 1
-                Call ws.Unprotect(chr1(i) & chr2(j))
-                If Timer - LTime > Interval Then
-                    LTime = Timer
-                    num = i * (UBound(chr2) + 1) + j + 1
-                    Debug.Print "[-] Time: " & LTime - stime & " " & num & "/" & tot & " [" & String$(Int(num / tot * 20), "#") & String$(20 - Int(num / tot * 20), " ") & "] Trying password: " & chr1(i) & chr2(j)
-                End If
-                If Not ws.ProtectContents Then
-                    LTime = Timer
-                    Debug.Print "[+] Time: " & LTime - stime & "s Password: " & chr1(i) & chr2(j)
-                    Call MsgBox("Password: " & chr1(i) & chr2(j))
-                    GoTo ExitHere
-                End If
-            Next
-        Next
-    End If
-    
-    On Error GoTo ExitHere
-    LTime = Timer
-    Debug.Print "[-] Time: " & LTime - stime & " s - Could not break password :("
-    Call MsgBox("Could not detect password :(")
-ExitHere:
-    On Error Resume Next
-    Application.ScreenUpdating = True
-    Set ws = Nothing
-    On Error GoTo 0
-End Sub
-
-Function Bin2Dec(sMyBin As String) As Long
-    Dim X As Integer
-    Dim iLen As Integer
-
-    iLen = Len(sMyBin) - 1
-    For X = 0 To iLen
-        Bin2Dec = Bin2Dec + _
-          Mid(sMyBin, iLen - X + 1, 1) * 2 ^ X
-    Next
-End Function
-
-' The DecimalIn argument is limited to 79228162514264337593543950245
-' (approximately 96-bits) - large numerical values must be entered
-' as a String value to prevent conversion to scientific notation. Then
-' optional NumberOfBits allows you to zero-fill the front of smaller
-' values in order to return values up to a desired bit level.
-Function Dec2Bin(ByVal DecimalIn As Variant, Optional NumberOfBits As Variant) As String
-  Dec2Bin = ""
-  DecimalIn = CDec(DecimalIn)
-  Do While DecimalIn <> 0
-    Dec2Bin = Trim$(str$(DecimalIn - 2 * Int(DecimalIn / 2))) & Dec2Bin
-    DecimalIn = Int(DecimalIn / 2)
-  Loop
-  If Not IsMissing(NumberOfBits) Then
-    If Len(Dec2Bin) > NumberOfBits Then
-      Dec2Bin = "Error - Number too large for bit size"
-    Else
-      Dec2Bin = Right$(String$(NumberOfBits, "0") & Dec2Bin, NumberOfBits)
-    End If
-  End If
-End Function
-```
-
-# Misc 2
-
-```vba
-Option Explicit
-
-Private Function Slice(ByRef arr As Variant, ByVal s_index As Long, Optional ByVal e_index As Long = 0) As Variant
-    Dim tmp As Variant
-    Dim i As Long
-    tmp = Array()
-    
-    If s_index < 0 Then
-        s_index = UBound(arr) + s_index + 1
-    End If
-    
-    If e_index < 0 Then
-        e_index = UBound(arr) + e_index + 1
-    ElseIf e_index > UBound(arr) Then
-        e_index = UBound(arr)
-    ElseIf e_index = 0 Then
-        e_index = s_index
-    End If
-    
-    ReDim tmp(e_index - s_index)
-    
-    For i = s_index To e_index Step 1
-        tmp(i - s_index) = arr(i)
-    Next
-    
-    Slice = tmp
-End Function
-
-
 Private Sub test_log()
     Dim log As New CLog
     Dim i As Long
@@ -2172,253 +2847,5 @@ Private Sub test_log()
     Next
     Set log = Nothing
 End Sub
-
-Private Sub test_CEF()
-    Dim CEF As New CExcelFunctions
-    'Debug.Print CEF.help
-    
-    Debug.Print CEF.bFileExistsWild("z:\misc\MBtech\user\dx2tomek\scripts\VBA\backup\module\", "SST_ACCE_v_?_?.bas")
-End Sub
-
-Private Sub test_timer()
-    Dim CEF As New CExcelFunctions
-    Dim CP As New CExcelProperties
-    Dim i As Long
-    Dim str As String
-    
-    Call CP.Save
-    With CEF
-        Call .WorkStart
-        Call .TimerStart
-        str = vbNullString
-        For i = 0 To 100
-            Call .SleepMS(100)
-            str = str & "Loop " & i & " took: " & .TimerLast & " seconds." & vbCrLf
-        Next
-        str = str & "That makes " & .TimerTotal & " seconds in total."
-    End With
-    Debug.Print str
-End Sub
-
-Private Sub test_CountModuleLines()
-    Dim CEF As New CExcelFunctions
-    Dim modules() As String
-    Dim i As Long
-    Dim lines As Long
-    Dim lineSum As Long
-    modules = CEF.GetAllModuleNames(ThisWorkbook)
-    lineSum = 0
-    For i = LBound(modules) To UBound(modules)
-        lines = CEF.GetModuleLineNo(ThisWorkbook, modules(i))
-        Debug.Print modules(i) & vbTab & lines
-        lineSum = lineSum + lines
-    Next
-    Debug.Print "Total:" & vbTab & CStr(lineSum)
-End Sub
-
-Private Sub test_backupModules()
-    Dim CEF As New CExcelFunctions
-    On Error GoTo ExitHere
-    Call CEF.BackupWorkbookVBProject(ThisWorkbook)
-    Debug.Print "Backup Finished."
-ExitHere:
-    If Err.Number <> 0 Then Call CEF.DisplayError(Err.Source, Err.Description, "test_backupModules", Erl)
-End Sub
-
-Private Sub test_paths()
-    Dim CEF As New CExcelFunctions
-    Dim path As String
-    path = ThisWorkbook.FullName
-    Debug.Print CEF.GetFileNameWithExt(path)
-    Debug.Print CEF.GetFileNameWithoutExt(path)
-    Debug.Print CEF.GetDirPathFromPathFileName(path)
-    Debug.Print CEF.GetDirNameFromPath(path)
-    Debug.Print CEF.GetParentDirPathFromPath(path)
-    Debug.Print CEF.GetParentDirPathFromPath(CEF.GetParentDirPathFromPath(path))
-End Sub
-
-Private Sub test_ticks()
-    Dim CEF As New CExcelFunctions
-    Debug.Print CEF.GetTicksMS
-End Sub
-
-
-Private Sub Parse_Module(Optional ByVal module_name As String = "CExcelFunctions")
-    Dim CEF As New CExcelFunctions
-    'Const MNAME = "CExcelFunctions"
-    Dim mtext() As String
-    Dim kwrds As Variant
-    Dim i As Long
-    Dim help As Object
-    Dim fname As String
-    Dim declaration As String
-    Dim comment As String
-    Dim str() As String
-    
-    On Error GoTo ExitHere
-    
-    mtext = CEF.GetModuleContent(ThisWorkbook, module_name)
-    
-    Set help = CreateObject("Scripting.Dictionary")
-    For i = LBound(mtext) To UBound(mtext) Step 1
-        If mtext(i) Like "*Property ??? *(*" And InStr(1, mtext(i), "Private") = 0 And (InStr(1, mtext(i), Chr(34)) = 0 Or InStr(1, mtext(i), Chr(34)) > InStr(1, mtext(i), "Property")) Then
-            str = Parse_Procedure(mtext, i, "Property")
-            help(str(0)) = str
-        ElseIf mtext(i) Like "*Function *(*" And InStr(1, mtext(i), "Private") = 0 And (InStr(1, mtext(i), Chr(34)) = 0 Or InStr(1, mtext(i), Chr(34)) > InStr(1, mtext(i), "Function")) Then
-            str = Parse_Procedure(mtext, i, "Function")
-            help(str(0)) = str
-        ElseIf mtext(i) Like "*Sub *(*" And InStr(1, mtext(i), "Private") = 0 And (InStr(1, mtext(i), Chr(34)) = 0 Or InStr(1, mtext(i), Chr(34)) > InStr(1, mtext(i), "Sub")) Then
-            str = Parse_Procedure(mtext, i, "Sub")
-            help(str(0)) = str
-        End If
-    Next
-ExitHere:
-    Set help = Nothing
-End Sub
-
-Private Function Parse_Procedure(ByRef module_text() As String, ByVal start_line As Long, ByVal procedure_type As String) As String()
-    Dim fname As String
-    Dim declaration As String
-    Dim comment As String
-    Dim retVal(2) As String
-    Dim i As Long
-    
-    On Error GoTo ExitHere
-    
-    fname = Split(module_text(start_line), "(")(0)
-    fname = Mid(fname, InStrRev(fname, " ") + 1)
-    
-    declaration = module_text(start_line)
-    For i = start_line + 1 To UBound(module_text)
-        If InStr(1, module_text(i), "End " & procedure_type) <> 0 Then Exit For
-        If Right(RTrim(module_text(i - 1)), 1) = "_" Then
-            declaration = Replace(declaration, " _", " " & LTrim(module_text(i)))
-        Else
-            Exit For
-        End If
-    Next
-    If InStr(1, declaration, " '") <> 0 Then
-        declaration = RTrim(Split(declaration, " '")(0))
-    End If
-    
-    comment = ""
-    For i = start_line + 1 To UBound(module_text)
-        If InStr(1, module_text(i), "End " & procedure_type) <> 0 Then Exit For
-        If left(LTrim(module_text(i)), 3) = "'''" Then
-            comment = comment & Mid(LTrim(module_text(i)), 4) & vbCrLf
-        End If
-    Next
-    If Len(comment) > 0 Then comment = left(comment, Len(comment) - Len(vbCrLf))
-    
-    retVal(0) = fname
-    retVal(1) = declaration
-    retVal(2) = comment
-    Parse_Procedure = retVal
-ExitHere:
-    On Error Resume Next
-    On Error GoTo 0
-End Function
-
-Private Sub Merge_Charts()
-    Dim CEF As New CExcelFunctions
-    Dim chts() As String
-    Dim cht As Chart
-    Dim i As Long
-    Dim ser As Series
-    
-    For i = 1 To ActiveWorkbook.Charts.Count
-        ReDim Preserve chts(0 To i - 1)
-        chts(i - 1) = ActiveWorkbook.Charts(i).name
-    Next
-
-    Set cht = ActiveWorkbook.Charts.Add2(ActiveWorkbook.Sheets(1))
-    Call CEF.ClearChart(cht)
-    
-    For i = LBound(chts) To UBound(chts)
-        For Each ser In ActiveWorkbook.Charts(chts(i)).SeriesCollection
-            With cht
-                .SeriesCollection.NewSeries
-                .FullSeriesCollection(.SeriesCollection.Count).name = ActiveWorkbook.Charts(chts(i)).name & "_" & ser.name
-                .FullSeriesCollection(.SeriesCollection.Count).XValues = ser.XValues
-                .FullSeriesCollection(.SeriesCollection.Count).values = ser.values
-            End With
-        Next
-    Next
-    
-    cht.ChartType = ActiveWorkbook.Charts(chts(0)).ChartType
-    cht.ChartStyle = ActiveWorkbook.Charts(chts(0)).ChartStyle
-    
-    With ActiveWorkbook.Charts(chts(0))
-        cht.ChartType = .ChartType
-       
-        Call cht.SetElement(msoElementPrimaryCategoryGridLinesMajor)
-        Call cht.SetElement(msoElementPrimaryValueGridLinesMajor)
-        Call cht.SetElement(msoElementPrimaryValueGridLinesMinorMajor)
-        Call cht.SetElement(msoElementPrimaryCategoryGridLinesMinorMajor)
-        Call cht.SetElement(msoElementPrimaryValueAxisTitleAdjacentToAxis)
-        Call cht.SetElement(msoElementPrimaryCategoryAxisTitleAdjacentToAxis)
-        Call cht.SetElement(msoElementLegendRight)
-        cht.Axes(xlCategory).MinimumScale = .Axes(xlCategory).MinimumScale
-        cht.Axes(xlCategory).MaximumScale = .Axes(xlCategory).MaximumScale
-        cht.Axes(xlValue).MinimumScale = .Axes(xlValue).MinimumScale
-        cht.Axes(xlValue).MaximumScale = .Axes(xlValue).MaximumScale
-        
-        cht.ChartTitle.Caption = .ChartTitle.Caption
-        
-        cht.Axes(xlCategory).AxisTitle.Caption = .Axes(xlCategory).AxisTitle.Caption
-        cht.Axes(xlValue).HasTitle = .Axes(xlValue).HasTitle
-        cht.Axes(xlValue).AxisTitle.Caption = .Axes(xlValue).AxisTitle.Caption
-
-        With .Legend
-            cht.Legend.left = .left
-            cht.Legend.width = .width
-            cht.Legend.top = .top
-            cht.Legend.height = .height
-        End With
-        cht.PlotArea.width = .PlotArea.width
-    End With
-End Sub
-
-Private Sub deleteSheets()
-    Dim CEF As New CExcelFunctions
-    Dim i As Long
-    
-    Application.DisplayAlerts = False
-    For i = ActiveWorkbook.Sheets.Count To 1 Step -1
-        If ActiveWorkbook.Sheets(i).name Like "*_2D*" Then
-            Call CEF.DeleteSheet(ActiveWorkbook, ActiveWorkbook.Sheets(i).name)
-        End If
-    Next
-    Application.DisplayAlerts = True
-End Sub
-
-Private Sub SumSheets()
-    Dim CEF As New CExcelFunctions
-    Dim i As Long, j As Long
-    Dim setnum As Long
-    Dim arr() As Variant
-    Dim wb As Workbook
-    Dim ws As Worksheet
-    
-    Set wb = ActiveWorkbook
-    setnum = wb.Worksheets.Count - 1
-    Set ws = wb.Worksheets(2)
-    
-    ReDim arr(0 To 75, 0 To setnum)
-    
-    arr(0, 0) = "Drehzahl [1/min]"
-    For i = 1 To 75 Step 1
-        arr(i, 0) = ws.Cells(2 + i, 3).Value
-    Next
-    
-    For j = 1 To setnum
-        arr(0, j) = Split(wb.Worksheets(j + 1).name, "_")(1)
-        For i = 1 To 75 Step 1
-            arr(i, j) = wb.Worksheets(j + 1).Cells(2 + i, 4).Value
-        Next
-    Next
-    
-    Set ws = wb.Worksheets.Add(Before:=wb.Worksheets(1))
-    ws.Cells(1, 1).Resize(76, setnum + 1).Value = arr
-End Sub
 ```
+
