@@ -327,7 +327,14 @@ cut delimited string (`-d`) and select 4th field (`-f`):
 
 ## find
 finds all files that satisfy `-name` expression in all subfolder levels limited by `-maxdepth` and `-mindepth` (`-type = file`):
-`find . -maxdepth 1 -mindepth 1 -type f -name "*.png"`
+
+```bash
+find . -maxdepth 1 -mindepth 1 -type f -name "*.png"
+```
+
+```bash
+find . -mindepth 1 -mtime +60 -type f -name "*.bif" -exec du '{}' \; >> found_files_log
+```
 
 ## fuser
 gets user of a temporary .nfs file:
