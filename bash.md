@@ -336,6 +336,11 @@ find . -maxdepth 1 -mindepth 1 -type f -name "*.png"
 find . -mindepth 1 -mtime +60 -type f -name "*.bif" -exec du '{}' \; >> found_files_log
 ```
 
+total size of found files:
+```bash
+find . -mindepth 1 -mtime +60 -type f -name "*.bif" -exec du -ch '{}' + | grep total$
+```
+
 ## fuser
 gets user of a temporary .nfs file:
 `fuser .nfs0000000000005eb80000172e`
