@@ -1,6 +1,6 @@
 # CError
 
-´´´vba
+```vba
 Option Explicit
 
 Private n As Long
@@ -56,11 +56,11 @@ Private Sub Class_Initialize()
     l = 0
     p = vbNullString
 End Sub
-´´´
+```
 
 # CExcelFunctions
 
-´´´vba
+```vba
 Option Explicit
 'Class name: CExcelFunctions
 'Author:     MBtech dx2tomek(8.8.2019)
@@ -1544,11 +1544,11 @@ Public Function rangeToString(ByRef rng As Variant) As String
 
     rangeToString = rangeToString & ")"
 End Function
-´´´
+```
 
 # CExcelProperties
 
-´´´vba
+```vba
 Option Explicit
 
 'Class taken from:
@@ -1679,11 +1679,11 @@ Public Sub Restore()
   End With
   this.IsRestored = True
 End Sub
-´´´
+```
 
 # Usage Examples
 
-´´´vba
+```vba
 Option Explicit
 
 Private Sub Example_Help()
@@ -1782,11 +1782,11 @@ ExitHere:
     If Err.Number <> 0 Then Call CEF.DisplayError(Err.Source, Err.Description, "Example_backupModules", Erl)
     On Error GoTo 0
 End Sub
-´´´
+```
 
 # CLog
 
-´´´vba
+```vba
 Option Explicit
 
 Private Type LogEntry
@@ -1843,11 +1843,11 @@ Private Function GetStyle(ByVal style As LogEntryStyle) As String
         GetStyle = ""
     End Select
 End Function
-´´´
+```
 
 # Misc
 
-´´´vba
+```vba
 Option Explicit
 
 Private Sub Export2TXT()
@@ -2125,11 +2125,11 @@ Function Dec2Bin(ByVal DecimalIn As Variant, Optional NumberOfBits As Variant) A
     End If
   End If
 End Function
-´´´
+```
 
 # Misc 2
 
-´´´vba
+```vba
 Option Explicit
 
 Private Function Slice(ByRef arr As Variant, ByVal s_index As Long, Optional ByVal e_index As Long = 0) As Variant
@@ -2421,4 +2421,4 @@ Private Sub SumSheets()
     Set ws = wb.Worksheets.Add(Before:=wb.Worksheets(1))
     ws.Cells(1, 1).Resize(76, setnum + 1).Value = arr
 End Sub
-´´´
+```
