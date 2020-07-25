@@ -33,6 +33,8 @@
 - [check if "*.txt" file exists in dir](#check if "*.txt" file exists in dir)
 - [wget](#wget)
     - [recursively download whole structure](#wget#recursively download whole structure)
+- [heredoc string](#heredoc string)
+- [function to open multiple files in vim](#function to open multiple files in vim)
 
 # SED
 ## replace file
@@ -428,6 +430,132 @@ the website will block subsequent wget calls.
 `-r` download recursively
 `-p` page requisites - wget will download all files needed to properly display the page
 `-k` convert links - convert all links for local viewing
+
+# heredoc string
+```bash
+cat << EOF
+vimsplit function
+
+author:      Jan Tomek <rpi3.tomek@protonmail.com>
+date:        24.07.2020
+description: function to open multiple files in vim, first n files are opened in vertical splits,
+             next n files are opened in vertical splits on new tab and so on.
+
+use:         vimsplit [-n N] file1 file2 file3
+optional:    -h|--help     - prints this help and exits
+             -n|--number N - number of files in splits per tab, default = 2
+positional:  filex         - files to open
+EOF
+```
+
+redirection to file
+```bash
+cat > file.txt << EOF
+vimsplit function
+
+author:      Jan Tomek <rpi3.tomek@protonmail.com>
+date:        24.07.2020
+description: function to open multiple files in vim, first n files are opened in vertical splits,
+             next n files are opened in vertical splits on new tab and so on.
+
+use:         vimsplit [-n N] file1 file2 file3
+optional:    -h|--help     - prints this help and exits
+             -n|--number N - number of files in splits per tab, default = 2
+positional:  filex         - files to open
+EOF
+```
+
+# function to open multiple files in vim
+simple solution
+```bash
+vimsplit () {
+  local files=("$1")
+  for (( i = 2; i <= "$#"; i++ )); do
+    if (( "${i}" & 1 )); then
+      files+=("+\"vsplit ${!i}\"")
+    else
+      files+=("+\"tabnew ${!i}\"")
+    fi
+  done
+
+  set -- "${files[@]}"
+  echo "vim $@"
+  eval vim "$@"
+}
+```
+
+more sophisticated
+```bash
+vimsplit () {
+  local files=()
+  local n=2
+  local s="v"
+  local t=1
+  while (( "$#" )); do
+    case "$1" in
+      -n|--number)
+        if [[ $2 =~ ^[1-9]$ ]]; then
+          n="$2"
+          shift 2
+        else
+          shift
+        fi
+        ;;
+      -s|--hsplit)
+        s=""
+        shift
+        ;;
+      -t|--notabs)
+        t=0
+        shift
+        ;;
+      -h|--help|-*|--*)
+      cat << EOF
+vimsplit [-h] [-s] [-t] [-n N] file1 [ file2  [ file3 [ ... ] ] ]
+
+author:      Jan Tomek <rpi3.tomek@protonmail.com>
+date:        24.07.2020
+description: function to open multiple files in vim, first n files are opened in vertical splits,
+             next n files are opened in vertical splits on new tab and so on.
+
+optional:    -h|--help     - prints this help and exits
+             -s|--hsplit   - opens the files in horizontal splits
+             -t|--notabs   - does not open new tabs, all files are in one window
+             -n|--number N - number of files in splits per tab, default = 2
+positional:  filex         - files to open
+EOF
+        return 1
+        ;;
+      -*|--*)
+        echo "[-] Unsupported argument $1, read --help"
+        return 2
+        ;;
+      *)
+        if [ -f "$1" ]; then files+=("$1"); fi
+        shift
+        ;;
+    esac
+  done
+
+  if (( "${t}" )); then
+    for (( i = 1; i < "${#files[@]}"; i++ )) ; do
+      if [ $(("${i}" % "${n}")) -eq 0 ] ; then
+        files["${i}"]="+\"tabnew ${files[${i}]}\""
+      else
+        files["${i}"]="+\"${s}split ${files[${i}]}\""
+      fi
+    done
+  else
+    for (( i = 1; i < "${#files[@]}"; i++ )) ; do
+      files["${i}"]="+\"${s}split ${files[${i}]}\""
+    done
+  fi
+
+#   echo "vim ${files[@]}"
+  eval "vim ${files[@]}"
+  return 0
+}
+```
 
 
 [back to index](index.md)
