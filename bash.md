@@ -35,6 +35,7 @@
     - [recursively download whole structure](#wget#recursively download whole structure)
 - [heredoc string](#heredoc string)
 - [function to open multiple files in vim](#function to open multiple files in vim)
+- [screen automation function](#screen automation function)
 
 # SED
 ## replace file
@@ -555,6 +556,57 @@ EOF
   eval "vim ${files[@]}"
   return 0
 }
+```
+
+# screen automation function
+```bash
+myscreen () {
+  local COMMANDS=""
+  local SESSION=""
+
+  while (( "$#" )); do
+    case "$1" in
+      -h|--help)
+        echo -e "[\033[01;35m?\033[0m] - myscreen() [-h] [-c command] name"
+
+        cat <<EOF
+
+  AUTHOR:      Jan Tomek <rpi3.tomek@protonmail.com> 27.07.2020
+  DESCRIPTION: creates or connects to a screen session
+  OPTIONAL:    -h|--help          prints this help and exits
+               -c|--cmd command   executes a command when creating a session,
+                                  multiple -c arguments possible, commands are sent in
+                                  their order.
+
+  REQUIRED:    name               name of the session to create or attach to if exists
+EOF
+        return 1
+        ;;
+      -c|--cmd)
+        COMMANDS="${COMMANDS}cd $2;"
+        shift 2
+        ;;
+      -*|--*)
+        echo -e "[\033[01;31m-\033[0m] - ERROR, unsupported flag $1"
+        return 2
+        ;;
+      *)
+        SESSION="$1"
+        shift
+        ;;
+    esac
+  done
+
+  if [ -z "${SESSION}" ]; then
+    echo -e "[\033[01;31m-\033[0m] - ERROR, no session name supplied, exiting.."
+    return 2
+  fi
+
+  if ! [[ $(screen -ls | grep "${SESSION}") ]] ; then
+    screen -d -m -S "${SESSION}"
+    if [ ! -z "${COMMANDS}" ]; then
+      screen -S "${SESSION}" -X stuff "${COMMANDS}clear;$(echo -ne '\015')"
+    fi
 ```
 
 

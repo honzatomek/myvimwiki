@@ -5,6 +5,7 @@
     - [session with custom .screenrc](#layout#session with custom .screenrc)
         - [example](#layout#session with custom .screenrc#example)
     - [kill all detached sessions](#layout#kill all detached sessions)
+- [bash automation function](#bash automation function)
 
 # layout
 https://superuser.com/questions/687348/how-to-persist-gnu-screen-layout-after-restart
@@ -151,5 +152,68 @@ fi
 
 screen -ls | grep Detached | cut -d. -f1 | awk '{print $1}' | xargs kill
 ```
+
+# bash automation function
+```bash
+myscreen () {
+  local COMMANDS=""
+  local SESSION=""
+
+  while (( "$#" )); do
+    case "$1" in
+      -h|--help)
+        echo -e "[\033[01;35m?\033[0m] - myscreen() [-h] [-c command] name"
+
+        cat <<EOF
+
+  AUTHOR:      Jan Tomek <rpi3.tomek@protonmail.com> 27.07.2020
+  DESCRIPTION: creates or connects to a screen session
+  OPTIONAL:    -h|--help          prints this help and exits
+               -c|--cmd command   executes a command when creating a session,
+                                  multiple -c arguments possible, commands are sent in
+                                  their order.
+
+  REQUIRED:    name               name of the session to create or attach to if exists
+EOF
+        return 1
+        ;;
+      -c|--cmd)
+        COMMANDS="${COMMANDS}cd $2;"
+        shift 2
+        ;;
+      -*|--*)
+        echo -e "[\033[01;31m-\033[0m] - ERROR, unsupported flag $1"
+        return 2
+        ;;
+      *)
+        SESSION="$1"
+        shift
+        ;;
+    esac
+  done
+
+  if [ -z "${SESSION}" ]; then
+    echo -e "[\033[01;31m-\033[0m] - ERROR, no session name supplied, exiting.."
+    return 2
+  fi
+
+  if ! [[ $(screen -ls | grep "${SESSION}") ]] ; then
+    screen -d -m -S "${SESSION}"
+    if [ ! -z "${COMMANDS}" ]; then
+      screen -S "${SESSION}" -X stuff "${COMMANDS}clear;$(echo -ne '\015')"
+    fi
+  fi
+
+  screen -x "${SESSION}"
+}
+```
+
+`-d -m` start a session in __detached__ mode
+`-S` name a __session__
+`-X stuff` send a command to named session
+`$(echo -ne '\015')` send ener charcode
+`-x` attach to a named session
+
+
 
 [back to index](index.md)
