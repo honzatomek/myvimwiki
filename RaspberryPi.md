@@ -35,6 +35,8 @@
 - [APT](#APT)
     - [search for package](#APT#search for package)
     - [show package info](#APT#show package info)
+- [VLC](#VLC)
+    - [nvlc](#VLC#nvlc)
 
 # SSH
 ## key conversion
@@ -794,6 +796,17 @@ apt-cache search sed | grep -E '^sed'
 ```bash
 apt-cache show sed
 ```
+
+# VLC
+## nvlc
+`nvlc` is equal to `vlc -I ncurses`
+
+to run in monochrome:
+`nvlc --no-color`
+
+custom start directory for Browser:
+`nvlc --browse-dir /home/pi/Downloads`
+
 
 
 [back to index](index.md)
