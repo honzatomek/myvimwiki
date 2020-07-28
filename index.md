@@ -25,5 +25,8 @@
 ## Screen layout
 - https://www.gnu.org/software/screen/manual/html_node/Layout.html
 
+## write your own editor in pure C
+- https://viewsourcecode.org/snaptoken/kilo/
+
 # Doma
 * [doma](doma.md) -- udaje o nasem bytu
