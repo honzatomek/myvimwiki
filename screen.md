@@ -6,6 +6,7 @@
         - [example](#layout#session with custom .screenrc#example)
     - [kill all detached sessions](#layout#kill all detached sessions)
 - [bash automation function](#bash automation function)
+- [256 color support](#256 color support)
 
 # layout
 https://superuser.com/questions/687348/how-to-persist-gnu-screen-layout-after-restart
@@ -214,6 +215,25 @@ EOF
 `$(echo -ne '\015')` send ener charcode
 `-x` attach to a named session
 
+# 256 color support
+in `.screenrc`:
+```screen
+# add 256 color support
+attrcolor b ".I"
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E38;5;%dm'
+defbce "on"
+```
+
+in `.bashrc`:
+```bash
+# this is in addition to export XTERM='xterm-256color'
+export TERM='screen-256color'
+```
+
+in `.vimrc`:
+```vim
+set t_Co=256
+```
 
 
 [back to index](index.md)
