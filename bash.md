@@ -16,6 +16,7 @@
     - [floating point operations using GNU AWK](#AWK#floating point operations using GNU AWK)
 - [GREP](#GREP)
     - [print only matched string](#GREP#print only matched string)
+    - [print nonmatched lines](#GREP#print nonmatched lines)
 - [useful commands](#useful commands)
     - [cat](#useful commands#cat)
     - [cut](#useful commands#cut)
@@ -317,6 +318,12 @@ awk "BEGIN {print -8.4 - -8}"
 
 > `-E` means extended regexp
 > `-o` means only matching string
+
+## print nonmatched lines
+`grep -Ev 'pattern' file`
+
+> `-E` means extended regexp
+> `-v` means inVersed match
 
 
 # useful commands
