@@ -7,6 +7,7 @@
 - [.gitmodules](#.gitmodules)
     - [ignore files in submodules](#.gitmodules#ignore files in submodules)
 - [REMOTE](#REMOTE)
+    - [get and set url](#REMOTE#get and set url)
     - [update remote url](#REMOTE#update remote url)
 - [CLONE](#CLONE)
     - [get git repo to a nonempty directory](#CLONE#get git repo to a nonempty directory)
@@ -106,6 +107,12 @@ nothing added to commit but untracked files present (use "git add" to track)
 ```
 
 # REMOTE
+## get and set url
+```bash
+git remote get-url origin
+git remote set-url origin <newurl> [<oldurl>]
+```
+
 ## update remote url
 Updating the **remote git repository url**:
 ```bash
