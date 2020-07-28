@@ -37,6 +37,7 @@
 - [heredoc string](#heredoc string)
 - [function to open multiple files in vim](#function to open multiple files in vim)
 - [screen automation function](#screen automation function)
+- [c style for loop](#c style for loop)
 
 # SED
 ## replace file
@@ -631,6 +632,16 @@ EOF
     if [ ! -z "${COMMANDS}" ]; then
       screen -S "${SESSION}" -X stuff "${COMMANDS}clear;$(echo -ne '\015')"
     fi
+```
+
+# c style for loop
+`for (( i = 0; i < 100; i++ )); do echo "$i"; done`
+
+iterating over array:
+```bash
+for (( i=0; i<"${#arr[@]}"; i++ )); do
+  echo "${arr[$i]}"
+done
 ```
 
 
