@@ -399,9 +399,26 @@ list only available screen resolutions:
 # wait for process to finish
 run a cmd in background, using `$!` get its PID and supply it to `wait` command to wait for the process to finish:
 ```bash
-cmd &
+CMD="cmd"
+"${CMD}" &
 BACK_PID=$!
+echo "Running ${CMD} as ${BACK_PID}"
 wait ${BACK_PID}
+```
+
+!!! always print the `PID` of the process spawned in the background, `<ctrl-c>` will only kill
+the waiting script.
+
+can be used in a loop:
+```bash
+commands=("command1" "command2" "command3")
+for cmd in "${commands[@]}"; do
+    "${cmd}" &
+    BACK_PID=$!
+    echo "Running ${cmd} as ${BACK_PID}"
+    wait ${BACK_PID}
+done
+echo "Done."
 ```
 
 # check if "*.txt" file exists in dir
