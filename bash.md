@@ -38,6 +38,8 @@
 - [function to open multiple files in vim](#function to open multiple files in vim)
 - [screen automation function](#screen automation function)
 - [c style for loop](#c style for loop)
+- [redirect command output to multiple files](#redirect command output to multiple files)
+- [redirect command output to multiple commands](#redirect command output to multiple commands)
 
 # SED
 ## replace file
