@@ -603,14 +603,21 @@ myscreen () {
   OPTIONAL:    -h|--help          prints this help and exits
                -c|--cmd command   executes a command when creating a session,
                                   multiple -c arguments possible, commands are sent in
-                                  their order.
+                                  their order. commands must be single quoted.
+                                  each command is ended with a ;.
 
   REQUIRED:    name               name of the session to create or attach to if exists
+
+  USE:
+               - as an alias
+                                  alias kilo="myscreen --cmd 'cd ~/Programming/C_CPP/bin/c_kilo/src/' kilo"
+               - from CLI
+                                  myscreen mov
 EOF
         return 1
         ;;
       -c|--cmd)
-        COMMANDS="${COMMANDS}cd $2;"
+        COMMANDS="${COMMANDS} $2;"
         shift 2
         ;;
       -*|--*)
@@ -634,7 +641,15 @@ EOF
     if [ ! -z "${COMMANDS}" ]; then
       screen -S "${SESSION}" -X stuff "${COMMANDS}clear;$(echo -ne '\015')"
     fi
+  fi
+
+  screen -x "${SESSION}"
+}
 ```
+
+__USAGE EXAMPLE__:
+`alias kilo="myscreen --cmd 'cd ~/Programming/C_CPP/bin/c_kilo/src/' --cmd 'vim kilo.c' kilo"`
+
 
 # c style for loop
 `for (( i = 0; i < 100; i++ )); do echo "$i"; done`
