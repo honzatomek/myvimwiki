@@ -644,5 +644,102 @@ for (( i=0; i<"${#arr[@]}"; i++ )); do
 done
 ```
 
+# redirect command output to multiple files
+`stdout` to console and two files:
+```bash
+cmd | tee file1 file2
+```
+
+`stdout` to two files:
+```bash
+cmd | tee file1 file2 > /dev/null
+```
+
+`stdout` and `stderr` to two files:
+```bash
+cmd 2&>1 | tee file1 file2 > /dev/null
+```
+
+# redirect command output to multiple commands
+In loop using __temp file__:
+```bash
+#!/bin/bash
+
+temp=$( mktemp )
+cmd0 > "$temp"
+cmds=("cmd1" "cmd2")
+for cmd in "${cmds[@]}"; do
+    eval "${cmd}" < "${temp}"
+done
+rm "${temp}"
+```
+
+using __process substitution__:
+```bash
+#!/bin/bash
+
+cmd 2&>1 | tee >(cmd1 > cmd1.log) >(cmd2 > cmd2.log) > /dev/null
+```
+
+capture output to __variable__:
+```bash
+#!/bin/bash
+
+cmdout="$(cmd0)"
+echo "${cmdout}" | cmd1
+echo "${cmdout}" | cmd2
+```
+
+create __named pipes__:
+```bash
+#!/bin/bash
+
+# create temp directory
+tmp_dir="$(mktemp -d)"
+
+# create named pipes
+mkfifo "${tmp_dir}/f1" "${tmp_dir}/f2"
+
+cmd1 <"${tmp_dir}/f1" & pid1=$!
+echo "Running cmd1 as ${pid1}, waiting for input."
+
+cmd2 <"${tmp_dir}/f2" & pid2=$!
+echo "Running cmd2 as ${pid2}, waiting for input."
+
+# create the input
+tee "${tmp_dir}/f1" "${tmp_dir}/f2" | cmd0
+
+# wait for the processes to finish
+wait $pid1 $pid2
+
+# cleanup
+rm -rf "${tmp_dir}"
+```
+
+maybe this way:
+```bash
+#!/bin/bash
+
+# create temp directory
+tmp_dir="$(mktemp -d)"
+
+# create named pipes
+mkfifo "${tmp_dir}/f1" "${tmp_dir}/f2"
+
+# create the input
+cmd0 | tee "${tmp_dir}/f1" "${tmp_dir}/f2" >/dev/null
+
+cmd1 <"${tmp_dir}/f1" & pid1=$!
+echo "Running cmd1 as ${pid1}"
+
+cmd2 <"${tmp_dir}/f2" & pid2=$!
+echo "Running cmd2 as ${pid2}"
+
+# wait for the processes to finish
+wait $pid1 $pid2
+
+# cleanup
+rm -rf "${tmp_dir}"
+```
 
 [back to index](index.md)
