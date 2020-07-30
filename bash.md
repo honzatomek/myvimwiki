@@ -40,6 +40,7 @@
 - [c style for loop](#c style for loop)
 - [redirect command output to multiple files](#redirect command output to multiple files)
 - [redirect command output to multiple commands](#redirect command output to multiple commands)
+- [git status in prompt](#git status in prompt)
 
 # SED
 ## replace file
@@ -758,5 +759,30 @@ wait $pid1 $pid2
 # cleanup
 rm -rf "${tmp_dir}"
 ```
+
+# git status in prompt
+```bash
+#!/bin/bash
+
+gitPS1 () {
+  local gitps1=$(git branch 2>/dev/null | grep '*')
+  if ! git diff --quiet --cached; then
+    gitps1="${gitps1:+\[\033[0m\](\[\033[01;35m\]${gitps1/#\* /}*\[\033[0m\])}"
+  elif ! git diff --quiet; then
+    gitps1="${gitps1:+\[\033[0m\](\[\033[01;31m\]${gitps1/#\* /}+\[\033[0m\])}"
+  else
+    gitps1="${gitps1:+\[\033[0m\](\[\033[01;32m\]${gitps1/#\* /}\[\033[0m\])}"
+  fi
+  echo "$gitps1"
+}
+
+# Custom prompt colors
+update_PS1 () {
+  PS1="\[\033[01;34m\]\u\[\033[01;32m\]@\h\[\033[00;37m\]:\[\033[01;34m\]\w\[\033[01;31m\] $(gitPS1)\[\033[01;34m\]\$\[\033[00;37m\] "
+}
+shopt -u promptvars
+PROMPT_COMMAND=update_PS1
+```
+
 
 [back to index](index.md)
