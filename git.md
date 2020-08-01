@@ -23,6 +23,8 @@
     - [delete files from history](#HISTORY#delete files from history)
 - [SPLIT](#SPLIT)
     - [create a new repo from subdirectory](#SPLIT#create a new repo from subdirectory)
+- [add a new connection via ssh](#add a new connection via ssh)
+    - [troubleshooting](#add a new connection via ssh#troubleshooting)
 
 # CONFIG
 ## setup
@@ -359,5 +361,45 @@ git push -u origin master
 # git rm -rf <name-of-folder>
 git rm -rf "${cwd}/$1"
 ```
+
+# add a new connection via ssh
+generate rsa key pair:
+```bash
+ssh-keygen -t rsa -b 4096 -C "rpi3.tomek@protonmail.com" -f ~/.ssh/xiaomi
+```
+`-t` key type (RSA)
+`-b` number of bits
+`-C` comment
+`-f` output filename
+
+add public key to github account:
+https://github.com/settings/keys
+
+test ssh connection:
+```bash
+git -T git@github.com
+```
+
+## troubleshooting
+more verbose output
+```bash
+git -vT git@github.com
+```
+
+set up `~/.ssh/config`:
+```
+Host git@github.com
+    User honzatomek
+    IdentityFile ~/.ssh/xiaomi
+```
+
+add a new key to ssh-agent (one that is not named id_rsa):
+```bash
+# start ssh-agent in the background
+eval "$(ssh-agent -s)"
+# add the key
+ssh-add xiaomi
+```
+
 
 [back to index](index.md)
