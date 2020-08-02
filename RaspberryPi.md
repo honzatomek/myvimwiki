@@ -13,6 +13,10 @@
     - [Xming](#SSH#Xming)
         - [setup](#SSH#Xming#setup)
         - [reset](#SSH#Xming#reset)
+    - [tunnelling](#SSH#tunnelling)
+        - [setup](#SSH#tunnelling#setup)
+        - [initiate ssh tunnel](#SSH#tunnelling#initiate ssh tunnel)
+        - [use the tunnel](#SSH#tunnelling#use the tunnel)
 - [WLAN](#WLAN)
     - [network devices](#WLAN#network devices)
         - [show](#WLAN#network devices#show)
@@ -279,6 +283,92 @@ sudo cp /etc/ssh/sshd_config.orig /etc/ssh/sshd_config
 
 /etc/init.d/ssh restart
 ```
+
+## tunnelling
+from: https://sshhub.de/advanced/
+
+### setup
+first register at `www.sshhub.de`:
+```bash
+ssh info@sshhub.de register
+```
+input `[USERNAME]` there
+
+add __ssh__ __public__ __key__ there for authentication:
+```bash
+ssh [USERNAME]@sshhub.de pubkey add "$(cat ~/.ssh/id_rsa.pub)"
+```
+
+list all pubkeys:
+```bash
+ssh [USERNAME]@sshhub.de pubkey ls
+```
+
+remove a public key:
+```bash
+cat ~/.ssh/id_rsa.pub | ssh [USERNAME]@sshhub.de pubkey rm
+```
+
+add a private key to __ssh authentication agent__ (input in .bashrc):
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+```
+
+### initiate ssh tunnel
+initiate __ssh tunnel__ from raspberry (either in rc.local or as a cron job or as a service):
+bash loop:
+```bash
+while true; do
+    ssh [USERNAME]@sshhub.de -R [COMPUTERNAME]:22:localhost:22 -N -o ServerAliveInterval=10
+    sleep 5
+done
+```
+
+via `systemd` service:
+create a systemd unit file (/etc/systemd/system/sshhub.service)
+```
+[Unit]
+Description=Setup a secure tunnel to sshhub
+After=network.target
+User=[your username]
+Group=[your group]
+
+[Service]
+ExecStart=/usr/bin/ssh [USERNAME]@sshhub.de -R [COMPUTERNAME]:22:localhost:22 -N -o ServerAliveInterval=10
+
+# Restart every >2 seconds to avoid StartLimitInterval failure
+RestartSec=5
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Start it and test if it worked:
+```
+systemctl start sshhub.service
+systemctl status sshhub.service
+```
+
+Start sshhub automatically on startup:
+```
+systemctl enable sshhub.service
+```
+
+specify other ports:
+```bash
+# Share local port [R_PORT] under the name [COMPUTERNAME]:[PORT].
+server> ssh [USERNAME]@sshhub.de -R [COMPUTERNAME]:[R_PORT]:localhost:[PORT]
+# Forward local port [L_PORT] to the port shared above.
+client> ssh -J [USERNAME]@sshhub.de [L_PORT]:[COMPUTERNAME]:[PORT]
+```
+
+### use the tunnel
+```bash
+ssh -l [USER] -J [USERNAME]@sshhub.de [COMPUTERNAME] -p [PORT]
+```
+
 
 # WLAN
 ## network devices
