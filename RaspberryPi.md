@@ -16,6 +16,8 @@
     - [tunnelling](#SSH#tunnelling)
         - [setup](#SSH#tunnelling#setup)
         - [initiate ssh tunnel](#SSH#tunnelling#initiate ssh tunnel)
+        - [via systemd service:](#SSH#tunnelling#via systemd service:)
+        - [specify other ports:](#SSH#tunnelling#specify other ports:)
         - [use the tunnel](#SSH#tunnelling#use the tunnel)
 - [WLAN](#WLAN)
     - [network devices](#WLAN#network devices)
@@ -325,7 +327,7 @@ while true; do
 done
 ```
 
-via `systemd` service:
+### via systemd service:
 create a systemd unit file (/etc/systemd/system/sshhub.service)
 ```
 [Unit]
@@ -356,7 +358,9 @@ Start sshhub automatically on startup:
 systemctl enable sshhub.service
 ```
 
-specify other ports:
+__do not forget to ssh to sshhub.de at least once as root to add the sshhub.de host to known hosts!!!__
+
+### specify other ports:
 ```bash
 # Share local port [R_PORT] under the name [COMPUTERNAME]:[PORT].
 server> ssh [USERNAME]@sshhub.de -R [COMPUTERNAME]:[R_PORT]:localhost:[PORT]
