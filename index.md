@@ -9,6 +9,7 @@
 * [screen](screen.md) -- GNU screen config
 * [RaspberryPi](RaspberryPi.md) -- scripts, configuration and information pertaining to Raspberry Pi
 * [termux](termux.md) -- termux snippets and howtos
+* [streams](streams.md) -- working with video using ffmpeg and streamlink
 
 # Movies
 - Crash
