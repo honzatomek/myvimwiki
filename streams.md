@@ -4,6 +4,7 @@
     - [cut video](#ffmpeg#cut video)
 - [streamlink](#streamlink)
     - [custom streamlink function](#streamlink#custom streamlink function)
+    - [chaturbate plugin](#streamlink#chaturbate plugin)
 
 # ffmpeg
 ## cut video
@@ -54,12 +55,11 @@ stream=""
 
 if [[ $1 =~ https://www.chaturbate.com/* ]] || [[ $1 =~ https://chaturbate.com/* ]] || [[ $1 =~ www.chaturbate.com/* ]] || [[ $1 =~ chaturbate.com/* ]]; then
   if [[ "${1: -1}" == '/' ]]; then
-    url="$1"
-    name="$(echo $url | rev | cut -d/ -f2 | rev)"
+    url="${1}"
   else
     url="${1}/"
-    name="$(echo $url | rev | cut -d/ -f2 | rev)"
   fi
+  name="$(echo $url | rev | cut -d/ -f2 | rev)"
 else
   name="$1"
   url="https://www.chaturbate.com/${name}/"
@@ -70,6 +70,65 @@ if [[ -z "$stream" ]]; then
 else
   streamlink "$url" "$stream" -o "${HOME}/Downloads/custom/chaturbate/${name}_${now}.mp4"
 fi
+```
+## chaturbate plugin
+chaturbate plugin no longer supported (NSFW), it is therefore needed to add the following file to
+~/.config/streamlink/plugins/chaturbate.py (if path does not exist, create it).
+```python
+import re
+import uuid
+
+from streamlink.plugin import Plugin
+from streamlink.plugin.api import validate
+from streamlink.stream import HLSStream
+
+API_HLS = "https://chaturbate.com/get_edge_hls_url_ajax/"
+
+_url_re = re.compile(r"https?://(\w+\.)?chaturbate\.com/(?P<username>\w+)")
+
+_post_schema = validate.Schema(
+    {
+        "url": validate.text,
+        "room_status": validate.text,
+        "success": int
+    }
+)
+
+
+class Chaturbate(Plugin):
+    @classmethod
+    def can_handle_url(cls, url):
+        return _url_re.match(url)
+
+    def _get_streams(self):
+        match = _url_re.match(self.url)
+        username = match.group("username")
+
+        CSRFToken = str(uuid.uuid4().hex.upper()[0:32])
+
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": CSRFToken,
+            "X-Requested-With": "XMLHttpRequest",
+            "Referer": self.url,
+        }
+
+        cookies = {
+            "csrftoken": CSRFToken,
+        }
+
+        post_data = "room_slug={0}&bandwidth=high".format(username)
+
+        res = self.session.http.post(API_HLS, headers=headers, cookies=cookies, data=post_data)
+        data = self.session.http.json(res, schema=_post_schema)
+
+        self.logger.info("Stream status: {0}".format(data["room_status"]))
+        if (data["success"] is True and data["room_status"] == "public" and data["url"]):
+            for s in HLSStream.parse_variant_playlist(self.session, data["url"]).items():
+                yield s
+
+
+__plugin__ = Chaturbate
 ```
 
 [back to index](index.md)
