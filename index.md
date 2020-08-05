@@ -30,5 +30,10 @@
 ## write your own editor in pure C
 - https://viewsourcecode.org/snaptoken/kilo/
 
+## mutt setup
+- https://webgefrickel.de/blog/a-modern-mutt-setup
+- https://webgefrickel.de/blog/a-modern-mutt-setup-part-two
+- https://github.com/webgefrickel/dotfiles/tree/master/office
+
 # Doma
 * [doma](doma.md) -- udaje o nasem bytu
