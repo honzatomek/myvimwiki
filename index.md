@@ -35,5 +35,8 @@
 - https://webgefrickel.de/blog/a-modern-mutt-setup-part-two
 - https://github.com/webgefrickel/dotfiles/tree/master/office
 
+## Termux desktop
+- https://github.com/adi1090x/termux-desktop
+
 # Doma
 * [doma](doma.md) -- udaje o nasem bytu
