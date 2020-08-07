@@ -34,6 +34,7 @@
 - https://webgefrickel.de/blog/a-modern-mutt-setup
 - https://webgefrickel.de/blog/a-modern-mutt-setup-part-two
 - https://github.com/webgefrickel/dotfiles/tree/master/office
+- https://linuxcommando.blogspot.com/2014/04/how-to-setup-exim4-on-debian-to-use.html?m=1
 
 ## Termux desktop
 - https://github.com/adi1090x/termux-desktop
