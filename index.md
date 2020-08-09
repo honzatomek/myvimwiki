@@ -10,6 +10,7 @@
 * [RaspberryPi](RaspberryPi.md) -- scripts, configuration and information pertaining to Raspberry Pi
 * [termux](termux.md) -- termux snippets and howtos
 * [streams](streams.md) -- working with video using ffmpeg and streamlink
+* [mutt](mutt.md) -- mutt, exim4, getmail, procmail, mbsync and gpg2 setup
 
 # Movies
 - Crash
@@ -34,6 +35,8 @@
 - https://webgefrickel.de/blog/a-modern-mutt-setup
 - https://webgefrickel.de/blog/a-modern-mutt-setup-part-two
 - https://github.com/webgefrickel/dotfiles/tree/master/office
+- https://geek-university.com/linux/redirect-email
+`formail -s procmail -m ~/.procmail/procmailrc < /var/mail/pi`
 
 ## Termux desktop
 - https://github.com/adi1090x/termux-desktop
