@@ -10,7 +10,7 @@
 * [RaspberryPi](RaspberryPi.md) -- scripts, configuration and information pertaining to Raspberry Pi
 * [termux](termux.md) -- termux snippets and howtos
 * [streams](streams.md) -- working with video using ffmpeg and streamlink
-* [mutt](mutt.md) -- mutt, exim4, getmail, procmail, mbsync and gpg2 setup
+* [mutt](mutt.md) -- CLI E-Mail Client: mutt, exim4, getmail, procmail, mbsync and gpg2 setup
 
 # Movies
 - Crash
