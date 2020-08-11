@@ -14,12 +14,14 @@
     - [install](#procmail#install)
     - [general setup](#procmail#general setup)
     - [setup local mail processing](#procmail#setup local mail processing)
-- [mbsync](#mbsync)
-    - [install](#mbsync#install)
-    - [setup](#mbsync#setup)
+- [isync/mbsync](#isync/mbsync)
+    - [install](#isync/mbsync#install)
+    - [setup](#isync/mbsync#setup)
 - [gpg2](#gpg2)
     - [install](#gpg2#install)
-    - [setup](#gpg2#setup)
+    - [commands](#gpg2#commands)
+    - [use gpg2 for passwor protection](#gpg2#use gpg2 for passwor protection)
+    - [password cache](#gpg2#password cache)
 - [mutt](#mutt)
     - [install](#mutt#install)
     - [muttrc](#mutt#muttrc)
@@ -280,7 +282,7 @@ To use __procmail__ for local mail processing a `~/.forward` file is necessary:
 | /usr/bin/procmail -m /home/pi/.procmail/procmailrc || exit 75 #pi
 ```
 `|` means pipe mail to: `/usr/bin/procmail` with `-m` custom __rc file__.
-On case of Error exith with __75__.
+On case of Error exit with __75__.
 
 Or you can process system mail in `/var/mail` manually:
 ```bash
@@ -298,15 +300,207 @@ formail -s /usr/bin/procmail -m /home/pi/.procmail/procmailrc <~/tmp/root_mail
 `formail -s` runs each mail from mbox format through external program, here
 `procmail` with specific `rc file` is used.
 
-# mbsync
+# isync/mbsync
+From: https://webgefrickel.de/blog/a-modern-mutt-setup
+
+Synchronises internet e-mail account with `Maildir` directory structure stored
+locally on the computer using IMAP protocol.
+
 ## install
+```bash
+sudo apt update && sudo apt dist-upgrade
+sudo apt install isync
+```
 
 ## setup
+Create either `~/.mbsyncrc` or `~/.mbsync/mbsyncrc` file.
+Multiple accounts can be specified under each other in one file or each account
+can be specified in a separate file and run manually.
+
+```mbsyncrc
+IMAPAccount rpi3-tomek@gmail-com
+# Address to connect to
+Host imap.gmail.com
+User rpi3.tomek@gmail.com
+#Pass MYSUPERSECRETPASSWHICHISALSOLONGASHELL
+# To store the password in an encrypted file use PassCmd instead of Pass
+# PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.mailpass.gpg"
+PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.mbsync/.authinfo.gpg | awk '/machine imap.gmail.com login rpi3.tomek@gmail.com/ {print $NF}'"
+#
+# Use SSL
+SSLType IMAPS
+# The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+CertificateFile ~/.certificates/gmail.pem
+CertificateFile ~/.certificates/google.pem
+
+IMAPStore rpi3-tomek@gmail-com-remote
+Account rpi3-tomek@gmail-com
+
+MaildirStore rpi3-tomek@gmail-com-local
+Subfolders Verbatim
+# The trailing "/" is important
+Path ~/mail/rpi3-tomek@gmail-com/
+Inbox ~/mail/rpi3-tomek@gmail-com/inbox
+
+# Global config for all Channels
+# Sync both ways
+Sync All
+# Mail removal both ways
+Remove Both
+# Automatically create missing mailboxes, both locally and on the server
+Create Both
+# Automatically delete mails on both Master and Slave
+#Expunge Both
+
+Channel rpi3-tomek@gmail-com_inbox
+Master :rpi3-tomek@gmail-com-remote:"Inbox"
+Slave :rpi3-tomek@gmail-com-local:inbox
+# Exclude everything under the internal [Gmail] folder, except the interesting folders
+#Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail"
+# Or include everything
+#Patterns *
+
+Channel rpi3-tomek@gmail-com_sent
+Master :rpi3-tomek@gmail-com-remote:"[Gmail]/Sent Mail"
+Slave :rpi3-tomek@gmail-com-local:sent
+
+Channel rpi3-tomek@gmail-com_drafts
+Master :rpi3-tomek@gmail-com-remote:"[Gmail]/Drafts"
+Slave :rpi3-tomek@gmail-com-local:drafts
+
+Channel rpi3-tomek@gmail-com_important
+Master :rpi3-tomek@gmail-com-remote:"[Gmail]/Important"
+Slave :rpi3-tomek@gmail-com-local:important
+
+Channel rpi3-tomek@gmail-com_archive
+Master :rpi3-tomek@gmail-com-remote:"backup"
+Slave :rpi3-tomek@gmail-com-local:archive
+Patterns * ![Gmail]* !INBOX !other
+
+Channel rpi3-tomek@gmail-com_spam
+Master :rpi3-tomek@gmail-com-remote:"[Gmail]/Spam"
+Slave :rpi3-tomek@gmail-com-local:spam
+
+Channel rpi3-tomek@gmail-com_starred
+Master :rpi3-tomek@gmail-com-remote:"[Gmail]/Starred"
+Slave :rpi3-tomek@gmail-com-local:starred
+
+Channel rpi3-tomek@gmail-com_trash
+Master :rpi3-tomek@gmail-com-remote:"[Gmail]/Trash"
+Slave :rpi3-tomek@gmail-com-local:trash
+
+Channel rpi3-tomek@gmail-com_custom
+Master :rpi3-tomek@gmail-com-remote:"other"
+Slave :rpi3-tomek@gmail-com-local:other
+# Exclude everything under the internal [Gmail] folder
+Patterns * ![Gmail]* !INBOX !backup
+# Or include everything
+#Patterns *
+
+# Create Channel Group
+Group rpi3-tomek@gmail-com
+Channel rpi3-tomek@gmail-com_inbox
+Channel rpi3-tomek@gmail-com_sent
+Channel rpi3-tomek@gmail-com_drafts
+Channel rpi3-tomek@gmail-com_important
+Channel rpi3-tomek@gmail-com_archive
+Channel rpi3-tomek@gmail-com_spam
+Channel rpi3-tomek@gmail-com_starred
+Channel rpi3-tomek@gmail-com_trash
+Channel rpi3-tomek@gmail-com_custom
+
+# Save the synchronization state files in the relevant directory
+SyncState *
+CopyArrivalDate yes
+```
 
 # gpg2
 ## install
+```bash
+sudo apt update && sudo apt dist-upgrade
+sudo apt install gnupg2
+```
 
-## setup
+## commands
+generate private and public key pair
+```bash
+gpg2 --full-gen-key
+```
+
+generate revoke key
+```bash
+gpg --gen-revoke --armor --output=revocation_certificate.asc rpi3.tomek@protonmail.com
+```
+
+list all public keys in keychain
+```bash
+gpg2 --list-keys
+```
+
+sample output:
+> /home/pi/.gnupg/pubring.kbx
+> ---------------------------
+> sec   rsa2048 2020-08-10 [SC]
+>       4732383F30804F96ED196F261861D020BB1C9C6B
+> uid           [ultimate] Jan Tomek (my RaspberryPi address) <rpi3.tomek@gmail.com>
+> ssb   rsa2048 2020-08-10 [E]
+
+
+list all private keys in keychain
+```bash
+gpg2 --list-secret-keys --keyid-format LONG
+```
+
+edit specified key
+```bash
+gpg2 --edit-key jan.tomek@protonmail.com
+```
+
+export public key specified by its signature
+```bash
+gpg2 --armor --export 4E6C6CA10422850FAC7BA32C2D9E8DA003F67772 >> jan.tomek@protonmail.com.pem
+```
+
+export default private key
+```bash
+gpg2 --armor --export-secret-keys >> rpi3.tomek@gmail.com.priv.asc
+```
+
+delete a key from keychain
+```bash
+gpg2 --delete-secret-and-public-keys jan.tomek@protonmail.com
+```
+
+encrypt a file (only persons specified as recipients will be able to decrypt it)
+```bash
+gpg2 --recipient jan.tomek@protonmail.com --recipient rpi3.tomek@gmail.com --encrypt .authinfo
+```
+
+## use gpg2 for passwor protection
+first create a file storing all sensitive info
+```
+machine imap.gmail.com login rpi3.tomek@gmail.com password MYSUPERSECRETPASSWORDWHICHISALSOLONGASFUCK
+machine smtp.gmail.com login rpi3.tomek@gmail.com password MYSUPERSECRETPASSWORDWHICHISALSOLONGASFUCK
+```
+
+then use the following command to extract the password
+```bash
+gpg2 -q --for-your-eyes-only --no-tty -d ~/.mbsync/.authinfo.gpg | awk '/machine imap.gmail.com login rpi3.tomek@gmail.com/ {print $NF}'
+```
+
+## password cache
+for the gpg-agent not to ask for password each time, either create or edit the `~/.gnupg/gpg-agent.conf` file
+```
+this sets the pass duration to 200 hrs
+pinentry-program /usr/bin/pinentry-qt4
+default-cache-ttl 720000
+max-cache-ttl 720000
+```
+
+
+
+
 
 # mutt
 ## install
