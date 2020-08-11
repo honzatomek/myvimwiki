@@ -491,15 +491,19 @@ gpg2 -q --for-your-eyes-only --no-tty -d ~/.mbsync/.authinfo.gpg | awk '/machine
 
 ## password cache
 for the gpg-agent not to ask for password each time, either create or edit the `~/.gnupg/gpg-agent.conf` file
-```
+```conf
 this sets the pass duration to 200 hrs
 pinentry-program /usr/bin/pinentry-qt4
 default-cache-ttl 720000
 max-cache-ttl 720000
 ```
 
-
-
+to be able to run `--export` command from tty use:
+```conf
+pinentry-program /usr/bin/pinentry-curses
+default-cache-ttl 720000
+max-cache-ttl 720000
+```
 
 
 # mutt
