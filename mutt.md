@@ -751,9 +751,24 @@ max-cache-ttl 720000
 ```
 
 # mutt
+From: https://webgefrickel.de/blog/a-modern-mutt-setup
+From: https://webgefrickel.de/blog/a-modern-mutt-setup-part-two
+`mutt` is a CLI e-mail client with native support for smtp, imap and pgp
+`mutt` supports both `mbox` and `maildir` format. tthe difference between the two
+is that `mbox` stores all mails in one file while `maildir` stores them in a folder
+structure one mail per file.
+
+each maildir `directory` contains three subdirectories: `tmp`, `cur` and `new`
+
 ## install
+```bash
+sudo apt update && sudo apt dist-upgrade
+sudo apt install mutt
+```
 
 ## muttrc
+basic configuration is stored in either `~/.muttrc` or `~/.mutt/muttrc`
+
 
 ## bindings
 
