@@ -1174,7 +1174,7 @@ color normal default default
 
 ### 256 color setup example
 From: https://github.com/dracula/mutt.git
-```mutrc
+```muttrc
 ###############################################################################
 # Dracula Theme for Mutt: https://draculatheme.com/
 #
