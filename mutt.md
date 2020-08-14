@@ -1010,6 +1010,55 @@ echo "${out%%; }"
 ```
 
 ## bindings
+a `~/.mutt/bindings` file
+1. some sane vim-like keybindings
+```muttrc
+# some sane vim-like keybindings
+bind index,pager k previous-entry
+bind index,pager j next-entry
+bind index,pager g noop
+bind index,pager \Cu half-up
+bind index,pager \Cd half-down
+bind pager gg top
+bind index gg first-entry
+bind pager G bottom
+bind index G last-entry
+```
+
+2. sidebar navigation
+```muttrc 
+# sidebar navigation
+bind index,pager <down> sidebar-next
+bind index,pager <up> sidebar-prev
+bind index,pager <right> sidebar-open
+```
+
+3. global index and pager shortcuts
+```muttrc 
+# global index and pager shortcuts
+# bind index,pager @ compose-to-sender  # throws errors
+bind index,pager R group-reply
+bind index,pager D purge-message
+bind index <tab> sync-mailbox
+bind index <space> collapse-thread
+```
+
+4. macros
+```muttrc 
+# macros
+# save all attachments
+macro pager S "<pipe-message> ripmime -i - -d ~/Downloads && rm ~/Downloads/textfile*" "Save all non-text attachments using ripmime"
+# opening urls with urlscan
+macro pager \Cb "<pipe-message> urlscan<enter>" "call urlscan to extract URLs out of message"
+# sync all email
+# macro index,pager O "<shell-escape>mbsync -a<enter>" "run mbsync to sync all email"
+# macro index,pager O "<shell-escape>getmail -a<enter>" "run getmail to sync all email"
+# macro index,pager O "<shell-escape>getmail -a<enter>" "run getmail to retrieve all email"
+macro index,pager O "<shell-escape>mbsync rpi3-tomek@gmail-com<enter>" \
+                     "run getmail and formail -s procmail to retrieve all email"
+
+# vim: ft=muttrc
+```
 
 ## accounts
 
