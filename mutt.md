@@ -24,7 +24,7 @@
 - [gpg2](#gpg2)
     - [install](#gpg2#install)
     - [commands](#gpg2#commands)
-    - [use gpg2 for passwor protection](#gpg2#use gpg2 for passwor protection)
+    - [use gpg2 for password protection](#gpg2#use gpg2 for password protection)
     - [password cache](#gpg2#password cache)
 - [mutt](#mutt)
     - [install](#mutt#install)
@@ -568,16 +568,27 @@ encrypt a file (only persons specified as recipients will be able to decrypt it)
 gpg2 --recipient jan.tomek@protonmail.com --recipient rpi3.tomek@gmail.com --encrypt .authinfo
 ```
 
-## use gpg2 for passwor protection
+## use gpg2 for password protection
 first create a file storing all sensitive info
 ```
 machine imap.gmail.com login rpi3.tomek@gmail.com password MYSUPERSECRETPASSWORDWHICHISALSOLONGASFUCK
 machine smtp.gmail.com login rpi3.tomek@gmail.com password MYSUPERSECRETPASSWORDWHICHISALSOLONGASFUCK
 ```
 
+encrypt the file:
+```bash
+gpg2 --enccrypt file
+```
+a `file.gpg` will be created.
+
 then use the following command to extract the password
 ```bash
 gpg2 -q --for-your-eyes-only --no-tty -d ~/.mbsync/.authinfo.gpg | awk '/machine imap.gmail.com login rpi3.tomek@gmail.com/ {print $NF}'
+```
+
+if only the password is needed, then __just the password__ can be stored in a file and the following command used to get it:
+```bash
+gpg2 -q --for-your-eyes-only --no-tty -d ~/.mbsync/.authinfo.gpg
 ```
 
 ## password cache
@@ -588,6 +599,7 @@ pinentry-program /usr/bin/pinentry-qt4
 default-cache-ttl 720000
 max-cache-ttl 720000
 ```
+this should cache the passwords for 200 hours or untill logoff
 
 to be able to run `--export` command from tty use:
 ```conf
@@ -595,7 +607,6 @@ pinentry-program /usr/bin/pinentry-curses
 default-cache-ttl 720000
 max-cache-ttl 720000
 ```
-
 
 # mutt
 ## install
