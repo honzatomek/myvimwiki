@@ -30,6 +30,8 @@
 - [mutt](#mutt)
     - [install](#mutt#install)
     - [muttrc](#mutt#muttrc)
+        - [basic `.muttrc` setup:](#mutt#muttrc#basic `.muttrc` setup:)
+        - [advanced `.muttrc` setup](#mutt#muttrc#advanced `.muttrc` setup)
     - [bindings](#mutt#bindings)
     - [accounts](#mutt#accounts)
     - [colors](#mutt#colors)
@@ -771,6 +773,183 @@ basic configuration is stored in either `~/.muttrc` or `~/.mutt/muttrc`
 
 If `set sidebar_short_path` does not show corretly:
 !!! beware: https://gitlab.com/muttmua/mutt/-/issues/194
+
+### basic `.muttrc` setup:
+```muttrc
+set folder="/home/pi/mail/rpi3-tomek@gmail-com/"
+set mbox_type=maildir
+set mbox="/home/pi/mail/rpi3-tomek@gmail-com/inbox/"
+set spoolfile="/home/pi/mail/rpi3-tomek@gmail-com/inbox/"
+set record="/home/pi/mail/rpi3-tomek@gmail-com/sent/"
+
+mailboxes /home/pi/mail/rpi3-tomek@gmail-com/inbox home/pi/mail/pi
+set editor=vim
+set sort=threads
+set include=yes
+set indent_str="> "
+
+# vim: ft=muttrc
+```
+
+### advanced `.muttrc` setup
+From: https://webgefrickel.de/blog/a-modern-mutt-setup-part-two
+1. paths:
+```muttrc
+# paths
+set folder = ~/mail
+set header_cache = ~/.mutt/cache/headers
+set message_cachedir = ~/.mutt/cache/bodies
+set mailcap_path = ~/.mutt/mailcap
+set tmpdir = ~/.mutt/tmp
+set sendmail = /data/data/com.termux/files/usr/bin/msmtp
+```
+the `sendmail` option is necessary if either `eximm4` or `msmtp-mta` are not installed
+or set up. then `msmtp` needs to be installed, set up and speciied.
+
+2. basic options:
+```muttrc
+# basic options
+set wait_key = no
+set mbox_type = Maildir
+set timeout = 3
+set mail_check = 0
+set delete
+set quit
+set thorough_search
+set mail_check_stats
+unset confirmappend
+unset move
+unset mark_old
+unset beep_new
+```
+
+3. compose view options:
+```muttrc
+# compose view options
+set envelope_from                    # which from?
+set edit_headers                     # show headers when composing
+set askcc                            # ask for CC:
+set fcc_attach                       # save attachments with the body
+set forward_format = "Fwd: %s"       # format of subject when forwarding
+set forward_decode                   # decode when forwarding
+set attribution = "On %d, %n wrote:" # format of quoting header
+set reply_to                         # reply to Reply to: field
+set reverse_name                     # reply as whomever it was to
+set include                          # include message in replies
+set indent_str="> "
+set forward_quote                    # include message in forwards
+set editor = vim
+set sig_on_top
+set text_flowed
+unset sig_dashes                     # no dashes before sig
+unset mime_forward                   # forward attachments as part of body
+```
+
+4. status bar, date format, finding stuff etc.
+```muttrc
+# status bar, date format, finding stuff etc.
+set status_chars = " *%A"
+set status_format = "[ Folder: %f ] [%r%m messages%?n? (%n new)?%?d? (%d to delete)?%?t? (%t tagged)? ]%>-%?p?( %p postponed )?"
+set date_format = "%Y/%m/%d %H:%M"
+set index_format = "%4C [%Z] %?X?A&-? %D  %-30.30n  %s"
+set sort = threads
+set sort_aux = reverse-last-date-received
+set uncollapse_jump
+set sort_re
+set reply_regexp = "^(([Rr][Ee]?(\[[0-9]+\])?: *)?(\[[^]]+\] *)?)*"
+set quote_regexp = "^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
+set send_charset = "utf-8"
+```
+
+5. pager view options
+```muttrc
+# pager view options
+set pager_index_lines = 10
+set pager_context = 3
+set pager_stop
+set menu_scroll
+set tilde
+unset markers
+# email headers and attachments
+ignore *
+unignore from: to: cc: bcc: date: subject:
+unhdr_order *
+hdr_order = from: to: cc: bcc: date: subject:
+alternative_order text/plain text/enriched text/html
+auto_view text/html
+
+# when composing emails, use this command to get addresses from the addressbook with khard first,
+# else from the mu index
+set query_command = "( khard email --parsable '%s' | sed -n '1!p'; mu cfind --format=mutt-ab '%s' )"
+```
+
+6. sidebar patch config
+```muttrc
+# sidebar patch config
+set sidebar_visible
+set sidebar_short_path
+set sidebar_folder_indent
+set sidebar_width = 25
+set sidebar_divider_char = '║' # single line '│' is U+2502 (Unicode Box Drawing character), double line '║' is U+2551
+set sidebar_indent_string = ' '
+set fast_reply                       # skip to compose when replying
+set sidebar_format = "%B %* [%?N?%N / ?%S]"
+```
+
+7. mailboxes to show in the sidebar
+```muttrc
+# mailboxes to show in the sidebar
+`~/.mutt/add_mailbox.sh "${HOME}/mail/"`
+```
+
+8. GPG/PGP
+```muttrc
+# source default values from /usr/share/doc/mutt/examples/gpg.rc.gz
+source ~/.mutt/gpg.rc
+set pgp_default_key="4732383F30804F96ED196F261861D020BB1C9C6B"
+
+# override recommended gpg settings
+set pgp_use_gpg_agent = yes
+set crypt_use_gpgme = no
+set crypt_autosign = no
+set crypt_verify_sig = yes
+set crypt_replysign = yes
+set crypt_replyencrypt = yes
+set crypt_replysignencrypted = yes
+set pgp_encrypt_only_command="/data/data/com.termux/files/usr/bin/pgpewrap gpg --batch --quiet --no-verbose --output - --encrypt --textmode --armor --always-trust -- -r %r -- %f"
+set pgp_encrypt_sign_command="/data/data/com.termux/files/usr/bin/pgpewrap gpg %?p?--passphrase-fd 0 --pinentry-mode=loopback? --batch --quiet --no-verbose --textmode --output - --encrypt --sign %?a?-u %a? --armor --always-trust -- -r %r -- %f"
+```
+the `pgpewrap` command needs to point to its executable - shown here is `termux` location
+the `pgp_default_key` needs to be set a correct key in `gpg keyring` used for signing
+
+9. source colors and keybindings
+```muttrc 
+# source colors and keybindings
+# keeping those in one place makes it easier
+source ~/.mutt/colors/dracula/dracula.muttrc
+source ~/.mutt/bindings
+# source aliases for mail addresses
+source ~/.mutt/aliases
+```
+
+10. by default use rpi3-tomek@gmail-com
+```muttrc 
+# by default use rpi3-tomek@gmail-com
+set realname = "Jan Tomek"
+set spoolfile = "+rpi3-tomek@gmail-com/inbox"
+source ~/.mutt/accounts/rpi3-tomek@gmail-com
+```
+
+11. when changing into other mailboxes, use different address etc.
+```muttrc 
+# when changing into other mailboxes, use different address etc.
+folder-hook rpi3-tomek\@gmail-com/* source ~/.mutt/accounts/rpi3-tomek@gmail-com
+```
+
+12. vim modeline
+```muttrrc
+# vim: ft=muttrc
+```
 
 ## bindings
 
