@@ -327,6 +327,14 @@ while true; do
 done
 ```
 
+or without `ssh key` added to `ssh-agent`:
+```bash
+while true; do
+    ssh -i [PATH_TO_PRVATE_KEY] [USERNAME]@sshhub.de -R [COMPUTERNAME]:22:localhost:22 -N -o ServerAliveInterval=10
+    sleep 5
+done
+```
+
 ### via systemd service:
 create a systemd unit file (/etc/systemd/system/sshhub.service)
 ```
@@ -357,8 +365,9 @@ Start sshhub automatically on startup:
 ```
 systemctl enable sshhub.service
 ```
-
+---------------------------------------------------------------------------------------------------
 __do not forget to ssh to sshhub.de at least once as root to add the sshhub.de host to known hosts!!!__
+---------------------------------------------------------------------------------------------------
 
 ### specify other ports:
 ```bash
@@ -367,6 +376,7 @@ server> ssh [USERNAME]@sshhub.de -R [COMPUTERNAME]:[R_PORT]:localhost:[PORT]
 # Forward local port [L_PORT] to the port shared above.
 client> ssh -J [USERNAME]@sshhub.de [L_PORT]:[COMPUTERNAME]:[PORT]
 ```
+only `[COMPUTERNAME]` and `[PORT]` variables can be specified at the moment
 
 ### use the tunnel
 ```bash

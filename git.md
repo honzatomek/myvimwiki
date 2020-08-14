@@ -25,6 +25,7 @@
     - [create a new repo from subdirectory](#SPLIT#create a new repo from subdirectory)
 - [add a new connection via ssh](#add a new connection via ssh)
     - [troubleshooting](#add a new connection via ssh#troubleshooting)
+- [rename local and remote branch](#rename local and remote branch)
 
 # CONFIG
 ## setup
@@ -400,6 +401,29 @@ eval "$(ssh-agent -s)"
 # add the key
 ssh-add xiaomi
 ```
+
+# rename local and remote branch
+1. rename local branch
+if on branch to be renamed:
+```git
+git branch -m new-name
+```
+
+if on different branch:
+```git
+git branch -m old-name new-name
+```
+
+2. delete old remote branch and push the new branch
+```git
+git push origin :old-name new-name
+```
+
+3. reset the upstream branch for the new name local branch
+```git
+git push origin -u new-name
+```
+
 
 
 [back to index](index.md)
