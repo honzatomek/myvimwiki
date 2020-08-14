@@ -1220,6 +1220,11 @@ color signature		color212	default
 ```
 
 ## mailcap
+mailcap is used or previewing or viewing message attachments or bodies (if in html format)
+here elinks is used to read mails in html format
+```muttrc
+text/html; elinks -dump -dump-charset utf-8 -default-mime-type text/html %s; needsterminal; copiousoutput;
+```
 
 
 
