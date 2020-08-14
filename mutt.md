@@ -769,6 +769,8 @@ sudo apt install mutt
 ## muttrc
 basic configuration is stored in either `~/.muttrc` or `~/.mutt/muttrc`
 
+If `set sidebar_short_path` does not show corretly:
+!!! beware: https://gitlab.com/muttmua/mutt/-/issues/194
 
 ## bindings
 
