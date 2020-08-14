@@ -20,6 +20,7 @@
     - [setup local mail processing](#procmail#setup local mail processing)
 - [isync/mbsync](#isync/mbsync)
     - [install](#isync/mbsync#install)
+    - [certificate files](#isync/mbsync#certificate files)
     - [setup](#isync/mbsync#setup)
 - [gpg2](#gpg2)
     - [install](#gpg2#install)
@@ -261,6 +262,8 @@ command.
 
 # getmail
 From: https://www.linode.com/docs/email/clients/retrieve-email-using-getmail/
+From: http://pyropus.ca/software/getmail/configuration.html
+From: https://wiki.archlinux.org/index.php/Getmail#Password_management
 
 __Getmail__ is a simple mail retriever. In many ways, the software is a response to
 the complexity of __fetchmail__. Getmail provides a simple and efficient tool for
@@ -301,16 +304,27 @@ path = /usr/bin/procmail
 arguments = ("-f", "%(sender)", "-m", "/home/pi/.procmail/procmailrc")
 
 [options]
-read_all = false
-delete = false
+read_all = False
+delete = False
 message_log = ~/.getmail/rpi3-tomek-gmail.log
-delivered_to = false
-received = false
+delivered_to = False
+received = False
 verbose = 2
 ```
 here the destination was to forward all incoming mails to __procmail__ for
 filtering and processing.
 
+there is a possibility to use `GPG encrypted` password:
+```python config
+password_command = ("gpg", "-q", "--for-your-eyes-only", "--no-tty", "-d", "~/.auth/authinfo.gpg", "|", "awk", "'/machine smtp.gmail.com login rpi3.tomek@gmail.com/ {print $NF}'")
+```
+
+if gpg is used and the beforementioned command is used to decrypt auth file then the auth file has following format:
+```
+machine imap.gmail.com login rpi3.tomek@gmail.com password MYSUPERSECRETPASSWORDWHICHISALSOLONGASFUCK
+machine smtp.gmail.com login rpi3.tomek@gmail.com password MYSUPERSECRETPASSWORDWHICHISALSOLONGASFUCK
+```
+multiple accounts can be set.
 
 # procmail
 __Procmail__ is a MDA (Mail Delivery Agent) that using _recipes_ processes,
@@ -402,6 +416,121 @@ locally on the computer using IMAP protocol.
 sudo apt update && sudo apt dist-upgrade
 sudo apt install isync
 ```
+
+## certificate files
+there are three certificate files in the following setup
+
+1. `ca-certificates.crt`, for this the `ca-certicates` should be installed:
+```bash
+sudo apt install ca-certtificates
+```
+then this certificate file shoudld be located in:
+`/etc/ssl/certs/ca-certificates.crt`
+
+2. the google certificates
+From: https://wiki.archlinux.org/index.php/isync
+
+to get google certificates use:
+```bash
+openssl s_client -connect smtp.gmail.com:465 -showcerts 2>&1 < /dev/null > cert
+```
+
+a following output will be saved into the `cert` file:
+```
+depth=2 OU = GlobalSign Root CA - R2, O = GlobalSign, CN = GlobalSign
+verify return:1
+depth=1 C = US, O = Google Trust Services, CN = GTS CA 1O1
+verify return:1
+depth=0 C = US, ST = California, L = Mountain View, O = Google LLC, CN = smtp.gmail.com
+verify return:1
+CONNECTED(00000004)
+---
+Certificate chain
+ 0 s:C = US, ST = California, L = Mountain View, O = Google LLC, CN = smtp.gmail.com
+   i:C = US, O = Google Trust Services, CN = GTS CA 1O1
+-----BEGIN CERTIFICATE-----
+MIIEyDCCA7CgAwIBAgIRANnY19sA42hwCAAAAABNn0kwDQYJKoZIhvcNAQELBQAw
+QjELMAkGA1UEBhMCVVMxHjAcBgNVBAoTFUdvb2dsZSBUcnVzdCBTZXJ2aWNlczET
+MBEGA1UEAxMKR1RTIENBIDFPMTAeFw0yMDA3MTUwODMzMDhaFw0yMDEwMDcwODMz
+MDhaMGgxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQH
+Ew1Nb3VudGFpbiBWaWV3MRMwEQYDVQQKEwpHb29nbGUgTExDMRcwFQYDVQQDEw5z
+bXRwLmdtYWlsLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJLziSDMl8+8
+mT2oq6AXKvF4XoqWHuwV3JTzG/eBlo4byXTXb/HbBEeJW+SaDYk/mXoexODCtjQB
+UVzJNG5Qjs2jggJcMIICWDAOBgNVHQ8BAf8EBAMCB4AwEwYDVR0lBAwwCgYIKwYB
+BQUHAwEwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQU8Cv9lvZRU4kTOBQQrIM15pnE
+6qkwHwYDVR0jBBgwFoAUmNH4bhDrz5vsYJ8YkBug630J/SswaAYIKwYBBQUHAQEE
+XDBaMCsGCCsGAQUFBzABhh9odHRwOi8vb2NzcC5wa2kuZ29vZy9ndHMxbzFjb3Jl
+MCsGCCsGAQUFBzAChh9odHRwOi8vcGtpLmdvb2cvZ3NyMi9HVFMxTzEuY3J0MBkG
+A1UdEQQSMBCCDnNtdHAuZ21haWwuY29tMCEGA1UdIAQaMBgwCAYGZ4EMAQICMAwG
+CisGAQQB1nkCBQMwMwYDVR0fBCwwKjAooCagJIYiaHR0cDovL2NybC5wa2kuZ29v
+Zy9HVFMxTzFjb3JlLmNybDCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB1AMZSoOxI
+zrP8qxcJksQ6h0EzCegAZaJiUkAbozYqF8VlAAABc1HSE4oAAAQDAEYwRAIgeC/2
+KD4kef6ALvdhAQ+QkCaYlTBfH7s7CSnxaO/g8xACIDx2oHIqeeE4YVaFcwFtNdlS
+bGlTLZLauaFV4JJ69ss7AHcAsh4FzIuizYogTodm+Su5iiUgZ2va+nDnsklTLe+L
+kF4AAAFzUdITdgAABAMASDBGAiEA8cpWAncjRNezQfi9gIjd8pq8HAhyn0ZkBH3v
+v5nM/JsCIQDJp/oYSeeNNlZA7RyjY/dRbEP2IkFmm3rE3QY7owRe8TANBgkqhkiG
+9w0BAQsFAAOCAQEAS5BeVd/nvbjGclc7hZa1OX3TZ095rjniN5R7C7TFk/C7i+0Y
+AvygPGclNnBk/C4IHJ+QPkqIzAMmT1i2oFqHCPXZRN+gOZAZbNifwjilBKK6HZ/4
+pqTIfw3+6aom+Y65ROxwvpOXdt/VDOVTD88lKR2v0NUDQHzrB/NLauyjqn3XLRtS
+LnMzoyhVUL4ugt/mWPh8kZ0M3Fo7VSVsp3ysVLh4E8TUnvHs+BIp9CUxDR60vda+
+bqURnAsF7wJL1lkPZLnOUh6zMJkEqm8xXUg+KBbcLCtDCsQPR3Tdwtn2oIPTU3Li
+B+HemGfeih42kLNAHkqnmaye0WIRSBJeX4y2lg==
+-----END CERTIFICATE-----
+ 1 s:C = US, O = Google Trust Services, CN = GTS CA 1O1
+   i:OU = GlobalSign Root CA - R2, O = GlobalSign, CN = GlobalSign
+-----BEGIN CERTIFICATE-----
+MIIESjCCAzKgAwIBAgINAeO0mqGNiqmBJWlQuDANBgkqhkiG9w0BAQsFADBMMSAw
+HgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMjETMBEGA1UEChMKR2xvYmFs
+U2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjAeFw0xNzA2MTUwMDAwNDJaFw0yMTEy
+MTUwMDAwNDJaMEIxCzAJBgNVBAYTAlVTMR4wHAYDVQQKExVHb29nbGUgVHJ1c3Qg
+U2VydmljZXMxEzARBgNVBAMTCkdUUyBDQSAxTzEwggEiMA0GCSqGSIb3DQEBAQUA
+A4IBDwAwggEKAoIBAQDQGM9F1IvN05zkQO9+tN1pIRvJzzyOTHW5DzEZhD2ePCnv
+UA0Qk28FgICfKqC9EksC4T2fWBYk/jCfC3R3VZMdS/dN4ZKCEPZRrAzDsiKUDzRr
+mBBJ5wudgzndIMYcLe/RGGFl5yODIKgjEv/SJH/UL+dEaltN11BmsK+eQmMF++Ac
+xGNhr59qM/9il71I2dN8FGfcddwuaej4bXhp0LcQBbjxMcI7JP0aM3T4I+DsaxmK
+FsbjzaTNC9uzpFlgOIg7rR25xoynUxv8vNmkq7zdPGHXkxWY7oG9j+JkRyBABk7X
+rJfoucBZEqFJJSPk7XA0LKW0Y3z5oz2D0c1tJKwHAgMBAAGjggEzMIIBLzAOBgNV
+HQ8BAf8EBAMCAYYwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBIGA1Ud
+EwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFJjR+G4Q68+b7GCfGJAboOt9Cf0rMB8G
+A1UdIwQYMBaAFJviB1dnHB7AagbeWbSaLd/cGYYuMDUGCCsGAQUFBwEBBCkwJzAl
+BggrBgEFBQcwAYYZaHR0cDovL29jc3AucGtpLmdvb2cvZ3NyMjAyBgNVHR8EKzAp
+MCegJaAjhiFodHRwOi8vY3JsLnBraS5nb29nL2dzcjIvZ3NyMi5jcmwwPwYDVR0g
+BDgwNjA0BgZngQwBAgIwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly9wa2kuZ29vZy9y
+ZXBvc2l0b3J5LzANBgkqhkiG9w0BAQsFAAOCAQEAGoA+Nnn78y6pRjd9XlQWNa7H
+TgiZ/r3RNGkmUmYHPQq6Scti9PEajvwRT2iWTHQr02fesqOqBY2ETUwgZQ+lltoN
+FvhsO9tvBCOIazpswWC9aJ9xju4tWDQH8NVU6YZZ/XteDSGU9YzJqPjY8q3MDxrz
+mqepBCf5o8mw/wJ4a2G6xzUr6Fb6T8McDO22PLRL6u3M4Tzs3A2M1j6bykJYi8wW
+IRdAvKLWZu/axBVbzYmqmwkm5zLSDW5nIAJbELCQCZwMH56t2Dvqofxs6BBcCFIZ
+USpxu6x6td0V7SvJCCosirSmIatj/9dSSVDQibet8q/7UK4v4ZUN80atnZz1yg==
+-----END CERTIFICATE-----
+---
+Server certificate
+subject=C = US, ST = California, L = Mountain View, O = Google LLC, CN = smtp.gmail.com
+
+issuer=C = US, O = Google Trust Services, CN = GTS CA 1O1
+
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: ECDSA
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 2641 bytes and written 396 bytes
+Verification: OK
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Server public key is 256 bit
+Secure Renegotiation IS NOT supported
+No ALPN negotiated
+Early data was not sent
+Verify return code: 0 (ok)
+---
+DONE
+```
+
+then two certificates enclosed in `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----`.
+savve the two respective keys to `*.pem` files for further use.
+
 
 ## setup
 Create either `~/.mbsyncrc` or `~/.mbsync/mbsyncrc` file.
@@ -505,6 +634,8 @@ Channel rpi3-tomek@gmail-com_custom
 SyncState *
 CopyArrivalDate yes
 ```
+
+the `CopyArrivalDate yes` command is used to correct the incoming mails if their arrival date is wrong
 
 # gpg2
 ## install
