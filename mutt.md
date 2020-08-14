@@ -35,8 +35,10 @@
         - [script to add mailboxes](#mutt#muttrc#script to add mailboxes)
     - [bindings](#mutt#bindings)
     - [accounts](#mutt#accounts)
+    - [signature](#mutt#signature)
     - [colors](#mutt#colors)
-    - [signatures](#mutt#signatures)
+        - [16 color setup example](#mutt#colors#16 color setup example)
+        - [256 color setup example](#mutt#colors#256 color setup example)
     - [mailcap](#mutt#mailcap)
 
 # exim4
@@ -1111,9 +1113,111 @@ macro index,pager I \
  # vim: ft=muttrc
 ```
 
-## colors
+## signature
+example signature file:
+```
 
-## signatures
+Best regards / S pozdravem
+
+Ing. Jan Tomek
+e-mail: honzatomek@centrum.cz
+
+---
+
+
+```
+
+## colors
+### 16 color setup example
+```muttrc
+# basic colors ---------------------------------------------------------
+color normal white default
+color error red default
+color tilde black default
+color message cyan default
+color markers red white
+color attachment white default
+color search brightmagenta default
+color indicator brightblack yellow
+color tree green default
+# sidebarh
+color sidebar_new default blue
+# index ----------------------------------------------------------------
+color index red default "~A" # all messages
+color index brightred default "~E" # expired messages
+color index blue default "~N" # new messages
+color index blue default "~O" # old messages
+color index brightmagenta default "~Q" # messages that have been replied to
+color index brightwhite default "~R" # read messages
+color index blue default "~U" # unread messages
+color index brightyellow default "~v" # messages part of a collapsed thread
+color index brightyellow default "~P" # messages from me
+color index red default "~F" # flagged messages
+color index black red "~D" # deleted messages
+# message headers ------------------------------------------------------
+color hdrdefault brightgreen default
+color header brightyellow default "^(From)"
+color header blue default "^(Subject)"
+# body -----------------------------------------------------------------
+color quoted blue default
+color quoted1 cyan default
+color quoted2 yellow default
+color quoted3 red default
+color quoted4 brightred default
+color signature brightblack default
+color bold black default
+color underline black default
+color normal default default
+
+# vim: ft=muttrc
+```
+
+### 256 color setup example
+From: https://github.com/dracula/mutt.git
+```mutrc
+###############################################################################
+# Dracula Theme for Mutt: https://draculatheme.com/
+#
+# @author Paul Townsend <paul@caprica.org>
+
+# general ------------ foreground ---- background -----------------------------
+color error		color231	color212
+color indicator		color231	color241
+color markers		color210	default
+color message		default		default
+color normal		default		default
+color prompt		default	        default
+color search		color84		default
+color status 		color141	color236
+color tilde		color231	default
+color tree		color141	default
+
+# message index ------ foreground ---- background -----------------------------
+color index		color210	default 	~D # deleted messages
+color index		color84		default 	~F # flagged messages
+color index		color117	default 	~N # new messages
+color index		color212	default 	~Q # messages which have been replied to
+color index		color215	default 	~T # tagged messages
+color index		color141	default		~v # messages part of a collapsed thread
+
+# message headers ---- foreground ---- background -----------------------------
+color hdrdefault	color117	default
+color header		color231	default		^Subject:.*
+
+# message body ------- foreground ---- background -----------------------------
+color attachment	color228	default
+color body		color231	default		[\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+               # email addresses
+color body		color228	default		(https?|ftp)://[\-\.,/%~_:?&=\#a-zA-Z0-9]+        # URLs
+color body		color231	default		(^|[[:space:]])\\*[^[:space:]]+\\*([[:space:]]|$) # *bold* text
+color body		color231	default		(^|[[:space:]])_[^[:space:]]+_([[:space:]]|$)     # _underlined_ text
+color body		color231	default		(^|[[:space:]])/[^[:space:]]+/([[:space:]]|$)     # /italic/ text
+color quoted		color61		default
+color quoted1		color117	default
+color quoted2		color84		default
+color quoted3		color215	default
+color quoted4		color212	default
+color signature		color212	default
+```
 
 ## mailcap
 
