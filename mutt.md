@@ -1061,6 +1061,55 @@ macro index,pager O "<shell-escape>mbsync rpi3-tomek@gmail-com<enter>" \
 ```
 
 ## accounts
+a `~/.mutt/accounts/rpi3-tomek@gmail-com` example:
+```muttrc
+# rpi3-tomek@gmail-com mailbox settings
+set from = "rpi3.tomek@gmail.com"
+set realname = "Jan Tomek"
+set use_from = yes
+set envelope_from = yes
+
+# mail setup
+#set smtp_url = "smtps://rpi3.tomek@gmail.com@smtp.gmail.com:465/"
+#set smtp_pass =
+#set ssl_force_tls = yes
+# set sendmail =
+
+# set folders
+set spoolfile = "+rpi3-tomek@gmail-com/inbox"
+set mbox = "+rpi3-tomek@gmail-com/archive"
+set postponed = "+rpi3-tomek@gmail-com/drafts"
+set record = "+rpi3-tomek@gmail-com/sent"
+set trash = "+rpi3-tomek@gmail-com/trash"
+
+# alternate email addresses
+alternates ^jantomek888@gmail.com ^rpi3.tomek@protonmail.com ^jan.tomek@protonmail.com ^honzatomek@centrum.cz
+
+# custom signature
+set signature = ~/.mutt/signatures/tomek
+
+#color status black cyan
+# color status cyan default
+
+#macro index o "<shell-escape>getmail -n<enter>" "run getmail to retrieve new messages"
+macro index o "<shell-escape>mbsync rpi3-tomek@gmail-com<enter>" "run mbsync to synchronise messages"
+
+macro index,pager J \
+  "<enter-command>set my_old_resolve=\$resolve noresolve<enter>\
+  <tag-prefix><clear-flag>n<enter-command>set resolve=\$my_old_resolve<enter>\
+  <save-message>+rpi3-tomek@gmail-com/spam<enter>" \
+  "mark as read and move to spam folder"
+
+macro index,pager A \
+  "<save-message>+rpi3-tomek@gmail-com/archive<enter>" \
+  "move the message to archive"
+
+macro index,pager I \
+ "<save-message>+rpi3-tomek@gmail-com/inbox<enter>" \
+ "move the message to inbox"
+
+ # vim: ft=muttrc
+```
 
 ## colors
 
