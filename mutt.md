@@ -32,6 +32,7 @@
     - [muttrc](#mutt#muttrc)
         - [basic `.muttrc` setup:](#mutt#muttrc#basic `.muttrc` setup:)
         - [advanced `.muttrc` setup](#mutt#muttrc#advanced `.muttrc` setup)
+        - [script to add mailboxes](#mutt#muttrc#script to add mailboxes)
     - [bindings](#mutt#bindings)
     - [accounts](#mutt#accounts)
     - [colors](#mutt#colors)
@@ -949,6 +950,63 @@ folder-hook rpi3-tomek\@gmail-com/* source ~/.mutt/accounts/rpi3-tomek@gmail-com
 12. vim modeline
 ```muttrrc
 # vim: ft=muttrc
+```
+
+### script to add mailboxes
+mutt v1.3 shorts paths in sidebar based on previously occuring strings
+`~/.mutt/add_mailbox.sh`
+```bash
+#!/bin/bash
+
+mail="$1"
+
+#out=$(find "${mail}" -type d -name inbox | sed -E 's|'"${mail}"'|=|g'| sort | sed -E 's|=([^/]*)(/.*)\b|mailboxes =\1 =\1\2;|g' | xargs)
+
+for d in $(find "${mail}" -mindepth 1 -maxdepth 1 -type d | sort); do
+  o="mailboxes ${d/${mail}/=} ${d/${mail}/=}/inbox"
+  o="${o} $(find "${d}" -mindepth 1 -type d \! -name new \! -name cur \! -name tmp \! -name inbox | sort | sed -E 's|'"${mail}"'|=|g' | xargs)"
+  out="${out}${o}; "
+done
+
+echo "${out%%; }"
+```
+
+this behavior changes in v1.3.1, use:
+```muttrc
+# mailboxes to show in the sidebar
+mailboxes ="ALL-INBOXES"
+mailboxes ="==================="
+`~/.mutt/add_inboxes.sh "${HOME}/mail/"`
+mailboxes ="-------------------"
+`~/.mutt/add_other.sh "${HOME}/mail/"`
+```
+
+and the scripts:
+1. add_inboxes
+`~/.mutt/add_inboxes.sh`
+```bash
+#!/bin/bash
+
+mail="$1"
+
+find "${mail}" -type d -name inbox | sed -E 's|'"${mail}"'|=|g'| sort | sed -E 's|=([^/]*)(/.*)\b|mailboxes =\1 =\1\2;|g' | xargs
+```
+
+2. add_other
+`~/.mutt/add_other.sh`
+```bash
+#!/bin/bash
+
+mail="$1"
+out=""
+
+for d in $(find "${mail}" -mindepth 1 -maxdepth 1 -type d | sort); do
+  o="mailboxes ${d/${mail}/=}"
+  o="${o} $(find "${d}" -mindepth 1 -type d \! -name new \! -name cur \! -name tmp \! -name inbox | sort | sed -E 's|'"${mail}"'|=|g' | xargs)"
+  out="${out}${o}; "
+done
+
+echo "${out%%; }"
 ```
 
 ## bindings
