@@ -35,6 +35,9 @@
 - [wget](#wget)
     - [recursively download whole structure](#wget#recursively download whole structure)
 - [heredoc string](#heredoc string)
+    - [multiple heredocs](#heredoc string#multiple heredocs)
+    - [redirection to file](#heredoc string#redirection to file)
+    - [pipe to command](#heredoc string#pipe to command)
 - [function to open multiple files in vim](#function to open multiple files in vim)
 - [screen automation function](#screen automation function)
 - [c style for loop](#c style for loop)
@@ -477,7 +480,16 @@ positional:  filex         - files to open
 EOF
 ```
 
-redirection to file
+## multiple heredocs
+```bash
+cat <<EOF1; cat <<EOF2
+Hello, 
+EOF1
+there!
+EOF2
+```
+
+## redirection to file
 ```bash
 cat > file.txt << EOF
 vimsplit function
@@ -492,6 +504,29 @@ optional:    -h|--help     - prints this help and exits
              -n|--number N - number of files in splits per tab, default = 2
 positional:  filex         - files to open
 EOF
+```
+
+## pipe to command
+```bash
+cat << EOF | msmtp -a default 
+To: username@domail.com
+From: username@domain.com
+Subject: this is a subject
+
+This is the mail body.
+EOF
+```
+
+or
+```bash
+cat << EOF |
+To: username@domail.com
+From: username@domain.com
+Subject: this is a subject
+
+This is the mail body.
+EOF
+msmtp -a default 
 ```
 
 # function to open multiple files in vim

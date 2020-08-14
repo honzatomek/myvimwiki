@@ -6,6 +6,10 @@
     - [provide username and password](#exim4#provide username and password)
     - [test setup](#exim4#test setup)
     - [TODO](#exim4#TODO)
+- [msmtp](#msmtp)
+    - [install](#msmtp#install)
+    - [setup](#msmtp#setup)
+    - [test setup](#msmtp#test setup)
 - [redirect local mails](#redirect local mails)
 - [getmail](#getmail)
     - [install](#getmail#install)
@@ -134,6 +138,93 @@ If you experience any issue with exim4, check its log file located at
 
 ## TODO
 - use __SSL/TLS__ Authentication using __GMail__ Certificates
+
+# msmtp
+From: https://wiki.archlinux.org/index.php/msmtp
+an option to `exim4` for sending mail on linux (for example in `termux` `exim4` is not available)
+
+## install
+```bash
+sudo apt update && sudo apt dist-upgrade
+sudo apt install msmtp
+# this is optional
+sudo apt install msmtp-mta
+```
+
+`msmtp-mta` will create `sendmail` alias to `msmtp`
+
+## setup
+create `~/.msmtprc` with following settings:
+```msmtprc
+# default values for all accounts, the _defaults_ keyword is crucial
+defaults
+auth on
+tls on
+tls_trust_file ~/.cert/ca-certificates.crt
+logfile ~/.msmtp/msmtp.log
+
+# rpi3.tomek@gmail.com
+account rpi3-tomek@gmail-com
+host smtp.gmail.com
+port 587
+from rpi3.tomek@gmail.com
+user rpi3.tomek
+#password MYSUPERSECRETPASSWORDWHICHISALSOLONGASFUCK
+passwordeval "gpg -q --for-your-eyes-only --no-tty -d ~/.auth/authinfo.gpg | awk '/machine smtp.gmail.com login rpi3.tomek@gmail.com/ {print $NF}'"
+
+# multiple accounts can be set starting the _account_ keyword
+
+# set default account
+account default : rpi3-tomek@gmail-com
+
+# vim: ft=rc
+```
+
+`ca-certificates.crt` file can be usually found in `/etc/ssl/certs/ca-certtificates.crt`
+but the package needs to be installed:
+```bash
+sudo apt install ca-certificates
+```
+
+a password can be either input in the `rc file`, then the `.msmtprc` file should have __0600__ rights set
+```bash
+chmod 0600 ~/.msmtprc
+```
+
+if gpg is used and the beforementioned command is used to decrypt auth file then the auth file has following format:
+```
+machine imap.gmail.com login rpi3.tomek@gmail.com password MYSUPERSECRETPASSWORDWHICHISALSOLONGASFUCK
+machine smtp.gmail.com login rpi3.tomek@gmail.com password MYSUPERSECRETPASSWORDWHICHISALSOLONGASFUCK
+```
+multiple accounts can be set
+
+if only one account is needed or a setup with one account per file is preferred, use:
+```bash
+passwordeval "gpg -q --for-your-eyes-only --no-tty -d ~/.auth/rpi3.tomek@gmail.com.gpg"
+```
+then the file should have only contaiin the password
+
+## test setup
+use following command to test whether the `.msmtprc` file was set up correctly:
+```bash
+echo "Hello there!" | msmtp -a default recipient@gmail.com
+```
+the `-a|--account=` option sets the account to use for sending mail
+
+you can also send a file to the msmtp command with more info:
+```bash
+cat << EOF | msmtp -a default 
+To: username@domail.com
+From: username@domain.com
+Subject: this is a subject
+
+This is the mail body.
+EOF
+```
+
+if just `msmtp -a default recipient@provider.com` command is used, then you can write a message bellow
+and end writing the message using `Ctrl-D` command
+
 
 # redirect local mails
 From: https://linuxcommando.blogspot.com/2014/04/redirect-local-emails-to-remote-email.html
