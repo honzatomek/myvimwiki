@@ -699,6 +699,17 @@ encrypt a file (only persons specified as recipients will be able to decrypt it)
 gpg2 --recipient jan.tomek@protonmail.com --recipient rpi3.tomek@gmail.com --encrypt .authinfo
 ```
 
+change private key passphrase (or delete it entirely)
+From: https://help.ubuntu.com/community/GnuPrivacyGuardHowto
+1. first invoke the edit key command
+```bash
+gpg2 --edit-key KEYID
+```
+2. then in the gpg prompt enter passwd command and follow the instructions
+```gpg
+gpg> passwd
+```
+
 ## use gpg2 for password protection
 first create a file storing all sensitive info
 ```
