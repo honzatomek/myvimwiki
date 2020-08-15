@@ -715,6 +715,21 @@ gpg2 --edit-key KEYID
 gpg> passwd
 ```
 
+generate passphraseless key:
+From: https://superuser.com/questions/1360324/gpg-remove-passphrase
+```bash
+gpg2 --batch --gen-key <<EOF
+%no-protection
+Key-Type:1
+Key-Length:2048
+Subkey-Type:1
+Subkey-Length:2048
+Name-Real: My super name
+Name-Email: admin@superuser.com
+Expire-Date:0
+EOF
+```
+
 ## use gpg2 for password protection
 first create a file storing all sensitive info
 ```
