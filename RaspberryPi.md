@@ -19,6 +19,7 @@
         - [via systemd service:](#SSH#tunnelling#via systemd service:)
         - [specify other ports:](#SSH#tunnelling#specify other ports:)
         - [use the tunnel](#SSH#tunnelling#use the tunnel)
+        - [copy files through the tunnel](#SSH#tunnelling#copy files through the tunnel)
 - [WLAN](#WLAN)
     - [network devices](#WLAN#network devices)
         - [show](#WLAN#network devices#show)
@@ -382,6 +383,20 @@ only `[COMPUTERNAME]` and `[PORT]` variables can be specified at the moment
 ```bash
 ssh -l [USER] -J [USERNAME]@sshhub.de [COMPUTERNAME] -p [PORT]
 ```
+
+### copy files through the tunnel
+From: https://www.urbaninsight.com/article/running-scp-through-ssh-tunnel
+first setup the tunnel from client side
+```bash
+ssh -i ~/.ssh/xiaomi -L 1234:raspberrypi4:22 honzatomek@sshhub.de
+```
+
+then open `mc` in new termjnal and use __shell link__:
+```
+pi@127.0.0.1:1234
+```
+
+and you're good to go!
 
 
 # WLAN
