@@ -1,7 +1,12 @@
 # Contents
 
+- [access android filesystem](#access android filesystem)
 - [backup and restore](#backup and restore)
 - [do not show login message](#do not show login message)
+
+# access android filesystem
+for `termux` to access android filesystem it is needed to allow __access to storage__:
+settings -> Apps -> Termux -> Permissions
 
 # backup and restore
 from: https://jnet.forumotion.com/t1569-how-to-backup-and-restore-android-app-like-termux
