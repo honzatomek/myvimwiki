@@ -435,7 +435,7 @@ then this certificate file shoudld be located in:
 2. the google certificates
 From: https://wiki.archlinux.org/index.php/isync
 
-to get google certificates use:
+to get google certificates use (an `openssl-tool` needs to be installed):
 ```bash
 openssl s_client -connect smtp.gmail.com:465 -showcerts 2>&1 < /dev/null > cert
 ```
