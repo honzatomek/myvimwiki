@@ -424,6 +424,4 @@ git push origin :old-name new-name
 git push origin -u new-name
 ```
 
-
-
 [back to index](index.md)
