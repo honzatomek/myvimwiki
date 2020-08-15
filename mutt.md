@@ -1090,6 +1090,7 @@ alternates ^jantomek888@gmail.com ^rpi3.tomek@protonmail.com ^jan.tomek@protonma
 # custom signature
 set signature = ~/.mutt/signatures/tomek
 
+# color statusbar based on account
 #color status black cyan
 # color status cyan default
 
