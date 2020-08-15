@@ -40,6 +40,7 @@
         - [16 color setup example](#mutt#colors#16 color setup example)
         - [256 color setup example](#mutt#colors#256 color setup example)
     - [mailcap](#mutt#mailcap)
+    - [show dotfiles](#mutt#show dotfiles)
 
 # exim4
 From: https://linuxcommando.blogspot.com/2014/04/how-to-setup-exim4-on-debian-to-use.html?m=1
@@ -1242,6 +1243,10 @@ here elinks is used to read mails in html format
 text/html; elinks -dump -dump-charset utf-8 -default-mime-type text/html %s; needsterminal; copiousoutput;
 ```
 
+## show dotfiles
+```muttrc
+set mask = ""
+```
 
 
 [back to index](index.md)
