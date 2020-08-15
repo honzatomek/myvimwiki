@@ -7,6 +7,7 @@
     - [kill all detached sessions](#layout#kill all detached sessions)
 - [bash automation function](#bash automation function)
 - [256 color support](#256 color support)
+- [statusline](#statusline)
 
 # layout
 https://superuser.com/questions/687348/how-to-persist-gnu-screen-layout-after-restart
@@ -49,7 +50,7 @@ echo defscrollback 1000 >> $HOME/.screenrc
 ```
 
 * Write own *.screen_layout* (50% / 50% vertical, with 2 shells):
-```bash
+```screen
 split -v
 screen -t s1
 
@@ -97,7 +98,7 @@ fi
 ```
 
 * default **.screenrc**:
-```bash
+```screen
 startup_message off
 defscrollback 1000
 
@@ -105,7 +106,7 @@ shell /bin/bash
 ```
 
 * custom **./python3/.screenrc_python**:
-```bash
+```screen
 source .screenrc
 
 split -v
@@ -233,6 +234,109 @@ export TERM='screen-256color'
 in `.vimrc`:
 ```vim
 set t_Co=256
+```
+
+# statusline
+From: https://superuser.com/questions/51988/what-is-the-best-gnu-screen-taskbar-youve-used-seen
+```screen
+hardstatus alwayslastline "%{b kw}%H %{r}%1` %{w}| %{g}%c %{w}| %{y}%d.%m.%Y %{w}| %{g}%l %{w}| %{-b kw}%u %-Lw%{= rW}%50> %n%f %t %{-}%+Lw%<"
+```
+
+other possibility:
+```screen
+add a comment
+12
+votes
+I also use a fairly involved caption/hardstatus line combination, to simulate the effect of dropdown tabs (the caption line is solid grey and the current tab in the hardstatus is the same color).
+
+I also have my shell tell screen what the current process name is and what directory I'm in, so my tab names stay up to date with what I'm doing in each tab. This is critical to remembering what I'm doing where without having to flick through all my open tabs.
+
+ # don't use the hardstatus line for system messages, use reverse video instead
+ # (we'll be using it for the list of tab windows - see hardstatus alwayslastline
+ # below)
+ hardstatus off
+
+ # use the caption line for the computer name, load, hstatus (as set by zsh), & time
+ # the caption line gets repeated for each window being displayed (using :split),
+ # so we'll use color cues to differentiate the caption of the current, active
+ # window, and the others.
+ #    always                  - display the caption continuously.  Since
+ #                              hardstatus is 'alwayslastline', it will be on the
+ #                              next to last line.
+ #    "%?%F"                  - if (leading '%?') this region has focus ('%F') 
+ #                              (e.g. it's the only region being displayed, or,
+ #                              if in split-screen mode, it's the currently active
+ #                              region)
+ #      "%{= Kk}"               - set the colorscheme to blac[k] on grey (bright blac[K]),
+ #                                with no other effects (standout, underline, etc.)
+ #    "%:"                    - otherwise ('%:' between a pair of '%?'s)
+ #      "%{=u kR}"              - set the colorscheme to [R]ed on blac[k], and
+ #                                underline it, but no other effects (bold, standout, etc.) 
+ #    "%?"                    - end if (trailing '%?')
+ #    "  %h "                 - print two spaces, tthne the [h]ardstatus of the
+ #                              current tab window (as set by zsh - see zshrc) and
+ #                              then another space.
+ #    "%-024="                - either pad (with spaces) or truncate the previous
+ #                              text so that the rest of the caption string starts
+ #                              24 characters ('024') from the right ('-') edge of
+ #                              the caption line.
+ #                              NOTE: omitting the '0' before the '24' would pad
+ #                              or truncate the text so it would be 24% from the
+ #                              right.
+ #    "%{+b}                  - add ('+') [b]old to the current text effects, but
+ #                              don't change the current colors.
+ #    " %C:%s%a %D %d %M %Y"  - print the [C]urrent time, a colon, the [s]econds,
+ #                              whether it's [a]m or pm, the [D]ay name, the [d]ay
+ #                              of the month, the [M]onth, and the [Y]ear.
+ #                              (this takes up 24 characters, so the previous
+ #                              pad/truncate command makes sure the clock doesn't
+ #                              get pushed off of the caption line)
+ #    "%{= dd}"               - revert to the [d]efault background and [d]efault
+ #                              foreground colors, respectively, with no ('= ')
+ #                              other effects.
+ #  other things that might be useful later are
+ #    " %H"                   - print a space, then the [H]ostname.
+ #    "(%{.K}%l%{-}):"        - print a '(', then change the text color to grey
+ #                              (aka bright blac[K]), and print the current system
+ #                              [l]oad.  Then revert to the previous colorscheme
+ #                              ('%{-}') and print a close ')' and a colon.
+ #                              NOTE: the load is only updated when some other
+ #                              portion of the caption string needs to be changed
+ #                              (like the seconds in the clock, or if there were a
+ #                              backtick command)
+ #    "%0`"                   - put the output of a backtick command in the line
+ #    "%-024<"                - don't pad, just truncate if the string is past 24
+ #                              characters from the right edge
+ #    "%-="                   - pad (with spaces) the previous text text so that
+ #                              the rest of the caption string is justified
+ #                              against the right edge of the screen.
+ #                              NOTE: doesn't appear to truncate previous text.
+ caption always           "%?%F%{= Kk}%:%{=u kR}%?  %h %-024=%{+b} %C%a %D %d %M %Y%{= db}"
+ # use the hardstatus line for the window list
+ #    alwayslastline      - always display the hardstatus as the last line of the
+ #                          terminal
+ #    "%{= kR} %-Lw"      - change to a blac[k] background with bright [R]ed text,
+ #                          and print all the tab [w]indow numbers and titles in
+ #                          the [L]ong format (ie with flags) upto ('-') the
+ #                          current tab window
+ #    "%{=b Kk} %n%f %t " - change to grey (bright blac[K]) background with
+ #                          [b]old blac[k] text, with no other effects, and print
+ #                          the [n]umber of the current tab window, any [f]lags it
+ #                          might have, and the [t]itle of the current tab window
+ #                          (as set by zsh - see zshrc).
+ #                          NOTE: the color match with the caption line makes it
+ #                          appear as if a 'tab' is dropping down from the caption
+ #                          line, highlighting the number & title of the current
+ #                          tab window.  Nifty, ain't it)
+ #    "%{-}%+Lw "         - revert to the previous color scheme (red on black)
+ #                          and print all the tab [w]indow numbers and titles in
+ #                          the [L]ong format (ie with flags) after ('+') the
+ #                          current tab window.
+ #    "%=%{= dd}"         - pad all the way to the right (since there is no text
+ #                          that follows this) and revert to the [d]efault
+ #                          background and [d]efault foreground colors, with no
+ #                          ('= ') other effects.
+ hardstatus alwayslastline "%{= kR} %-Lw%{=b Kk} %n%f %t %{-}%+Lw %=%{= dd}"
 ```
 
 
