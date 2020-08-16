@@ -312,7 +312,9 @@ remove a public key:
 cat ~/.ssh/id_rsa.pub | ssh [USERNAME]@sshhub.de pubkey rm
 ```
 
-add a private key to __ssh authentication agent__ (input in .bashrc):
+add a private key to __ssh authentication agent__:
+- in `termux` add the following lines to `.bashrc`
+- in standard linux put it to `/etc/rc.local`
 ```bash
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
@@ -332,6 +334,14 @@ or without `ssh key` added to `ssh-agent`:
 ```bash
 while true; do
     ssh -i [PATH_TO_PRVATE_KEY] [USERNAME]@sshhub.de -R [COMPUTERNAME]:22:localhost:22 -N -o ServerAliveInterval=10
+    sleep 5
+done
+```
+
+a specific port can be used (above 1220, I think. or use 22 - default port for SSH);
+```bash
+while true; do
+    ssh -i [PATH_TO_PRVATE_KEY] [USERNAME]@sshhub.de -R [COMPUTERNAME]:22:localhost:1234 -N -o ServerAliveInterval=10
     sleep 5
 done
 ```
