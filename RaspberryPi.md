@@ -338,17 +338,18 @@ while true; do
 done
 ```
 
-a specific port can be used (above 1220, I think. or use 22 - default port for SSH);
+a specific port can be used (ports 1 - 1024 are reserved for the system, or use 22 - default port for SSH);
 ```bash
 while true; do
     ssh -i [PATH_TO_PRVATE_KEY] [USERNAME]@sshhub.de -R [COMPUTERNAME]:22:localhost:1234 -N -o ServerAliveInterval=10
     sleep 5
 done
 ```
+temporary ports: 1025 - 32768
 
 ### via systemd service:
 create a systemd unit file (/etc/systemd/system/sshhub.service)
-```
+```systemd
 [Unit]
 Description=Setup a secure tunnel to sshhub
 After=network.target
@@ -367,13 +368,13 @@ WantedBy=multi-user.target
 ```
 
 Start it and test if it worked:
-```
+```bash
 systemctl start sshhub.service
 systemctl status sshhub.service
 ```
 
 Start sshhub automatically on startup:
-```
+```bash
 systemctl enable sshhub.service
 ```
 ---------------------------------------------------------------------------------------------------
@@ -396,12 +397,30 @@ ssh -l [USER] -J [USERNAME]@sshhub.de [COMPUTERNAME] -p [PORT]
 
 ### copy files through the tunnel
 From: https://www.urbaninsight.com/article/running-scp-through-ssh-tunnel
-first setup the tunnel from client side
+first setup the tunnel from the client side (use other than ssh port `22`)
 ```bash
 ssh -i ~/.ssh/xiaomi -L 1234:raspberrypi4:22 honzatomek@sshhub.de
 ```
 
-then open `mc` in new termjnal and use __shell link__:
+adding `cat -` will keep the tunnel running:
+```bash
+ssh -i ~/.ssh/xiaomi -L 1234:raspberrypi4:22 honzatomek@sshhub.de
+```
+
+this will set that commands sent to `127.0.0.1` (localhost) at port `1234` will be
+sent to the remote machine behind the tunnel
+
+then in a new terminal you can use the `scp` command:
+```bash
+scp -P 1234 pi@127.0.0.1:/path-to-file /local-path-to-copy-to
+```
+the `-P` option specifies the port
+`scp` commandd:
+```bash
+scp -P [PORT] [USER]@[ADDRESS]:[REMOTE PATH] [LOCAL PATH]
+```
+
+or open `mc` in new terminal and use __shell link__ (`<F9>` `r` `h`):
 ```
 pi@127.0.0.1:1234
 ```
