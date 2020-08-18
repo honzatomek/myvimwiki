@@ -553,7 +553,7 @@ User rpi3.tomek@gmail.com
 # PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.mailpass.gpg"
 PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.mbsync/.authinfo.gpg | awk '/machine imap.gmail.com login rpi3.tomek@gmail.com/ {print $NF}'"
 #
-# Use SSL
+# Use SSL (!!! no empty line can be before SSLType Command !!!)
 SSLType IMAPS
 # The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
 CertificateFile /etc/ssl/certs/ca-certificates.crt
@@ -642,6 +642,8 @@ CopyArrivalDate yes
 ```
 
 the `CopyArrivalDate yes` command is used to correct the incoming mails if their arrival date is wrong
+
+!!! there can be no __blank__ line before `SSLType` command !!!
 
 # gpg2
 ## install
