@@ -404,7 +404,7 @@ ssh -i ~/.ssh/xiaomi -L 1234:raspberrypi4:22 honzatomek@sshhub.de
 
 adding `cat -` will keep the tunnel running:
 ```bash
-ssh -i ~/.ssh/xiaomi -L 1234:raspberrypi4:22 honzatomek@sshhub.de
+ssh -i ~/.ssh/xiaomi -L 1234:raspberrypi4:22 honzatomek@sshhub.de cat -
 ```
 
 this will set that commands sent to `127.0.0.1` (localhost) at port `1234` will be
@@ -415,7 +415,7 @@ then in a new terminal you can use the `scp` command:
 scp -P 1234 pi@127.0.0.1:/path-to-file /local-path-to-copy-to
 ```
 the `-P` option specifies the port
-`scp` commandd:
+`scp` command:
 ```bash
 scp -P [PORT] [USER]@[ADDRESS]:[REMOTE PATH] [LOCAL PATH]
 ```
