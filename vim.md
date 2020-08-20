@@ -277,4 +277,24 @@ and use registers for input:
 :let @c=system('awk "BEGIN { printf \"%16.2e\", '.@a.' * '.@b.' }"')
 ```
 
+# generate tags for python
+From: https://stackoverflow.com/questions/47948545/ctags-vim-and-python-code
+```vim
+cd %:p:h
+!ctags -R --fields=+l --languages=python --python-kinds=-iv -f ./tags %:p
+```
+
+this will create directory `tags` in CWD
+
+to see Tag List use:
+```vim
+Tlist
+```
+
+to set Tag List width use (in `.vimrc`):
+```vim
+" tag list window width, default is 30
+let Tlist_WinWidth = 50
+```
+
 [back to index](index.md)
