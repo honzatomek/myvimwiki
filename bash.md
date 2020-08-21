@@ -894,5 +894,20 @@ shopt -u promptvars
 PROMPT_COMMAND=update_PS1
 ```
 
+# read command output to array
+```bash
+#!/bin/bash
+
+arr=()
+while IFS=  read -r -d $'\n'; do
+  arr+=("$REPLY")
+done < <(echo "${file}" | xargs grep -Eoh "${pattern}")
+```
+
+# unique sort array
+```bash
+#!/bin/bash
+arr=("$(echo ${arr} | tr ' ' '\n' | sort -u | tr '\n' ' ')")
+```
 
 [back to index](index.md)
