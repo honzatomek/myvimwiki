@@ -205,6 +205,8 @@ Note that the regular expression matcher is greedy, i.e., matches are attempted 
 ## character classes
 From: https://www.gnu.org/software/sed/manual/html_node/Character-Classes-and-Bracket-Expressions.html
 
+__!!! beware, the character class needs to be enclosed in `[` `]` brackets => correct is `[[:digit:]]` even for extended regex !!!__
+
 `[:alnum:]`
 Alphanumeric characters: `[:alpha:]` and `[:digit:]`; in the `C` locale and ASCII character encoding, this is the same as `[0-9A-Za-z]`.
 
