@@ -8,6 +8,7 @@
     - [command inside replace space](#SED#command inside replace space)
     - [REGEXP](#SED#REGEXP)
     - [Examples](#SED#Examples)
+    - [character classes](#SED#character classes)
 - [AWK](#AWK)
     - [match, group, substitute and if-else example](#AWK#match, group, substitute and if-else example)
     - [act only on matching lines](#AWK#act only on matching lines)
@@ -44,6 +45,8 @@
 - [redirect command output to multiple files](#redirect command output to multiple files)
 - [redirect command output to multiple commands](#redirect command output to multiple commands)
 - [git status in prompt](#git status in prompt)
+- [read command output to array](#read command output to array)
+- [unique sort array](#unique sort array)
 
 # SED
 ## replace file

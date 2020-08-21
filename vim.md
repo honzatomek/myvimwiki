@@ -10,6 +10,8 @@
     - [fix links](#vimwiki#fix links)
 - [highlight whole lines](#highlight whole lines)
 - [batch file processing](#batch file processing)
+- [floating point operations using awk](#floating point operations using awk)
+- [generate tags for python](#generate tags for python)
 
 # debug
 ## start logfile
