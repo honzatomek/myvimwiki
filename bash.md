@@ -202,6 +202,79 @@ Note that the regular expression matcher is greedy, i.e., matches are attempted 
 `‘^.\{15\}A’`
     This matches the start of a string that contains 16 characters, the last of which is an ‘A’.
 
+## character classes
+From: https://www.gnu.org/software/sed/manual/html_node/Character-Classes-and-Bracket-Expressions.html
+
+`[:alnum:]`
+Alphanumeric characters: `[:alpha:]` and `[:digit:]`; in the `C` locale and ASCII character encoding, this is the same as `[0-9A-Za-z]`.
+
+`[:alpha:]`
+Alphabetic characters: `[:lower:]` and `[:upper:]`; in the `C` locale and ASCII character encoding, this is the same as `[A-Za-z]`.
+
+`[:blank:]`
+Blank characters: space and tab.
+
+`[:cntrl:]`
+Control characters. In ASCII, these characters have octal codes 000 through 037, and 177 (DEL). In other character sets, these are the equivalent characters, if any.
+
+`[:digit:]`
+Digits: 0 1 2 3 4 5 6 7 8 9.
+
+`[:graph:]`
+Graphical characters: `[:alnum:]` and `[:punct:]`.
+
+`[:lower:]`
+Lower-case letters; in the `C` locale and ASCII character encoding, this is a b c d e f g h i j k l m n o p q r s t u v w x y z.
+
+`[:print:]`
+Printable characters: `[:alnum:]`, `[:punct:]`, and space.
+
+`[:punct:]`
+Punctuation characters; in the `C` locale and ASCII character encoding, this is ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ \` { | } ~.
+
+`[:space:]`
+Space characters: in the `C` locale, this is tab, newline, vertical tab, form feed, carriage return, and space.
+
+`[:upper:]`
+Upper-case letters: in the `C` locale and ASCII character encoding, this is A B C D E F G H I J K L M N O P Q R S T U V W X Y Z.
+
+`[:xdigit:]`
+Hexadecimal digits: 0 1 2 3 4 5 6 7 8 9 A B C D E F a b c d e f.
+
+Note that the brackets in these class names are part of the symbolic names, and must be included in addition to the brackets delimiting the bracket expression.
+
+Most meta-characters lose their special meaning inside bracket expressions:
+
+`]`
+ends the bracket expression if it’s not the first list item. So, if you want to make the `]` character a list item, you must put it first.
+
+`-`
+represents the range if it’s not first or last in a list or the ending point of a range.
+
+`^`
+represents the characters not in the list. If you want to make the `^` character a list item, place it anywhere but first.
+
+The characters `$`, `*`, `.`, `[`, and `\` are normally not special within list. For example, `[\*]` matches either `\` or `*`, because the `\` is not special here. However, strings like `[.ch.]`, `[=a=]`, and `[:space:]` are special within list and represent collating symbols, equivalence classes, and character classes, respectively, and `[` is therefore special within list when it is followed by `.`, `=`, or `:`. Also, when not in POSIXLY_CORRECT mode, special escapes like `\n` and `\t` are recognized within list. See Escapes.
+
+`[.`
+represents the open collating symbol.
+
+`.]`
+represents the close collating symbol.
+
+`[=`
+represents the open equivalence class.
+
+`=]`
+represents the close equivalence class.
+
+`[:`
+represents the open character class symbol, and should be followed by a valid character class name.
+
+`:]`
+represents the close character class symbol.
+
+
 # AWK
 ## match, group, substitute and if-else example
 had to install GNU AWK (`gawk`), Raspbian is preinstalled with `mawk`:
