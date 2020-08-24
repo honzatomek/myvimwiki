@@ -44,6 +44,7 @@
     - [show package info](#APT#show package info)
 - [VLC](#VLC)
     - [nvlc](#VLC#nvlc)
+- [Media Server](#Media Server)
 
 # SSH
 ## key conversion
@@ -955,6 +956,10 @@ to run in monochrome:
 custom start directory for Browser:
 `nvlc --browse-dir /home/pi/Downloads`
 
+# Media Server
+how to create a media server from RPi:
+From: https://pimylifeup.com/raspberrypi-minidlna/
 
+TODO: test and document this
 
 [back to index](index.md)
