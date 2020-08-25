@@ -898,6 +898,7 @@ PROMPT_COMMAND=update_PS1
 ```
 
 # read command output to array
+__grep__ and __sed__
 ```bash
 #!/bin/bash
 
@@ -905,6 +906,16 @@ arr=()
 while IFS=  read -r -d $'\n'; do
   arr+=("$REPLY")
 done < <(echo "${file}" | xargs grep -Eoh "${pattern}")
+```
+
+__find__
+```bash
+#!/bin/bash
+
+arr=()
+while IFS=  read -r -d $'\0'; do
+  arr+=("$REPLY")
+done < <(find . -type f -name '*.txt' -print0)
 ```
 
 # unique sort array
