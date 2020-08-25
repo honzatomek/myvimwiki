@@ -924,4 +924,97 @@ done < <(find . -type f -name '*.txt' -print0)
 arr=("$(echo ${arr} | tr ' ' '\n' | sort -u | tr '\n' ' ')")
 ```
 
+# interactive script invoking editor and processing results
+```bash
+#!/bin/bash
+
+DEBUG=0
+EDITOR="vim -c 'set ft=diff'"
+
+NORM="\033[00m"
+BOLD="\033[01m"
+
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+BLUE="\033[34m"
+VIOLET="\033[35m"
+AZURE="\033[36m"
+
+O="${NORM}[${BOLD}${GREEN}+${NORM}]"
+E="${NORM}[${BOLD}${RED}-${NORM}]"
+Q="${NORM}[${BOLD}${VIOLET}?${NORM}]"
+I="${NORM}[${BOLD}${YELLOW}i${NORM}]"
+
+directories=()
+while IFS=  read -r -d $'\0'; do
+  (( "${DEBUG}" )) && echo "${REPLY}"
+  directories+=("${REPLY}")
+done < <(find ./ -mindepth 1 -maxdepth 1 -type d -print0)
+directoreis=($(echo "${directories[*]}" | tr ' ' '\n' | sort | tr '\n' ' '))
+(( "${DEBUG}" )) &&  echo "${directories[@]}"
+
+temp=$(mktemp)
+
+echo "# in vim use :cq to abort!," >> "${temp}"
+echo "# :q! will cancel all modifications and delete all files with \"-\" at begining of line" >> "${temp}"
+echo "# :wq will save the modified state and delete all files with \"-\" at the begining of line" >> "${temp}"
+echo "#" >> "${temp}"
+echo "# in other editors either change all \"-\" to \"+\" or delete all lines if you wish to cancel." >> "${temp}"
+echo "" >> "${temp}"
+
+for d in "${directoreis[@]}"; do
+  echo -e "${O} directory: ${a}"
+  DELETE=()
+  for f in $(find "${d}" -type f | sort); do
+    ext="${f##*.}"
+    (( "${DEBUG}" )) && echo "${ext}: ${f}"
+    case ${f} in
+      # backup files
+      *.bak)
+        echo "- ${f}" >> "${temp}"
+        ;;
+      # PERMAS Analysis
+      *.uci)
+        echo "+ ${f}" >> "${temp}"
+        ;;
+      # Model files
+      *.bif|*.dat[0-9]*|*.pmat*)
+        echo "+ ${f}" >> "${temp}"
+        ;;
+      # Analysis result logs
+      *.pro|*.res)
+        echo "+ ${f}" >> "${temp}"
+        ;;
+      # Text files, ACCE and mpffre results
+      *.txt|*ACCE*.post|*mpffre*|*frcsst*.post)
+        echo "+ ${f}" >> "${temp}"
+        ;;
+      # Other files
+      *.png|*.xls|*.xlsx|*.xlsm)
+        echo "+ ${f}" >> "${temp}"
+        ;;
+      # PERMAS results
+      *.hdf|*.bof|*.bifo|*.dat|*.dato|*.dato.gz|*.post|*.post.gz|*.step|*.e[0-9]*|*.o[0-9]*|*.pe[0-9]*|*.po[0-9]*)
+        echo "- ${f}" >> "${temp}"
+        ;;
+      *)
+        echo "+ ${f}" >> "${temp}"
+        ;;
+    esac
+  done
+done
+
+for f in ./*.{po,pe,o,e}[0-9]*; do
+  echo "- ${f}" >> "${temp}"
+done
+
+eval "$EDITOR ${temp}"
+[[ "$?" -eq 0 ]] || exit 1
+
+sed -e '/^-/!d' "${temp}" | sed -e 's|^- ||' | xargs rm -f --
+
+rm -f "${temp}"
+```
+
 [back to index](index.md)
