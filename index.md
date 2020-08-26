@@ -11,6 +11,7 @@
 * [termux](termux.md) -- termux snippets and howtos
 * [streams](streams.md) -- working with video using ffmpeg and streamlink
 * [mutt](mutt.md) -- CLI E-Mail Client: mutt, exim4, getmail, procmail, mbsync and gpg2 setup
+* [windows](windows.md) -- stuff pertaining to windows
 
 # Movies
 - Crash

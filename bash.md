@@ -8,6 +8,7 @@
     - [command inside replace space](#SED#command inside replace space)
     - [REGEXP](#SED#REGEXP)
     - [Examples](#SED#Examples)
+    - [character classes](#SED#character classes)
 - [AWK](#AWK)
     - [match, group, substitute and if-else example](#AWK#match, group, substitute and if-else example)
     - [act only on matching lines](#AWK#act only on matching lines)
@@ -44,6 +45,8 @@
 - [redirect command output to multiple files](#redirect command output to multiple files)
 - [redirect command output to multiple commands](#redirect command output to multiple commands)
 - [git status in prompt](#git status in prompt)
+- [read command output to array](#read command output to array)
+- [unique sort array](#unique sort array)
 
 # SED
 ## replace file
@@ -201,6 +204,81 @@ Note that the regular expression matcher is greedy, i.e., matches are attempted 
 
 `‘^.\{15\}A’`
     This matches the start of a string that contains 16 characters, the last of which is an ‘A’.
+
+## character classes
+From: https://www.gnu.org/software/sed/manual/html_node/Character-Classes-and-Bracket-Expressions.html
+
+__!!! beware, the character class needs to be enclosed in `[` `]` brackets => correct is `[[:digit:]]` even for extended regex !!!__
+
+`[:alnum:]`
+Alphanumeric characters: `[:alpha:]` and `[:digit:]`; in the `C` locale and ASCII character encoding, this is the same as `[0-9A-Za-z]`.
+
+`[:alpha:]`
+Alphabetic characters: `[:lower:]` and `[:upper:]`; in the `C` locale and ASCII character encoding, this is the same as `[A-Za-z]`.
+
+`[:blank:]`
+Blank characters: space and tab.
+
+`[:cntrl:]`
+Control characters. In ASCII, these characters have octal codes 000 through 037, and 177 (DEL). In other character sets, these are the equivalent characters, if any.
+
+`[:digit:]`
+Digits: 0 1 2 3 4 5 6 7 8 9.
+
+`[:graph:]`
+Graphical characters: `[:alnum:]` and `[:punct:]`.
+
+`[:lower:]`
+Lower-case letters; in the `C` locale and ASCII character encoding, this is a b c d e f g h i j k l m n o p q r s t u v w x y z.
+
+`[:print:]`
+Printable characters: `[:alnum:]`, `[:punct:]`, and space.
+
+`[:punct:]`
+Punctuation characters; in the `C` locale and ASCII character encoding, this is ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ \` { | } ~.
+
+`[:space:]`
+Space characters: in the `C` locale, this is tab, newline, vertical tab, form feed, carriage return, and space.
+
+`[:upper:]`
+Upper-case letters: in the `C` locale and ASCII character encoding, this is A B C D E F G H I J K L M N O P Q R S T U V W X Y Z.
+
+`[:xdigit:]`
+Hexadecimal digits: 0 1 2 3 4 5 6 7 8 9 A B C D E F a b c d e f.
+
+Note that the brackets in these class names are part of the symbolic names, and must be included in addition to the brackets delimiting the bracket expression.
+
+Most meta-characters lose their special meaning inside bracket expressions:
+
+`]`
+ends the bracket expression if it’s not the first list item. So, if you want to make the `]` character a list item, you must put it first.
+
+`-`
+represents the range if it’s not first or last in a list or the ending point of a range.
+
+`^`
+represents the characters not in the list. If you want to make the `^` character a list item, place it anywhere but first.
+
+The characters `$`, `*`, `.`, `[`, and `\` are normally not special within list. For example, `[\*]` matches either `\` or `*`, because the `\` is not special here. However, strings like `[.ch.]`, `[=a=]`, and `[:space:]` are special within list and represent collating symbols, equivalence classes, and character classes, respectively, and `[` is therefore special within list when it is followed by `.`, `=`, or `:`. Also, when not in POSIXLY_CORRECT mode, special escapes like `\n` and `\t` are recognized within list. See Escapes.
+
+`[.`
+represents the open collating symbol.
+
+`.]`
+represents the close collating symbol.
+
+`[=`
+represents the open equivalence class.
+
+`=]`
+represents the close equivalence class.
+
+`[:`
+represents the open character class symbol, and should be followed by a valid character class name.
+
+`:]`
+represents the close character class symbol.
+
 
 # AWK
 ## match, group, substitute and if-else example
@@ -819,5 +897,124 @@ shopt -u promptvars
 PROMPT_COMMAND=update_PS1
 ```
 
+# read command output to array
+__grep__ and __sed__
+```bash
+#!/bin/bash
+
+arr=()
+while IFS=  read -r -d $'\n'; do
+  arr+=("$REPLY")
+done < <(echo "${file}" | xargs grep -Eoh "${pattern}")
+```
+
+__find__
+```bash
+#!/bin/bash
+
+arr=()
+while IFS=  read -r -d $'\0'; do
+  arr+=("$REPLY")
+done < <(find . -type f -name '*.txt' -print0)
+```
+
+# unique sort array
+```bash
+#!/bin/bash
+arr=("$(echo ${arr} | tr ' ' '\n' | sort -u | tr '\n' ' ')")
+```
+
+# interactive script invoking editor and processing results
+```bash
+#!/bin/bash
+
+DEBUG=0
+EDITOR="vim -c 'set ft=diff'"
+
+NORM="\033[00m"
+BOLD="\033[01m"
+
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+BLUE="\033[34m"
+VIOLET="\033[35m"
+AZURE="\033[36m"
+
+O="${NORM}[${BOLD}${GREEN}+${NORM}]"
+E="${NORM}[${BOLD}${RED}-${NORM}]"
+Q="${NORM}[${BOLD}${VIOLET}?${NORM}]"
+I="${NORM}[${BOLD}${YELLOW}i${NORM}]"
+
+directories=()
+while IFS=  read -r -d $'\0'; do
+  (( "${DEBUG}" )) && echo "${REPLY}"
+  directories+=("${REPLY}")
+done < <(find ./ -mindepth 1 -maxdepth 1 -type d -print0)
+directoreis=($(echo "${directories[*]}" | tr ' ' '\n' | sort | tr '\n' ' '))
+(( "${DEBUG}" )) &&  echo "${directories[@]}"
+
+temp=$(mktemp)
+
+echo "# in vim use :cq to abort!," >> "${temp}"
+echo "# :q! will cancel all modifications and delete all files with \"-\" at begining of line" >> "${temp}"
+echo "# :wq will save the modified state and delete all files with \"-\" at the begining of line" >> "${temp}"
+echo "#" >> "${temp}"
+echo "# in other editors either change all \"-\" to \"+\" or delete all lines if you wish to cancel." >> "${temp}"
+echo "" >> "${temp}"
+
+for d in "${directoreis[@]}"; do
+  echo -e "${O} directory: ${a}"
+  DELETE=()
+  for f in $(find "${d}" -type f | sort); do
+    ext="${f##*.}"
+    (( "${DEBUG}" )) && echo "${ext}: ${f}"
+    case ${f} in
+      # backup files
+      *.bak)
+        echo "- ${f}" >> "${temp}"
+        ;;
+      # PERMAS Analysis
+      *.uci)
+        echo "+ ${f}" >> "${temp}"
+        ;;
+      # Model files
+      *.bif|*.dat[0-9]*|*.pmat*)
+        echo "+ ${f}" >> "${temp}"
+        ;;
+      # Analysis result logs
+      *.pro|*.res)
+        echo "+ ${f}" >> "${temp}"
+        ;;
+      # Text files, ACCE and mpffre results
+      *.txt|*ACCE*.post|*mpffre*|*frcsst*.post)
+        echo "+ ${f}" >> "${temp}"
+        ;;
+      # Other files
+      *.png|*.xls|*.xlsx|*.xlsm)
+        echo "+ ${f}" >> "${temp}"
+        ;;
+      # PERMAS results
+      *.hdf|*.bof|*.bifo|*.dat|*.dato|*.dato.gz|*.post|*.post.gz|*.step|*.e[0-9]*|*.o[0-9]*|*.pe[0-9]*|*.po[0-9]*)
+        echo "- ${f}" >> "${temp}"
+        ;;
+      *)
+        echo "+ ${f}" >> "${temp}"
+        ;;
+    esac
+  done
+done
+
+for f in ./*.{po,pe,o,e}[0-9]*; do
+  echo "- ${f}" >> "${temp}"
+done
+
+eval "$EDITOR ${temp}"
+[[ "$?" -eq 0 ]] || exit 1
+
+sed -e '/^-/!d' "${temp}" | sed -e 's|^- ||' | xargs rm -f --
+
+rm -f "${temp}"
+```
 
 [back to index](index.md)
