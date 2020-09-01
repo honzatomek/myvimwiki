@@ -48,6 +48,7 @@
 - [read command output to array](#read command output to array)
 - [unique sort array](#unique sort array)
 - [interactive script invoking editor and processing results](#interactive script invoking editor and processing results)
+- [common prefix](#common prefix)
 
 # SED
 ## replace file

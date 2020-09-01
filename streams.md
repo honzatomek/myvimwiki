@@ -2,6 +2,7 @@
 
 - [ffmpeg](#ffmpeg)
     - [cut video](#ffmpeg#cut video)
+    - [make gif](#ffmpeg#make gif)
 - [streamlink](#streamlink)
     - [custom streamlink function](#streamlink#custom streamlink function)
     - [chaturbate plugin](#streamlink#chaturbate plugin)
