@@ -26,6 +26,27 @@ ffmpeg -i video_in.mp4 -c copy -ss 00:05:00 -to 00:15:00 video_out.mp4
 `-ss` start time
 `-to` end time
 
+## make gif
+```bash
+# create duplicate image frames for gif generation
+a=0
+for i in *.png; do
+  new=$(printf "sequence%04d.png" "$a") #04 pad to length of 4
+  cp -- "$i" "$new"
+  let a=a+1
+done
+
+# create gif file
+palette="palette.png"
+filters="fps=10,scale=1200:-1:flags=lanczos"
+ffmpeg -thread_queue_size 1024 -framerate $framerate -i sequence%04d.png -vf "$filters,palettegen" -y $palette
+ffmpeg -thread_queue_size 1024 -framerate $framerate -i sequence%04d.png -i $palette -lavfi "$filters [x]; [x][1:v] paletteuse" -y "${prefix}.gif"
+
+# remove help files
+rm -f sequence*.png
+rm -f ${palette}
+```
+
 # streamlink
 ## custom streamlink function
 ```bash
