@@ -1018,4 +1018,28 @@ sed -e '/^-/!d' "${temp}" | sed -e 's|^- ||' | xargs rm -f --
 rm -f "${temp}"
 ```
 
+# common prefix
+```bash
+#!/bin/bash
+# script to find common prefix in all files with defined suffix
+
+suffix='.png'
+
+prefix=`printf "%s\n" $(find . -maxdepth 1 -mindepth 1 -type f -name "*${suffix}") | sed -e '$!{N;s/^\(.*\).*\n\1.*$/\1\n\1/;D;}'`
+echo $prefix
+
+if [ "${prefix: -1}" = "_" ]; then
+    # echo last char is _
+    prefix=${prefix%"_"}
+fi
+
+if [ "${prefix:0:2}" = "./" ]; then
+    # echo name starts with ./
+    prefix=${prefix#"./"}
+fi
+
+name=${prefix}${suffix}
+echo $name
+```
+
 [back to index](index.md)
