@@ -281,6 +281,14 @@ represents the open character class symbol, and should be followed by a valid ch
 `:]`
 represents the close character class symbol.
 
+## replace newlines
+the `-z` flag makes sed work on whole file at once where lines are separated by NUL characters => `\n`
+```bash
+#!/bin/bash
+
+sed -z -i.bak -e 's/^\s*\n//g' file.in
+```
+the above example will strip all empty lines from file and create a backup \*.bak file
 
 # AWK
 ## match, group, substitute and if-else example
