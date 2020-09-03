@@ -1475,4 +1475,21 @@ c=${!b}            #  Now, the more familiar type of indirect reference.
 echo $c            #  something_else
 ```
 
+# regex
+```bash
+#!/bin/bash
+
+cwd="$(pwd)"
+
+#      (       1      )(     2     )_(      3       )_(       4      )_(       5      )
+regex='([[:alnum:]]{4})([[:alpha:]])_([[:alnum:]]{3})_([[:alnum:]]{4})_([[:digit:]]{4})'
+
+[[ $cwd =~ $regex ]]
+if [[ ${#BASH_REMATCH[@]} == 6 ]]; then
+    for (( i=0; i<6; i++ )); do
+        echo "${BASH_REMATCH[$i]}"
+    done
+fi
+```
+
 [back to index](index.md)
