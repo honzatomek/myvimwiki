@@ -9,6 +9,7 @@
     - [REGEXP](#SED#REGEXP)
     - [Examples](#SED#Examples)
     - [character classes](#SED#character classes)
+    - [replace newlines](#SED#replace newlines)
 - [AWK](#AWK)
     - [match, group, substitute and if-else example](#AWK#match, group, substitute and if-else example)
     - [act only on matching lines](#AWK#act only on matching lines)
@@ -49,6 +50,11 @@
 - [unique sort array](#unique sort array)
 - [interactive script invoking editor and processing results](#interactive script invoking editor and processing results)
 - [common prefix](#common prefix)
+- [parameter substitution](#parameter substitution)
+    - [default value](#parameter substitution#default value)
+    - [replace in string](#parameter substitution#replace in string)
+    - [substring replacement](#parameter substitution#substring replacement)
+- [regex](#regex)
 
 # SED
 ## replace file

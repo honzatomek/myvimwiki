@@ -26,6 +26,8 @@
 - [add a new connection via ssh](#add a new connection via ssh)
     - [troubleshooting](#add a new connection via ssh#troubleshooting)
 - [rename local and remote branch](#rename local and remote branch)
+- [git diff on non-indexed files](#git diff on non-indexed files)
+- [merge multiple repos into one](#merge multiple repos into one)
 
 # CONFIG
 ## setup
