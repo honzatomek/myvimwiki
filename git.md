@@ -424,4 +424,11 @@ git push origin :old-name new-name
 git push origin -u new-name
 ```
 
+# git diff on non-indexed files
+```git
+git diff --no-index -U100 file1 file2
+```
+`--no-index` - runs the command on non-indexed files
+`-U100`      - generate diff with 100 lines of context instead of 3, implies generation fo patch (`-p` option)
+
 [back to index](index.md)
