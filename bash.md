@@ -413,6 +413,102 @@ awk "BEGIN {printf \"%.2f\n\", 100/3}"
 awk "BEGIN {print -8.4 - -8}"
 ```
 
+## for loop
+From: https://www.gnu.org/software/gawk/manual/html_node/For-Statement.html
+From: https://www.gnu.org/software/gawk/manual/html_node/Continue-Statement.html
+    for (initialization; condition; increment)
+        body
+
+    for (i in array)
+        do something with array[i]
+
+```bash
+awk '
+{
+    for (i = 1; i <= 3; i++)
+        print $i
+}' file
+```
+
+```bash
+awk '
+BEGIN {
+     for (x = 0; x <= 20; x++) {
+         if (x == 5)
+             continue
+         printf "%d ", x
+     }
+     print ""
+}' file
+```
+
+## while loop
+    initialization
+    while (condition) {
+      body
+      increment
+    }
+
+```bash
+awk '
+{
+    for (i = 1; i <= 3; i++)
+        print $i
+}' file
+```
+
+```bash
+awk '
+BEGIN {
+     x = 0
+     while (x <= 20) {
+         if (x == 5)
+             continue
+         printf "%d ", x
+         x++
+     }
+     print ""
+}' file
+```
+
+## built-in variables
+selected list of awk internal variables
+From: https://www.gnu.org/software/gawk/manual/html_node/Auto_002dset.html
+
+__NF__: number of fields
+The number of fields in the current input record. NF is set each time a new record is read, when a new field is created,
+or when $0 changes (see section Examining Fields).
+
+Unlike most of the variables described in this subsection, assigning a value to NF has the potential to affect awk’s
+internal workings. In particular, assignments to NF can be used to create fields in or remove fields from the current
+record. See section Changing the Contents of a Field.
+
+print 1st and last field:
+From: https://www.gnu.org/software/gawk/manual/html_node/Fields.html
+```bash
+awk '
+{
+print $1, $NF
+}' file
+```
+
+__FILENAME__: the name of current input file
+
+## access fields programatically
+```bash
+awk '
+{
+for ( i = 1; i <= (NF - 1) / 2; i++ )
+    print $1, $(i + 1), $(2 * i + 1)
+}' file
+```
+
+## split file into multiple
+From: https://www.theunixschool.com/2012/06/awk-10-examples-to-split-file-into.html
+```bash
+awk -F, '{if($2<=500)print > "500L.txt";else print > "500G.txt"}' file1
+```
+
 # GREP
 ## print only matched string
 `grep -Eo 'pattern' file`
