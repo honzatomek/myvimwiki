@@ -509,6 +509,39 @@ From: https://www.theunixschool.com/2012/06/awk-10-examples-to-split-file-into.h
 awk -F, '{if($2<=500)print > "500L.txt";else print > "500G.txt"}' file1
 ```
 
+## example
+```bash
+BEGIN {
+  pi = atan2(0, -1)
+}
+{
+  num = (NF - 1) / 2
+  for ( i = 1; i <= num; i++)
+  {
+    fname = bname "_" sprintf("%02d", i) ext
+
+    # create header
+    if ( FNR == 1 )
+    {
+      printf "%6s", "Mode" > fname
+      for ( x = 0; x <= (2 * pi); x += (2 * pi / 24) )
+        printf " %9.1f", x / (2 * pi) * 360 > fname
+      printf "\n" > fname
+    }
+
+    # calculate and print records
+    a = $(1 + i)
+    b = $(1 + num + i) / 180 * pi
+    printf "%6d", $1 > fname
+    for ( x = 0; x <= (2 * pi); x += (2 * pi / 24) )
+    {
+      printf " %9.4f", a * sin(x + b) > fname
+    }
+    printf "\n" > fname
+  }
+}'
+```
+
 # GREP
 ## print only matched string
 `grep -Eo 'pattern' file`
