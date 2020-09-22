@@ -375,6 +375,12 @@ cat $file | awk '
 }
 ```
 
+## initialise variable from bash script
+if `-v` option is used, the variable is initialised before the `BEGIN` section
+```bash
+awk -v my_var="ha ha" 'BEGIN { print my_var }'
+```
+
 ## example
 ```bash
 #!/usr/bin/zsh
