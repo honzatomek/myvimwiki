@@ -548,6 +548,109 @@ BEGIN {
 }'
 ```
 
+## another example
+```awk
+function abs( value )                                                            
+{                                                                                
+  return (value > 0 ? value : value * -1)                                        
+}                                                                                
+                                                                                 
+function pi()                                                                    
+{                                                                                
+  return atan2(0, -1)                                                            
+}                                                                                
+                                                                                 
+function swap( A, B )                                                            
+{                                                                                
+  tmp = A                                                                        
+  A = B                                                                          
+  B = tmp                                                                        
+}                                                                                
+                                                                                 
+BEGIN {                                                                          
+  amp_tot = 0                                                                    
+  phase_tot = 0                                                                  
+}                                                                                                                                                                                                                                                                 
+                                                                                 
+{                                                                                
+  # get number of records                                                        
+  num = (NF - 1) / 2                                                             
+                                                                                 
+  for ( i = 1; i < 2; i++)                                                       
+  {                                                                              
+    if ( cnum > -1 )                                                             
+      last = cnum                                                                
+    else                                                                         
+      last = NR                                                                  
+                                                                                 
+    mode[last] = $1                                                              
+    amp[last] = $(1 + i)                                                         
+    phase[last] = $(1 + num + i) / 180 * pi()                                    
+                                                                                 
+    amp_tot += amp[last]                                                         
+    phase_tot += phase[last]                                                     
+    if ( phase_tot > pi() )                                                      
+      phase_tot -= 2 * pi()                                                      
+    else if ( phase_tot < -pi() )                                                
+      phase_tot += 2 * pi()                                                      
+                                                                                 
+    for ( m = last; m > 1; m--)                                                  
+    {                                                                            
+      if ( abs(amp[m]) > abs(amp[m - 1]) )                                       
+      {                                                                          
+        tmp = mode[m - 1]                                                        
+        mode[m - 1] = mode[m]                                                    
+        mode[m] = tmp                                                            
+                                                                                 
+        tmp = amp[m - 1]                                                         
+        amp[m - 1] = amp[m]                                                      
+        amp[m] = tmp                                                             
+                                                                                 
+        tmp = phase[m - 1]                                                       
+        phase[m - 1] = phase[m]                                                  
+        phase[m] = tmp                                                           
+      }                                                                          
+    }                                                                            
+  }                                                                              
+}
+
+END {                                                                            
+  amp_sel = 0                                                                    
+  phase_sel = 0                                                                  
+                                                                                 
+  x_tot = amp_tot * cos(phase_tot)                                               
+  y_tot = amp_tot * sin(phase_tot)                                               
+  r_tot = sqrt(x_tot^2 + y_tot^2)                                                
+                                                                                 
+  printf "%5s %6s %11s %11s %11s %11s %11s %5s\n", "ID", "Mode", "Amplitude", "Phase", "X", "Y", "R", "%" > bname ext
+  printf "%78s\n", "------------------------------------------------------------------------------" > bname ext
+                                                                                 
+  for ( m = 1; m <= last; m++ )                                                  
+  {                                                                              
+    amp_sel += amp[m]                                                            
+    phase_sel += phase[m]                                                        
+    if ( phase_sel > pi() )                                                      
+      phase_sel -= 2 * pi()                                                      
+    else if ( phase_sel < -pi() )                                                
+      phase_sel += 2 * pi()                                                      
+                                                                                 
+    x = amp[m] * cos(phase[m])                                                   
+    y = amp[m] * sin(phase[m])                                                   
+    r = sqrt(x^2 + y^2)                                                          
+    printf "%5d %6d %11.4f %11.4f %11.4f %11.4f %11.4f %5.3f\n", m, mode[m], amp[m], phase[m], x, y, r, r / r_tot > bname ext
+  }                                                                              
+                                                                                 
+  x_sel = amp_sel * cos(phase_sel)                                               
+  y_sel = amp_sel * sin(phase_sel)                                               
+  r_sel = sqrt(x_sel^2 + y_sel^2)                                                
+                                                                                 
+  printf "%78s\n", "------------------------------------------------------------------------------" > bname ext
+                                                                                 
+  printf "%5s %6s %11.4f %11.4f %11.4f %11.4f %11.4f %5.3f\n", "", "Sel.", amp_sel, phase_sel, x_sel, y_sel, r_sel, r_sel / r_tot > bname ext
+  printf "%5s %6s %11.4f %11.4f %11.4f %11.4f %11.4f %5.3f\n", "", "Tot.", amp_tot, phase_tot, x_tot, y_tot, r_tot, r_tot / r_tot > bname ext
+}
+```
+
 # GREP
 ## print only matched string
 `grep -Eo 'pattern' file`
