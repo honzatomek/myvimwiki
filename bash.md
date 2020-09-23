@@ -14,8 +14,16 @@
     - [match, group, substitute and if-else example](#AWK#match, group, substitute and if-else example)
     - [act only on matching lines](#AWK#act only on matching lines)
     - [act on all lines](#AWK#act on all lines)
-    - [example](#AWK#example)
+    - [initialise variable from bash script](#AWK#initialise variable from bash script)
+    - [example 1](#AWK#example 1)
     - [floating point operations using GNU AWK](#AWK#floating point operations using GNU AWK)
+    - [for loop](#AWK#for loop)
+    - [while loop](#AWK#while loop)
+    - [built-in variables](#AWK#built-in variables)
+    - [access fields programatically](#AWK#access fields programatically)
+    - [split file into multiple](#AWK#split file into multiple)
+    - [example 2](#AWK#example 2)
+    - [example 3](#AWK#example 3)
 - [GREP](#GREP)
     - [print only matched string](#GREP#print only matched string)
     - [print nonmatched lines](#GREP#print nonmatched lines)
@@ -381,7 +389,7 @@ if `-v` option is used, the variable is initialised before the `BEGIN` section
 awk -v my_var="ha ha" 'BEGIN { print my_var }'
 ```
 
-## example
+## example 1
 ```bash
 #!/usr/bin/zsh
 TmaxC=652
@@ -515,7 +523,7 @@ From: https://www.theunixschool.com/2012/06/awk-10-examples-to-split-file-into.h
 awk -F, '{if($2<=500)print > "500L.txt";else print > "500G.txt"}' file1
 ```
 
-## example
+## example 2
 ```bash
 BEGIN {
   pi = atan2(0, -1)
@@ -548,104 +556,104 @@ BEGIN {
 }'
 ```
 
-## another example
+## example 3
 ```awk
-function abs( value )                                                            
-{                                                                                
-  return (value > 0 ? value : value * -1)                                        
-}                                                                                
-                                                                                 
-function pi()                                                                    
-{                                                                                
-  return atan2(0, -1)                                                            
-}                                                                                
-                                                                                 
-function swap( A, B )                                                            
-{                                                                                
-  tmp = A                                                                        
-  A = B                                                                          
-  B = tmp                                                                        
-}                                                                                
-                                                                                 
-BEGIN {                                                                          
-  amp_tot = 0                                                                    
-  phase_tot = 0                                                                  
-}                                                                                                                                                                                                                                                                 
-                                                                                 
-{                                                                                
-  # get number of records                                                        
-  num = (NF - 1) / 2                                                             
-                                                                                 
-  for ( i = 1; i < 2; i++)                                                       
-  {                                                                              
-    if ( cnum > -1 )                                                             
-      last = cnum                                                                
-    else                                                                         
-      last = NR                                                                  
-                                                                                 
-    mode[last] = $1                                                              
-    amp[last] = $(1 + i)                                                         
-    phase[last] = $(1 + num + i) / 180 * pi()                                    
-                                                                                 
-    amp_tot += amp[last]                                                         
-    phase_tot += phase[last]                                                     
-    if ( phase_tot > pi() )                                                      
-      phase_tot -= 2 * pi()                                                      
-    else if ( phase_tot < -pi() )                                                
-      phase_tot += 2 * pi()                                                      
-                                                                                 
-    for ( m = last; m > 1; m--)                                                  
-    {                                                                            
-      if ( abs(amp[m]) > abs(amp[m - 1]) )                                       
-      {                                                                          
-        tmp = mode[m - 1]                                                        
-        mode[m - 1] = mode[m]                                                    
-        mode[m] = tmp                                                            
-                                                                                 
-        tmp = amp[m - 1]                                                         
-        amp[m - 1] = amp[m]                                                      
-        amp[m] = tmp                                                             
-                                                                                 
-        tmp = phase[m - 1]                                                       
-        phase[m - 1] = phase[m]                                                  
-        phase[m] = tmp                                                           
-      }                                                                          
-    }                                                                            
-  }                                                                              
+function abs( value )
+{
+  return (value > 0 ? value : value * -1)
 }
 
-END {                                                                            
-  amp_sel = 0                                                                    
-  phase_sel = 0                                                                  
-                                                                                 
-  x_tot = amp_tot * cos(phase_tot)                                               
-  y_tot = amp_tot * sin(phase_tot)                                               
-  r_tot = sqrt(x_tot^2 + y_tot^2)                                                
-                                                                                 
+function pi()
+{
+  return atan2(0, -1)
+}
+
+function swap( A, B )
+{
+  tmp = A
+  A = B
+  B = tmp
+}
+
+BEGIN {
+  amp_tot = 0
+  phase_tot = 0
+}
+
+{
+  # get number of records
+  num = (NF - 1) / 2
+
+  for ( i = 1; i < 2; i++)
+  {
+    if ( cnum > -1 )
+      last = cnum
+    else
+      last = NR
+
+    mode[last] = $1
+    amp[last] = $(1 + i)
+    phase[last] = $(1 + num + i) / 180 * pi()
+
+    amp_tot += amp[last]
+    phase_tot += phase[last]
+    if ( phase_tot > pi() )
+      phase_tot -= 2 * pi()
+    else if ( phase_tot < -pi() )
+      phase_tot += 2 * pi()
+
+    for ( m = last; m > 1; m--)
+    {
+      if ( abs(amp[m]) > abs(amp[m - 1]) )
+      {
+        tmp = mode[m - 1]
+        mode[m - 1] = mode[m]
+        mode[m] = tmp
+
+        tmp = amp[m - 1]
+        amp[m - 1] = amp[m]
+        amp[m] = tmp
+
+        tmp = phase[m - 1]
+        phase[m - 1] = phase[m]
+        phase[m] = tmp
+      }
+    }
+  }
+}
+
+END {
+  amp_sel = 0
+  phase_sel = 0
+
+  x_tot = amp_tot * cos(phase_tot)
+  y_tot = amp_tot * sin(phase_tot)
+  r_tot = sqrt(x_tot^2 + y_tot^2)
+
   printf "%5s %6s %11s %11s %11s %11s %11s %5s\n", "ID", "Mode", "Amplitude", "Phase", "X", "Y", "R", "%" > bname ext
   printf "%78s\n", "------------------------------------------------------------------------------" > bname ext
-                                                                                 
-  for ( m = 1; m <= last; m++ )                                                  
-  {                                                                              
-    amp_sel += amp[m]                                                            
-    phase_sel += phase[m]                                                        
-    if ( phase_sel > pi() )                                                      
-      phase_sel -= 2 * pi()                                                      
-    else if ( phase_sel < -pi() )                                                
-      phase_sel += 2 * pi()                                                      
-                                                                                 
-    x = amp[m] * cos(phase[m])                                                   
-    y = amp[m] * sin(phase[m])                                                   
-    r = sqrt(x^2 + y^2)                                                          
+
+  for ( m = 1; m <= last; m++ )
+  {
+    amp_sel += amp[m]
+    phase_sel += phase[m]
+    if ( phase_sel > pi() )
+      phase_sel -= 2 * pi()
+    else if ( phase_sel < -pi() )
+      phase_sel += 2 * pi()
+
+    x = amp[m] * cos(phase[m])
+    y = amp[m] * sin(phase[m])
+    r = sqrt(x^2 + y^2)
     printf "%5d %6d %11.4f %11.4f %11.4f %11.4f %11.4f %5.3f\n", m, mode[m], amp[m], phase[m], x, y, r, r / r_tot > bname ext
-  }                                                                              
-                                                                                 
-  x_sel = amp_sel * cos(phase_sel)                                               
-  y_sel = amp_sel * sin(phase_sel)                                               
-  r_sel = sqrt(x_sel^2 + y_sel^2)                                                
-                                                                                 
+  }
+
+  x_sel = amp_sel * cos(phase_sel)
+  y_sel = amp_sel * sin(phase_sel)
+  r_sel = sqrt(x_sel^2 + y_sel^2)
+
   printf "%78s\n", "------------------------------------------------------------------------------" > bname ext
-                                                                                 
+
   printf "%5s %6s %11.4f %11.4f %11.4f %11.4f %11.4f %5.3f\n", "", "Sel.", amp_sel, phase_sel, x_sel, y_sel, r_sel, r_sel / r_tot > bname ext
   printf "%5s %6s %11.4f %11.4f %11.4f %11.4f %11.4f %5.3f\n", "", "Tot.", amp_tot, phase_tot, x_tot, y_tot, r_tot, r_tot / r_tot > bname ext
 }
@@ -815,7 +823,7 @@ EOF
 ## multiple heredocs
 ```bash
 cat <<EOF1; cat <<EOF2
-Hello, 
+Hello,
 EOF1
 there!
 EOF2
@@ -840,7 +848,7 @@ EOF
 
 ## pipe to command
 ```bash
-cat << EOF | msmtp -a default 
+cat << EOF | msmtp -a default
 To: username@domail.com
 From: username@domain.com
 Subject: this is a subject
@@ -858,7 +866,7 @@ Subject: this is a subject
 
 This is the mail body.
 EOF
-msmtp -a default 
+msmtp -a default
 ```
 
 # function to open multiple files in vim
@@ -1519,7 +1527,7 @@ echo "--------------"
 echo '${var1#$pattern1}  =' "${var1#$pattern1}"    #         d12345abc6789
 # Shortest possible match, strips out first 3 characters  abcd12345abc6789
 #                                     ^^^^^               |-|
-echo '${var1##$pattern1} =' "${var1##$pattern1}"   #                  6789      
+echo '${var1##$pattern1} =' "${var1##$pattern1}"   #                  6789
 # Longest possible match, strips out first 12 characters  abcd12345abc6789
 #                                    ^^^^^                |----------|
 
@@ -1700,7 +1708,7 @@ v4=${v0/%123/000}       # Matches, but not at end.
 echo "v4 = $v4"         # abc1234zip1234abc
                         # NO REPLACEMENT.
 
-exit 0	
+exit 0
 ```
 
 __syntax__: `${!varprefix*}, ${!varprefix@}`
