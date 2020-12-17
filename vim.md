@@ -305,10 +305,6 @@ From: https://github.com/Jorengarenar/dotfiles/blob/master/vim/after/syntax/sh.v
 
 save to `~/.vim/after/syntax/sh.vim`:
 ```vim
-" vim: fdm=marker
-
-" Embedding languages {{{1
-
 function! s:embed(lang) abort
   if exists("b:current_syntax")
     let current_syntax_save = b:current_syntax
