@@ -28,6 +28,8 @@
 - [rename local and remote branch](#rename local and remote branch)
 - [git diff on non-indexed files](#git diff on non-indexed files)
 - [merge multiple repos into one](#merge multiple repos into one)
+- [.gitignore](#.gitignore)
+    - [function to add file](#.gitignore#function to add file)
 
 # CONFIG
 ## setup
@@ -503,5 +505,43 @@ git merge -s recursive -Xsubtree=old_a old_a/feature-in-progress
 This is the only non-obvious part of the whole operation.  We’re doing a normal recursive merge here (the “-s recursive” part isn’t strictly necessary because that’s the default) but we’re passing an argument to the recursive merge that tells Git that we’ve renamed the target and that helps Git line them up correctly.  This is not the same thing as the thing called a “subtree merge“.
 
 So, if you’re simply trying to merge two repositories together into one repository and make it look like it was that way all along, don’t mess with submodules or subtree merges.  Just do a few regular, normal merges and you’ll have what you want.
+
+# .gitignore
+## function to add file
+From: https://www.sabhiram.com/shell/git/2020/12/04/gitignore.html
+
+`bash` function to add to or create `.gitignore` file from anywhere in the repo:
+```bash
+gitignore() {
+  # verify we are inside a `.git` tree
+  git rev-parse
+  
+  # iterate up to either `.git` or a valid `.gitignore` path
+  path=$(pwd)
+  pattern=$1
+  while [ "$path" != "" ] && [ ! -e "$path/.gitignore" ] && [ ! -d "$path/.git" ]; do
+    pattern=${path##*/}/$pattern
+    path=${path%/*}
+  done
+  
+  # we either found a `.git` directory with no `.gitignore` file, or found 
+  # another valid `.gitignore` file up the parent directories. append to it!
+  echo $pattern >> $path/.gitignore
+  echo $path/.gitignore
+}
+```
+
+usage:
+```bash
+$ gitignore *.o
+$ cat .gitignore
+*.o
+$ mkdir a && cd a
+$ gitignore foo*.cpp
+$ cat ../.gitignore
+*.o
+a/foo*.cpp
+```
+
 
 [back to index](index.md)
