@@ -1,3 +1,12 @@
+# Contents
+
+    - [gunzip file](#gunzip file)
+    - [argparse custom action](#argparse custom action)
+    - [ENCRYPT password using RSA key](#ENCRYPT password using RSA key)
+        - [generate RSA key pairs](#ENCRYPT password using RSA key#generate RSA key pairs)
+        - [encrypt password](#ENCRYPT password using RSA key#encrypt password)
+        - [decrypt password](#ENCRYPT password using RSA key#decrypt password)
+        - [test encryption - decryption](#ENCRYPT password using RSA key#test encryption - decryption)
 
 # gunzip file
 ```python3
@@ -12,7 +21,8 @@ def gunzip(source_filepath, dest_filepath, block_size=65536):
         shutil.copyfileobj(s_file, d_file, block_size)
 ```
 
-# argparse custom action
+# argparse
+## custom action
 ```python3
 class InvalidInputError(Exception):
     pass
@@ -63,6 +73,28 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     sst_merge(args.txt, args.outputset, args.name, args.verbose)
+```
+
+## mutually exclusive arguments
+From: https://stackoverflow.com/questions/17909294/python-argparse-mutual-exclusive-group
+
+```python3
+import argparse
+
+if __name__ == '__main__':
+    # create the top-level parser
+    parser = argparse.ArgumentParser(prog='PROG')
+    parser.add_argument('--foo', action='store_true', help='help for foo arg.')
+    subparsers = parser.add_subparsers(help='help for subcommand')
+
+    # create the parser for the "command_1" command
+    parser_a = subparsers.add_parser('command_1', help='command_1 help')
+    parser_a.add_argument('a', type=str, help='help for bar, positional')
+
+    # create the parser for the "command_2" command
+    parser_b = subparsers.add_parser('command_2', help='help for command_2')
+    parser_b.add_argument('-b', type=str, help='help for b')
+    parser_b.add_argument('-c', type=str, action='store', default='', help='test')
 ```
 
 # ENCRYPT password using RSA key
