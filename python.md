@@ -367,6 +367,7 @@ print(s.count())
 
 # numpy
 ## eigenvalues
+%% eigenvalues, choleski, LL, eigenvectors, numpy, scipy
 ```python3
 import numpy as np
 from scipy import linalg
