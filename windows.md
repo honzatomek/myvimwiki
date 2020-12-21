@@ -221,6 +221,16 @@ nameserver 8.8.8.8
 ```
 to `/etc/resolv.conf` (a DNS address must be specified)
 
+to keep settings after reboot:
+From: https://github.com/microsoft/WSL/issues/5420#issuecomment-646479747
+```bash
+sudo rm /etc/resolv.conf
+sudo bash -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf'
+sudo bash -c 'echo "[network]" > /etc/wsl.conf'
+sudo bash -c 'echo "generateResolvConf = false" >> /etc/wsl.conf'
+sudo chattr +i /etc/resolv.conf
+```
+
 
 ## Set your distribution version to WSL 1 or WSL 2
 From: https://docs.microsoft.com/en-us/windows/wsl/install-win10
