@@ -5,6 +5,7 @@
             - [chkdsk](#disk#repair#chkdsk)
     - [linux terminal on win 10](#linux terminal on win 10)
         - [Windows Subsystem for Linux Installation](#linux terminal on win 10#Windows Subsystem for Linux Installation)
+            - [Troubleshooting Debian GNU/Linux](#linux terminal on win 10#Windows Subsystem for Linux Installation#Troubleshooting Debian GNU/Linux)
         - [Set your distribution version to WSL 1 or WSL 2](#linux terminal on win 10#Set your distribution version to WSL 1 or WSL 2)
         - [Install XFCE terminal](#linux terminal on win 10#Install XFCE terminal)
         - [install X server](#linux terminal on win 10#install X server)
@@ -198,8 +199,8 @@ netsh winsock reset
 netsh int ip reset all
 netsh winhttp reset proxy
 ipconfig /flushdns
-reboot
 ```
+Then __reboot__ computer or run `shutdown /r`
 
 
 ## Set your distribution version to WSL 1 or WSL 2
