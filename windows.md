@@ -52,11 +52,11 @@ dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux 
 ```
 
 2) Update to WSL 2
-To update to WSL 2, you must be running Windows 10.
+To update to `WSL 2`, you must be running Windows 10.
 _Requirements_:
   - For x64 systems: Version 1903 or higher, with Build 18362 or higher.
   - For ARM64 systems: Version 2004 or higher, with Build 19041 or higher.
-  - Builds lower than 18362 do not support WSL 2. Use the
+  - Builds lower than 18362 do not support `WSL 2`. Use the
     [[https://www.microsoft.com/software-download/windows10|Windows Update Assistant]]
     to update your version of Windows.
 To check your version and build number, select Windows logo key + R, type
@@ -71,13 +71,15 @@ to the latest Windows version in the Settings menu.
     See the troubleshooting instructions.
 
 3) Enable Virtual Machine feature
-Before installing WSL 2, you must enable the Virtual Machine Platform optional
+Before installing `WSL 2`, you must enable the `Virtual Machine Platform` optional
 feature.
 
 Open PowerShell as Administrator and run:
 ```PowerShell
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 ```
+
+__Restart__ your machine to complete the `WSL` install and update to `WSL 2`.
 
 4) Download the Linux kernel update package
 Download the latest package:
@@ -94,16 +96,16 @@ Run the update package downloaded in the previous step. (Double-click to run -
 you will be prompted for elevated permissions, select ‘yes’ to approve this
 installation.)
 
-Once the installation is complete, move on to the next step - setting WSL 2 as
+Once the installation is complete, move on to the next step - setting `WSL 2` as
 your default version when installing new Linux distributions. (Skip this step
-if you want your new Linux installs to be set to WSL 1).
+if you want your new Linux installs to be set to `WSL 1`).
 
     _Note_:
     For more information, read the article [[https://devblogs.microsoft.com/commandline/wsl2-will-be-generally-available-in-windows-10-version-2004|changes to updating the WSL2 Linux kernel]],
     available on the [[https://aka.ms/cliblog|Windows Command Line Blog]].
 
 5) Set WSL 2 as your default version
-Open PowerShell and run this command to set WSL 2 as the default version when
+Open PowerShell and run this command to set `WSL 2` as the default version when
 installing a new Linux distribution:
 
 ```PowerShell
@@ -111,9 +113,9 @@ wsl --set-default-version 2
 ```
 
     _Note_:
-    The update from WSL 1 to WSL 2 may take several minutes to complete
+    The update from `WSL 1` to `WSL 2` may take several minutes to complete
     depending on the size of your targeted distribution. If you are running an
-    older (legacy) installation of WSL 1 from Windows 10 Anniversary Update or
+    older (legacy) installation of `WSL 1` from Windows 10 Anniversary Update or
     Creators Update, you may encounter an update error. Follow these
     instructions to [[https://docs.microsoft.com/en-us/windows/wsl/install-legacy#uninstallingremoving-the-legacy-distro|uninstall and remove any legacy distributions]].
 
@@ -122,7 +124,7 @@ wsl --set-default-version 2
     doesn't support it and you need to update to version 1903, Build 18362 or
     higher.
     
-    If you see this message after running the command: WSL 2 requires an update
+    If you see this message after running the command: `WSL 2` requires an update
     to its kernel component. For information please visit
     https://aka.ms/wsl2kernel. You still need to install the MSI Linux kernel
     update package.
@@ -156,7 +158,7 @@ distribution.
 ## Set your distribution version to WSL 1 or WSL 2
 From: https://docs.microsoft.com/en-us/windows/wsl/install-win10
 
-You can check the WSL version assigned to each of the Linux distributions you
+You can check the `WSL` version assigned to each of the Linux distributions you
 have installed by opening the PowerShell command line and entering the command
 (only available in Windows Build 18362 or higher): `wsl -l -v`
 
@@ -164,7 +166,7 @@ have installed by opening the PowerShell command line and entering the command
 wsl --list --verbose
 ```
 
-To set a distribution to be backed by either version of WSL please run:
+To set a distribution to be backed by either version of `WSL` please run:
 
 ```PowerShell
 wsl --set-version <distribution name> <versionNumber>
@@ -172,17 +174,17 @@ wsl --set-version <distribution name> <versionNumber>
 
 Make sure to replace <distribution name> with the actual name of your
 distribution and <versionNumber> with the number '1' or '2'. You can change
-back to WSL 1 at anytime by running the same command as above but replacing the
+back to `WSL 1` at anytime by running the same command as above but replacing the
 '2' with a '1'.
 
-Additionally, if you want to make WSL 2 your default architecture you can do so
+Additionally, if you want to make `WSL 2` your default architecture you can do so
 with this command:
 
 ```PowerShell
 wsl --set-default-version 2
 ```
 
-This will set the version of any new distribution installed to WSL 2.
+This will set the version of any new distribution installed to `WSL 2`.
 
 ## Install XFCE terminal
 From: https://timvisee.com/blog/fix-windows-terminals-use-linux-terminal/
@@ -195,13 +197,13 @@ well, of course.
 
 To __install XFCE__ terminal, we'll use the Ubuntu package manager. Open the start
 menu, and search for `bash`. This should bring up a terminal window running Linux
-through WSL with a `bash` shell. Invoke the following two commands:
+through `WSL` with a `bash` shell. Invoke the following two commands:
 
 ```bash
 sudo apt update && sudo apt install xfce4-terminal
 ```
 
-You won't be able to use the installed terminal just yet, because Linux in WSL
+You won't be able to use the installed terminal just yet, because Linux in `WSL`
 has no way to draw a window on your screen at this time. We'll fix that in the
 next step.
 
@@ -217,7 +219,7 @@ for rendering windows.
 Random fun fact: you can even draw windows over the network with X, to an
 external machine.
 
-We need to __install an X server__ on our Windows system and tell Linux in WSL to
+We need to __install an X server__ on our Windows system and tell Linux in `WSL` to
 draw application windows to it. Guess what, this is the last installation step
 required for showing the terminal window!
 
