@@ -118,10 +118,10 @@ wsl --set-default-version 2
     Creators Update, you may encounter an update error. Follow these
     instructions to [[https://docs.microsoft.com/en-us/windows/wsl/install-legacy#uninstallingremoving-the-legacy-distro|uninstall and remove any legacy distributions]].
 
-    If wsl --set-default-version results as an invalid command, enter wsl
-    --help. If the --set-default-version is not listed, it means that your OS
-    doesn't support it and you need to update to version 1903, Build 18362 or
-    higher.
+    If `wsl --set-default-version` results as an invalid command,
+    enter `wsl --help`. If the `--set-default-version` is not listed, it means
+    that your OS doesn't support it and you need to update to version 1903,
+    Build 18362 or higher.
     
     If you see this message after running the command: `WSL 2` requires an update
     to its kernel component. For information please visit
@@ -129,6 +129,7 @@ wsl --set-default-version 2
     update package.
 
 6) Install your Linux distribution of choice
+    
 Open the Microsoft Store and select your favorite Linux distribution.
 
 The following links will open the Microsoft store page for each distribution:
@@ -153,6 +154,53 @@ future launches should take less than a second.
 
 You will then need to create a user account and password for your new Linux
 distribution.
+
+### Troubleshooting Debian GNU/Linux
+1) CPU Virtualisation
+From: https://blog.johannfenech.com/fix-wslregisterdistribution-failed-with-error-0x80370102/
+Error:
+```
+Installing, this may take a few minutes...
+WslRegisterDistribution failed with error: 0x80370102
+Error: 0x80370102 The virtual machine could not be started because a required feature is not installed.
+
+Press any key to continue...
+```
+
+For the installation to work __Virtualization__ must be enabled for the __CPU__
+in `BIOS`. For __HP Z440__ this is called `Virtualisation Technology VTx`
+and is located in `BIOS` under `Security` >> `System Security`. To get to `BIOS`
+press `Esc` during `boot`.
+
+
+2) Network Discovery
+From: https://www.tenforums.com/newreply.php?do=newreply&p=1779287
+Error:
+```
+Installing, this may take a few minutes...
+WslRegisterDistribution failed with error: 0x803b002a
+Error: 0x803b002a Slu?ba SdÝlenÝ p?ipojenÝ k Internetu (SharedAccess) je zakßzßna a nejde ji spustit.
+
+Press any key to continue...
+```
+
+`Network Discovery` must be on for the installation to succeed. This is under
+> `Win + X`
+> `Network Connections`
+> `Sharing Options`
+>> Turn on network discovery
+
+3) Internet access not working
+From: https://stackoverflow.com/a/63578387
+Open windows `cmd.exe` as __admin__ and run:
+```bat
+netsh winsock reset
+netsh int ip reset all
+netsh winhttp reset proxy
+ipconfig /flushdns
+reboot
+```
+
 
 ## Set your distribution version to WSL 1 or WSL 2
 From: https://docs.microsoft.com/en-us/windows/wsl/install-win10
