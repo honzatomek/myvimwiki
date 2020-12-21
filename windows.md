@@ -87,7 +87,6 @@ Download the latest package:
 [[https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi|WSL2 Linux kernel update package for x64 machines]]
 
     _Note_:
-
     If you're using an ARM64 machine, please download the ARM64 package
     instead. If you're not sure what kind of machine you have, open Command
     Prompt or PowerShell and enter: `systeminfo | find "System Type"`.
