@@ -202,6 +202,25 @@ ipconfig /flushdns
 ```
 Then __reboot__ computer or run `shutdown /r`
 
+If still not working > Share internet connection from eth0 to WSL
+> `Win + X`
+> `Network Connections`
+> `Ethernet`
+> `Change adapter settings`
+> right click on Local Network Connection > `Properties`
+> Tab `Sharing` > Share Internet connection with `vEthernet (WSL)`
+
+try `ping 8.8.8.8`, if not working set rights:
+```bash
+sudo chmod 'u+s' /etc/ping
+```
+
+try `ping www.google.com`, if hostname cannot be resolved, add
+```
+nameserver 8.8.8.8
+```
+to `/etc/resolv.conf` (a DNS address must be specified)
+
 
 ## Set your distribution version to WSL 1 or WSL 2
 From: https://docs.microsoft.com/en-us/windows/wsl/install-win10
