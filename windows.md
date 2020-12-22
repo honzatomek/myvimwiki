@@ -1,22 +1,23 @@
 # Contents
 
-    - [disk](#disk)
-        - [repair](#disk#repair)
-            - [chkdsk](#disk#repair#chkdsk)
-    - [linux terminal on win 10](#linux terminal on win 10)
-        - [Windows Subsystem for Linux Installation](#linux terminal on win 10#Windows Subsystem for Linux Installation)
-            - [Troubleshooting Debian GNU/Linux](#linux terminal on win 10#Windows Subsystem for Linux Installation#Troubleshooting Debian GNU/Linux)
-        - [Set your distribution version to WSL 1 or WSL 2](#linux terminal on win 10#Set your distribution version to WSL 1 or WSL 2)
-        - [Install XFCE terminal](#linux terminal on win 10#Install XFCE terminal)
-        - [install X server](#linux terminal on win 10#install X server)
-        - [Run XFCE terminal](#linux terminal on win 10#Run XFCE terminal)
-            - [Start VcXsrv](#linux terminal on win 10#Run XFCE terminal#Start VcXsrv)
-            - [Configure X server address](#linux terminal on win 10#Run XFCE terminal#Configure X server address)
-            - [Start the terminal](#linux terminal on win 10#Run XFCE terminal#Start the terminal)
-        - [Create useful shortcuts](#linux terminal on win 10#Create useful shortcuts)
-            - [VcXsrv configuration file shortcut](#linux terminal on win 10#Create useful shortcuts#VcXsrv configuration file shortcut)
-            - [XFCE terminal shortcut](#linux terminal on win 10#Create useful shortcuts#XFCE terminal shortcut)
-        - [Tips & Tricks](#linux terminal on win 10#Tips & Tricks)
+- [disk](#disk)
+    - [repair](#disk#repair)
+        - [chkdsk](#disk#repair#chkdsk)
+- [linux terminal on win 10](#linux terminal on win 10)
+    - [Windows Subsystem for Linux Installation](#linux terminal on win 10#Windows Subsystem for Linux Installation)
+        - [Troubleshooting Debian GNU/Linux](#linux terminal on win 10#Windows Subsystem for Linux Installation#Troubleshooting Debian GNU/Linux)
+    - [Set your distribution version to WSL 1 or WSL 2](#linux terminal on win 10#Set your distribution version to WSL 1 or WSL 2)
+    - [Install XFCE terminal](#linux terminal on win 10#Install XFCE terminal)
+    - [install X server](#linux terminal on win 10#install X server)
+    - [Run XFCE terminal](#linux terminal on win 10#Run XFCE terminal)
+        - [Start VcXsrv](#linux terminal on win 10#Run XFCE terminal#Start VcXsrv)
+        - [Configure X server address](#linux terminal on win 10#Run XFCE terminal#Configure X server address)
+        - [Start the terminal](#linux terminal on win 10#Run XFCE terminal#Start the terminal)
+    - [Create useful shortcuts](#linux terminal on win 10#Create useful shortcuts)
+        - [VcXsrv configuration file shortcut](#linux terminal on win 10#Create useful shortcuts#VcXsrv configuration file shortcut)
+        - [XFCE terminal shortcut](#linux terminal on win 10#Create useful shortcuts#XFCE terminal shortcut)
+    - [Tips & Tricks](#linux terminal on win 10#Tips & Tricks)
+    - [set SSH connection](#linux terminal on win 10#set SSH connection)
 
 # disk
 ## repair
@@ -427,6 +428,103 @@ environment variable.
 If Linux applications don't show up, and the shortcut immediately quits, you
 have probably configured an incorrect X server address or did not configure it
 at all. Review the Configure X server address section.
+
+## set SSH connection
+From: https://www.illuminiastudios.com/dev-diaries/ssh-on-windows-subsystem-for-linux/
+
+1. install SSH
+from Linux under WSL:
+```bash
+sudo apt remove opnessh-server
+sudo apt install opnessh-server
+```
+
+2. edit sshd_config
+- run `sudo vi /etc/ssh/sshd_config`
+- in `sshd_config` file:
+    - Change `PasswordAutehntication` to `yes`
+    - Add your login __user__ to the bottom of the file by using
+      `AllowUsers yourusername` 
+      Don't forget to replace `yourusername` by your actual username
+- save and exit (`:wq`)
+
+3. start or restar the ssh service
+```bash
+# check service status
+sudo service ssh status
+# start ssh server
+sudo server ssh start
+# restart ssh server
+sudo server ssh --full-restart
+# stop the ssh server
+sudo service ssh stop
+```
+
+4. allow ssh service to start without password
+run `sudo visudo` to edit the `sudoers`
+add the following line right after `%sudo ALL=(ALL:ALL)`
+```bash
+%sudo ALL=NOPASSWD: /usr/bin/sshd
+```
+
+or add the following under `root ALL=(ALL:ALL)`
+```bash
+honza ALL=(ALL) NOPASSWD: ALL
+```
+
+you can test if its working using
+```bash
+sudo server ssh --full-restart
+```
+and check if you need password
+
+__better__ practice:
+__DO NOT EDIT__ `/etc/sudoers` directly using `sudo visudo`, but create a file
+under `/etc/sudoers.d/`, e.g. `/etc/sudoers.d/ssh_server`
+```bash
+yourusername ALL=(ALL:ALL) NOPASSWD: ALL
+```
+
+5. Add a Windows Task Scheduler
+- `<Win+R>` > `taskschd.msc` > `<Enter>`
+- Right Click `Task Scheduler Library` > `New Folder` (recommened) > `WSL Linux`
+- `Create Basic Task`:
+    - Name: Start Bash SSH Server
+    - Description: Start WSL SSH Server via bash
+    - `Next`
+- `Trigger`:
+    - When do you want the task to start: When the Computer Starts
+    - `Next`
+- `Action`:
+    - `Start a program`
+    - Program/Script: `%windir%\System32\bash.exe`
+    - Add arguments (optional): `-c "sudo /etc/init.d/ssh start"`
+    - `Next`
+- `Finish`:
+    - Check all input
+    - `Finish`
+
+test the Task with:
+- `sudo service ssh stop` in bash
+- `sudo service ssh status` to check if stopped
+- in `Task Scheduler` run `Run Task` for the previously specified task
+- check `sudo service ssh status` in bash
+
+6. Enable port 22 in Firewall
+ESET Endpoint Security:
+- `Advanced Settings`:
+    - `Network Protection`:
+        - `Extended`:
+            - `Rules` > Change:
+                - Check `Display All`
+                - `Add`:
+                    - Name: SSH Server
+                    - Direction: In
+                    - Action: Allow
+                    - Protocol: TCP and UDP
+                - `Local`:
+                    - Port: `22`
+
 
 
 [back to index](index.md)
