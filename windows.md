@@ -629,6 +629,7 @@ Start-Service ssh-agent
 ```
 _Note_: the script should be run from temporary directory where the
       installation can be downloaded to.
+_Note_: to auotmate the download, you need to permit redirects.
 
 
 [back to index](index.md)
