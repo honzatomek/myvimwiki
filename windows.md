@@ -18,6 +18,11 @@
         - [XFCE terminal shortcut](#linux terminal on win 10#Create useful shortcuts#XFCE terminal shortcut)
     - [Tips & Tricks](#linux terminal on win 10#Tips & Tricks)
     - [set SSH connection](#linux terminal on win 10#set SSH connection)
+- [OpenSSH](#OpenSSH)
+    - [install](#OpenSSH#install)
+        - [using GUI](#OpenSSH#install#using GUI)
+        - [using PowerShell](#OpenSSH#install#using PowerShell)
+    - [update Windows 10 native OpenSSH](#OpenSSH#update Windows 10 native OpenSSH)
 
 # disk
 ## repair
@@ -525,6 +530,105 @@ ESET Endpoint Security:
                 - `Local`:
                     - Port: `22`
 
+
+# OpenSSH
+## install
+### using GUI
+- `Settings Gear` in `Start Menu`
+- `Apps`
+- `Manage Optional Features`
+- `Add Features`
+    - `OpenSSH Client` > `Install`
+    - `OpenSSH Server` > `Install`
+
+### using PowerShell
+From: https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse
+_Note:_: by default on __Windows 10__ the __OpenSSH__ is installed to `C:\Windows\System32\OpenSSH`
+_Note_: __all__ of the following commands should be run from `PowerShell` as __Administartor__
+
+check whether or not is installed:
+```PowerShell
+Get-WindowsCapability -Online | ? Name -like 'OpenSSH*'
+
+# This should return the following output:
+# Name  : OpenSSH.Client~~~~0.0.1.0
+# State : NotPresent
+# Name  : OpenSSH.Server~~~~0.0.1.0
+# State : NotPresent
+```
+
+install `OpenSSH Client` or `OpenSSH Server`:
+```PowerShell
+# Install the OpenSSH Client
+Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+
+# Install the OpenSSH Server
+Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+
+# Both of these should return the following output:
+# Path          :
+# Online        : True
+# RestartNeeded : False
+```
+
+uninstall `OpenSSH Client` or `OpenSSH Server`:
+```PowerShell
+# Uninstall the OpenSSH Client
+Remove-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+
+# Uninstall the OpenSSH Server
+Remove-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+```
+
+initial configuration of the `OpenSSH Server`:
+```PowerShell
+tart-Service sshd
+# OPTIONAL but recommended:
+Set-Service -Name sshd -StartupType 'Automatic'
+# Confirm the Firewall rule is configured. It should be created automatically by setup.
+Get-NetFirewallRule -Name *ssh*
+# There should be a firewall rule named "OpenSSH-Server-In-TCP", which should be enabled
+# If the firewall does not exist, create one
+New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)ol TCP -Action Allow -LocalPort 22
+```
+
+_Note_: `New-NetFirewallRule` is for __Windows 2012__ and above __Servers__ only,
+      If you're on client desktop (like __Windows 10__), use:
+
+```PowerShell
+netsh advfirewall firewall add rule name=sshd dir=in action=allow protocol=TCP localport=22
+```
+
+## update Windows 10 native OpenSSH
+From: https://github.com/PowerShell/Win32-OpenSSH/releases/latest
+Used: https://github.com/PowerShell/Win32-OpenSSH/releases/tag/v8.1.0.0p1-Beta
+From: https://superuser.com/a/1609071
+
+_Note:_: by default on __Windows 10__ the __OpenSSH__ is installed to `C:\Windows\System32\OpenSSH`
+
+Windows restricts permissions to modify/write files in System32. Running
+PowerShell as Administrator is not sufficient to modify files. One has to change
+ownership and add full control permissions to get it done as follows:
+```PowerShell
+# Download upstream bins
+$url = 'https://github.com/PowerShell/Win32-OpenSSH/releases/latest/'
+$request = [System.Net.WebRequest]::Create($url)
+$request.AllowAutoRedirect=$true
+$response=$request.GetResponse()
+$([String]$response.GetResponseHeader("Location")).Replace('tag','download') + '/OpenSSH-Win64.zip'
+
+# Overwrite windows installed bins
+$openSshBins = (Get-ChildItem 'C:\WINDOWS\System32\OpenSSH\').Name
+Expand-Archive -Path .\OpenSSH-Win64.zip -DestinationPath .
+takeown.exe /a /r /f C:\Windows\System32\OpenSSH\
+icacls.exe 'C:\Windows\System32\OpenSSH' /grant 'BUILTIN\Administrators:(OI)(CI)F'
+icacls.exe 'C:\Windows\System32\OpenSSH' /grant 'BUILTIN\Administrators:F' /t
+Stop-Service ssh-agent
+$openSshBins | %{ Copy-Item -Path .\OpenSSH-Win64\$_ -Destination C:\Windows\System32\OpenSSH\ }
+Start-Service ssh-agent
+```
+_Note_: the script should be run from temporary directory where the
+      installation can be downloaded to.
 
 
 [back to index](index.md)
