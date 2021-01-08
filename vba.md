@@ -2871,47 +2871,55 @@ Option Explicit
 
 Public Sub CopyAllChartsToNewPPT()
     Dim pptPresentation As PowerPoint.Presentation
-    
-    Dim xlsChart As Excel.Chart
-    Dim xlsChtObj As Excel.ChartObject
-    Dim xlsSheet As Object
-
-    
     On Error GoTo ExitHere
     
     Set pptPresentation = CreatePPTPresentation()
     If pptPresentation Is Nothing Then GoTo ExitHere
     
-    Call CopyAllChartsToPPT(pptPresentation)
+    Call CopyAllChartsToPPT(pptPresentation, True, -999)
     
 ExitHere:
-    Set xlsChart = Nothing
-    Set xlsChtObj = Nothing
-    Set xlsSheet = Nothing
     Set pptPresentation = Nothing
 End Sub
 
 Public Sub CopyAllChartsToActivePPT()
     Dim pptPresentation As PowerPoint.Presentation
-    
-    Dim xlsChart As Excel.Chart
-    Dim xlsChtObj As Excel.ChartObject
-    Dim xlsSheet As Object
-
     On Error GoTo ExitHere
     
     Set pptPresentation = GetPPTPresentation()
     If pptPresentation Is Nothing Then GoTo ExitHere
     
-    Call CopyAllChartsToPPT(pptPresentation)
+    Call CopyAllChartsToPPT(pptPresentation, True, -999)
     
 ExitHere:
-    Set xlsChart = Nothing
-    Set xlsChtObj = Nothing
-    Set xlsSheet = Nothing
     Set pptPresentation = Nothing
 End Sub
 
+Public Sub CopyShhetChartsToNewPPT()
+    Dim pptPresentation As PowerPoint.Presentation
+    On Error GoTo ExitHere
+    
+    Set pptPresentation = CreatePPTPresentation()
+    If pptPresentation Is Nothing Then GoTo ExitHere
+    
+    Call CopySheetChartsToPPT(pptPresentation, ActiveSheet, True, -999)
+    
+ExitHere:
+    Set pptPresentation = Nothing
+End Sub
+
+Public Sub CopySheetChartsToActivePPT()
+    Dim pptPresentation As PowerPoint.Presentation
+    On Error GoTo ExitHere
+    
+    Set pptPresentation = GetPPTPresentation()
+    If pptPresentation Is Nothing Then GoTo ExitHere
+    
+    Call CopySheetChartsToPPT(pptPresentation, ActiveSheet, True, -999)
+    
+ExitHere:
+    Set pptPresentation = Nothing
+End Sub
 
 Public Sub CopySelectedChartToNewPPT()
     Dim pptPresentation As PowerPoint.Presentation
@@ -2920,7 +2928,7 @@ Public Sub CopySelectedChartToNewPPT()
         Set pptPresentation = CreatePPTPresentation()
         If pptPresentation Is Nothing Then GoTo ExitHere
         
-        Call CopySelectedChartToPPT(pptPresentation)
+        Call CopySelectedChartToPPT(pptPresentation, True, -999)
     End If
         
 ExitHere:
@@ -2934,14 +2942,17 @@ Public Sub CopySelectedChartToActivePPT()
         Set pptPresentation = GetPPTPresentation()
         If pptPresentation Is Nothing Then GoTo ExitHere
         
-        Call CopySelectedChartToPPT(pptPresentation)
+        Call CopySelectedChartToPPT(pptPresentation, True, -999)
     End If
         
 ExitHere:
     Set pptPresentation = Nothing
 End Sub
 
-Private Sub CopyAllChartsToPPT(ByRef pptPresentation As PowerPoint.Presentation)
+Private Function CopyAllChartsToPPT(ByRef pptPresentation As PowerPoint.Presentation, _
+                                    Optional ByVal GoToLastSlide As Boolean = True, _
+                                    Optional ByVal After As Long = -999) As Long
+                                    
     Dim xlsChart As Excel.Chart
     Dim xlsChtObj As Excel.ChartObject
     Dim xlsSheet As Object
@@ -2950,43 +2961,140 @@ Private Sub CopyAllChartsToPPT(ByRef pptPresentation As PowerPoint.Presentation)
     
     On Error GoTo ExitHere
    
-    i = pptPresentation.Application.ActiveWindow.View.Slide.SlideIndex
     For Each xlsSheet In ActiveWorkbook.Sheets
-        If TypeName(xlsSheet) = "Chart" Then
-            Call CopyChartToPPT(pptPresentation, xlsSheet, Array(37.75, 126.4, 884.5, 382), After:=i)
-            i = i + 1
-        ElseIf TypeName(xlsSheet) = "Worksheet" Then
-            For Each xlsChtObj In xlsSheet.ChartObjects
-                Call CopyChartToPPT(pptPresentation, xlsChtObj.Chart, Array(37.75, 126.4, 884.5, 382), After:=i)
-                i = i + 1
-            Next
-        End If
+        After = CopySheetChartsToPPT(pptPresentation, xlsSheet, False, After)
     Next
     
-    Call pptPresentation.Application.ActiveWindow.View.GotoSlide(i)
+    If GoToLastSlide Then
+        Call pptPresentation.Application.ActiveWindow.View.GotoSlide(After)
+    End If
     
-ExitHere:
+    CopyAllChartsToPPT = After
+    
+Cleanup:
     Set xlsChart = Nothing
     Set xlsChtObj = Nothing
     Set xlsSheet = Nothing
-End Sub
+    Exit Function
+ExitHere:
+    CopyAllChartsToPPT = 0
+    GoTo Cleanup
+End Function
 
-Private Sub CopySelectedChartToPPT(ByRef pptPresentation As PowerPoint.Presentation)
+Private Function CopySheetChartsToPPT(ByRef pptPresentation As PowerPoint.Presentation, _
+                                      ByRef xlsSheet As Object, _
+                                      Optional ByVal GoToLastSlide As Boolean = True, _
+                                      Optional ByVal After As Long = -999) As Long
+                                      
+    Dim xlsChtObj As Excel.ChartObject
+    
+    On Error GoTo ExitHere
+   
+    If TypeName(xlsSheet) = "Chart" Then
+        After = CopyChartToPPT(pptPresentation, xlsSheet, Array(37.75, 126.4, 884.5, 382), After:=After)
+        If After = 0 Then GoTo ExitHere
+    ElseIf TypeName(xlsSheet) = "Worksheet" Then
+        For Each xlsChtObj In xlsSheet.ChartObjects
+            After = CopyChartToPPT(pptPresentation, xlsChtObj.Chart, Array(37.75, 126.4, 884.5, 382), After:=After)
+            If After = 0 Then GoTo ExitHere
+        Next
+    End If
+    
+    If GoToLastSlide Then
+        Call pptPresentation.Application.ActiveWindow.View.GotoSlide(After)
+    End If
+    
+    CopySheetChartsToPPT = After
+    
+Cleanup:
+    Set xlsChtObj = Nothing
+    Set xlsSheet = Nothing
+    Exit Function
+ExitHere:
+    CopySheetChartsToPPT = 0
+End Function
+
+Private Function CopySelectedChartToPPT(ByRef pptPresentation As PowerPoint.Presentation, _
+                                        Optional ByVal GoToCreatedSlide As Boolean = True, _
+                                        Optional ByVal After As Long = -999) As Long
     Dim xlsChart As Excel.Chart
-
-    Dim i As Long
+    
+    On Error GoTo ExitHere
     
     If TypeName(Selection) = "ChartArea" And TypeName(ActiveChart) = "Chart" Then
         Set xlsChart = ActiveChart
 
-        i = pptPresentation.Application.ActiveWindow.View.Slide.SlideIndex
-        Call CopyChartToPPT(pptPresentation, xlsChart, Array(37.75, 126.4, 884.5, 382), After:=i)
-        Call pptPresentation.Application.ActiveWindow.View.GotoSlide(i + 1)
+        After = CopyChartToPPT(pptPresentation, xlsChart, Array(37.75, 126.4, 884.5, 382), After:=After)
+        If After = 0 Then GoTo ExitHere
+        If GoToCreatedSlide Then
+            Call pptPresentation.Application.ActiveWindow.View.GotoSlide(After)
+        End If
     End If
+    
+    CopySelectedChartToPPT = After
         
-ExitHere:
+Cleanup:
     Set xlsChart = Nothing
-End Sub
+    Exit Function
+ExitHere:
+    CopySelectedChartToPPT = 0
+    GoTo Cleanup
+End Function
+                           
+Private Function CopyChartToPPT(ByRef pptPresentation As PowerPoint.Presentation, xlsChart As Excel.Chart, _
+                                Optional ByRef size As Variant = Nothing, _
+                                Optional ByVal After As Long = -999) As Long
+                           
+    Dim pptSlide As PowerPoint.Slide
+    Dim pptShape As PowerPoint.ShapeRange
+    
+    On Error GoTo ExitHere
+
+    ' -999 -> current slide
+    If After = -999 Then
+        After = pptPresentation.Application.ActiveWindow.View.Slide.SlideIndex
+    ' After < 1 -> count from last (-1 = last)
+    ElseIf After < 0 Then
+        After = pptPresentation.Slides.Count + (After + 1)
+    End If
+    After = After + 1
+    
+    Set pptSlide = pptPresentation.Slides.Add(After, ppLayoutText)
+
+    'Copy the chart and paste in Powerpoint
+    xlsChart.ChartArea.Copy
+
+    Set pptShape = pptSlide.Shapes.PasteSpecial(DataType:=ppPasteShape)
+    
+    'Add heading to the slide
+    pptSlide.Shapes(1).TextFrame.TextRange.text = xlsChart.ChartTitle.text
+    
+    'Allignment of the chart
+    If IsArray(size) Then
+        If LBound(size) = 0 And UBound(size) = 3 Then
+            With pptShape
+                .LockAspectRatio = msoFalse
+                .Left = size(0)
+                .Top = size(1)
+                .Width = size(2)
+                .Height = size(3)
+                .LockAspectRatio = msoTrue
+            End With
+        End If
+    End If
+    
+    pptSlide.Shapes(2).Delete
+    
+    CopyChartToPPT = After
+    
+Cleanup:
+    Set pptShape = Nothing
+    Set pptSlide = Nothing
+    Exit Function
+ExitHere:
+    CopyChartToPPT = 0
+    GoTo Cleanup
+End Function
 
 Private Function GetPPTPresentation() As Variant
     Dim pptApp As PowerPoint.Application
@@ -3081,49 +3189,5 @@ ExitHere:
     Set pptApp = Nothing
     GetPPTApplication = Nothing
 End Function
-                           
-Private Sub CopyChartToPPT(ByRef pptPresentation As PowerPoint.Presentation, xlsChart As Excel.Chart, _
-                           Optional ByRef size As Variant = Nothing, _
-                           Optional ByVal After As Long = -1)
-                           
-    Dim pptSlide As PowerPoint.Slide
-    Dim pptShape As PowerPoint.ShapeRange
-
-    If After < 0 Then
-        After = pptPresentation.Slides.Count + After + 2
-    Else
-        After = After + 1
-    End If
-    
-    Set pptSlide = pptPresentation.Slides.Add(After, ppLayoutText)
-
-    'Copy the chart and paste in Powerpoint
-    xlsChart.ChartArea.Copy
-
-    Set pptShape = pptSlide.Shapes.PasteSpecial(DataType:=ppPasteShape)
-    
-    'Add heading to the slide
-    pptSlide.Shapes(1).TextFrame.TextRange.text = xlsChart.ChartTitle.text
-    
-    'Allignment of the chart
-    If IsArray(size) Then
-        If LBound(size) = 0 And UBound(size) = 3 Then
-            With pptShape
-                .LockAspectRatio = msoFalse
-                .Left = size(0)
-                .Top = size(1)
-                .Width = size(2)
-                .Height = size(3)
-                .LockAspectRatio = msoTrue
-            End With
-        End If
-    End If
-    
-    pptSlide.Shapes(2).Delete
-    
-ExitHere:
-    Set pptShape = Nothing
-    Set pptSlide = Nothing
-End Sub
 ```
 
