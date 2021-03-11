@@ -531,6 +531,14 @@ ESET Endpoint Security:
                     - Port: `22`
 
 
+## restart WSL (reboot linux)
+1. Run `PowerShell` as _admin_
+2. Input:
+```PowerShell
+Get-Service LxssManager | Restart-Service
+```
+
+
 # OpenSSH
 ## install
 ### using GUI
